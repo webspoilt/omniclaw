@@ -42,11 +42,11 @@
 - **Vibe-Coded Execution**: Agent writes, compiles, and installs tools on-demand
 - **Deep System Access**: Shell commands, file management, browser control
 
-### 3. Mobile "Super-App"
+### 3. Mobile "Super-App" & Interfaces
 - **"Allow Everything" Permissions**: React Native UI with Accessibility and Background Service
 - **Human Proxy Mode**: Read screens and click buttons autonomously
-- **Auto-Setup**: Self-configuring environment on first run
-- **Messaging Gateway**: Telegram and WhatsApp Bot API integration
+- **Multi-Channel Inbox**: Out-of-the-box support for Telegram, WhatsApp, Discord, Slack, Matrix, and iMessage.
+- **Voice Wake & Audio**: Global hot-word activation (like Siri) for macOS desktop and mobile continuous conversation.
 
 ### 4. Automation & Earning
 - **Financial Automation**: Trading platform hooks and earning workflows
@@ -160,10 +160,16 @@ memory:
   max_history: 1000
 ```
 
-### Messaging Gateway
+### Messaging & Voice Gateway
 
 ```yaml
 messaging:
+  discord:
+    enabled: true
+    token: "YOUR_DISCORD_BOT_TOKEN"
+  slack:
+    enabled: true
+    bot_token: "xoxb-..."
   telegram:
     enabled: true
     token: "YOUR_BOT_TOKEN"
@@ -172,6 +178,15 @@ messaging:
   whatsapp:
     enabled: true
     allowed_numbers: ["+1234567890"]
+    
+  imessage:
+    enabled: true
+  matrix:
+    enabled: true
+
+voice:
+  macos_hotword: "Hey Omni"
+  elevenlabs_api_key: "sk-..."
 ```
 
 ## 💬 Usage
@@ -195,9 +210,9 @@ omniclaw daemon
 systemctl --user start omniclaw  # With systemd
 ```
 
-### Telegram Control (OpenClaw / Moltbot Interface)
+### Omni-Channel Control (OpenClaw / Moltbot Interface)
 
-You can run OmniClaw as your own personal **Moltbot / OpenClaw Assistant** directly from Telegram or WhatsApp. By connecting the messaging gateway in `config.yaml`, the agent will listen and respond to chats securely:
+You can run OmniClaw as your own personal **Moltbot / OpenClaw Assistant** directly from Discord, Slack, Telegram, WhatsApp, iMessage, or Matrix. By connecting the messaging gateway in `config.yaml`, the agent will listen and respond to chats securely:
 
 1. Use [@BotFather](https://t.me/BotFather) on Telegram to create a bot and get a Token.
 2. Put the Token in `config.yaml` > `messaging` > `telegram`.
