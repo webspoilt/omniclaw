@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "public": true,
+    "routes": [
+        {
+            "src": "/setup.sh",
+            "dest": "/public/setup.sh"
+        },
+        {
+            "src": "/",
+            "dest": "/public/index.html"
+        }
+    ]
+}
