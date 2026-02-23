@@ -19,6 +19,8 @@
   <em>A fully deployable, open-source AI agent system that scales across Mobile (Termux/Android), Laptop, and High-End PC using a "Hybrid Hive" architecture where multiple AI models collaborate autonomously.</em>
 </p>
 
+> **🤖 Built with AI Assistance**: Please note that parts of OmniClaw's architecture and features were developed alongside AI coding assistants. While powerful, this means there may be unexpected bugs or edge cases in certain modules. Contributions and issue reports are highly welcome!
+
 ---
 
 > [!WARNING]
