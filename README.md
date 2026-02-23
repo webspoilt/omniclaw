@@ -70,6 +70,8 @@ Check out our **[Real-World Use Cases](USE_CASES.md)** document to see how engin
 
 ## 🚀 Quick Start
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/webspoilt/omniclaw/blob/main/OmniClaw_Colab_Sandbox.ipynb)
+
 > **🍼 NEW TO ALL THIS?** Read our **[Very Simple: 24/7 Deployment Guide](DEPLOYMENT_GUIDE.md)** for a complete step-by-step walkthrough on how to set up Telegram, rent a Cloud Computer, and install OmniClaw easily using the `setup.sh` Blueprint.
 
 ### One-Click Installer Blueprint (Local)
