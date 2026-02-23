@@ -61,6 +61,13 @@
 - **Persistent Memory**: Local Vector Database for context retention
 - **Bug Bounty Hunting**: Automated research and vulnerability detection
 
+## 🌐 Real-World Use Cases
+Wondering what you can actually build with an autonomous agent swarm? 
+Check out our **[Real-World Use Cases](USE_CASES.md)** document to see how engineers are using OmniClaw for:
+- 🎯 Autonomous Bug Bounty Hunting
+- 🩺 24/7 Server Health & Incident Response
+- 🎙️ Hands-Free Smart Home Automation
+
 ## 🚀 Quick Start
 
 > **🍼 NEW TO ALL THIS?** Read our **[Very Simple: 24/7 Deployment Guide](DEPLOYMENT_GUIDE.md)** for a complete step-by-step walkthrough on how to set up Telegram, rent a Cloud Computer, and install OmniClaw easily using the `setup.sh` Blueprint.
