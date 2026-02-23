@@ -50,6 +50,12 @@ You can rent a computer in the cloud that stays on forever. It's called a **VPS*
 3. Rent the cheapest "Ubuntu Linux" computer (usually $5 to $10 per month).
 4. They will give you an **IP Address** and a password. You log into it using a terminal.
 
+### Choice C: An Android Phone (Using Termux)
+If you have an old Android phone connected to WiFi, you can host OmniClaw right on the phone! 
+1. Download **Termux** from F-Droid.
+2. Open Termux and keep the phone plugged into a charger.
+3. You can run the setup script directly inside Termux to host your robot!
+
 ## ⚙️ Step 5: Giving OmniClaw Your Secrets
 
 Now that you have your computer ready (Choice A or Choice B), let's put OmniClaw on it and give it the Walkie-Talkie secrets.
@@ -107,3 +113,7 @@ Try typing exactly this:
 - `/status`
 
 Congratulations! You now own an autonomous, 24/7 AI employee that lives in a computer and takes orders from your phone! 🎉
+
+---
+### 🛑 Strict Legal Warning
+**Using OmniClaw for automated hacking, network penetration, or malicious activity is strictly illegal and punishable by law. We do not encourage or endorse such actions. You use this AI tool entirely at your own risk and liability.**

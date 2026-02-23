@@ -29,6 +29,8 @@
 > - **Environment:** Kindly use this *only* inside a Virtual Machine (VM).
 > - **Kernel Level:** For eBPF/Kernel level access, please use Linux inside **VMware** or **VirtualBox**.
 > - **Liability:** Use at your own risk!
+> 
+> **🛑 STRICT LEGAL WARNING:** Using OmniClaw for automated hacking, unauthorized network penetration, or malicious exploitation is **strictly illegal and punishable by law**. We do not encourage, endorse, or support malicious activities. You assume all risk and liability for how you deploy this autonomous tool.
 
 ## 🌟 Features
 
@@ -43,10 +45,12 @@
 - **Kernel Bridge (C++/eBPF)**: Real-time Linux/Android system call and network monitoring
 - **Vibe-Coded Execution**: Agent writes, compiles, and installs tools on-demand
 - **Deep System Access**: Shell commands, file management, browser control
+- **Linux Native Tool Execution**: Natively integrates and executes Linux system tools for powerful automation.
 
 ### 3. Mobile "Super-App" & Interfaces
 - **"Allow Everything" Permissions**: React Native UI with Accessibility and Background Service
 - **Human Proxy Mode**: Read screens and click buttons autonomously
+- **Termux WiFi Host**: OmniClaw can run flawlessly on an Android phone connected to WiFi using Termux to host the core AI node 24/7.
 - **Multi-Channel Inbox**: Out-of-the-box support for Telegram, WhatsApp, Discord, Slack, Matrix, and iMessage.
 - **Voice Wake & Audio**: Global hot-word activation (like Siri) for macOS desktop and mobile continuous conversation.
 
