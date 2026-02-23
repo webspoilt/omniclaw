@@ -1,15 +1,26 @@
-# 🤖 OmniClaw: The Hybrid Hive AI Agent System
+﻿<p align="center">
+  <img src="https://raw.githubusercontent.com/webspoilt/omniclaw/main/docs/assets/architecture.png" alt="OmniClaw Banner" width="100%" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+</p>
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/omniclaw/omniclaw)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://python.org)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Android%20%7C%20macOS-lightgrey.svg)]()
+<h1 align="center" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 3em; color: #4A90E2; margin-bottom: 0;">🌐 OmniClaw</h1>
+<h3 align="center" style="font-weight: 300; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #666; margin-top: 5px;">The Hybrid Hive AI Agent System</h3>
 
-> **The Final Deployment Prompt** - A fully deployable, open-source AI agent system that scales across Mobile (Termux/Android), Laptop, and High-End PC using a "Hybrid Hive" architecture where multiple AI models collaborate autonomously.
+<p align="center">
+  <a href="https://github.com/webspoilt/omniclaw/releases">
+    <img src="https://img.shields.io/badge/version-1.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
+  </a>
+  <a href="https://python.org">
+    <img src="https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  </a>
+  <br><br>
+  <em>A fully deployable, open-source AI agent system that scales across Mobile (Termux/Android), Laptop, and High-End PC using a "Hybrid Hive" architecture where multiple AI models collaborate autonomously.</em>
+</p>
 
-![OmniClaw Architecture](docs/assets/architecture.png)
-
-## 🌟 Features
+---
+## ðŸŒŸ Features
 
 ### 1. Hybrid Hive Architecture
 - **Multi-API Orchestrator**: Manager-Worker loop handling 10+ AI API keys simultaneously
@@ -33,7 +44,7 @@
 - **Persistent Memory**: Local Vector Database for context retention
 - **Bug Bounty Hunting**: Automated research and vulnerability detection
 
-## 🚀 Quick Start
+## ðŸš€ Quick Start
 
 ### One-Line Installation
 
@@ -64,45 +75,45 @@ nano config.yaml  # Add your API keys
 python omniclaw.py chat
 ```
 
-## 📱 Platform Support
+## ðŸ“± Platform Support
 
 | Platform | Status | Features |
 |----------|--------|----------|
-| **Linux (Desktop/Server)** | ✅ Full | All features including eBPF kernel bridge |
-| **Android (Termux)** | ✅ Full | Mobile super-app, messaging gateway |
-| **macOS** | ✅ Partial | Core features (no eBPF) |
-| **Windows (WSL)** | ⚠️ Experimental | Core features only |
+| **Linux (Desktop/Server)** | âœ… Full | All features including eBPF kernel bridge |
+| **Android (Termux)** | âœ… Full | Mobile super-app, messaging gateway |
+| **macOS** | âœ… Partial | Core features (no eBPF) |
+| **Windows (WSL)** | âš ï¸ Experimental | Core features only |
 
-## 🏗️ Architecture
+## ðŸ—ï¸ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    HYBRID HIVE                              │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
-│  │  Manager    │◄──►│   Worker 1  │◄──►│   Worker 2  │     │
-│  │  (GPT-4)    │    │ (Claude-3)  │    │  (Gemini)   │     │
-│  └──────┬──────┘    └─────────────┘    └─────────────┘     │
-│         │                                                   │
-│         ▼                                                   │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
-│  │   Worker 3  │◄──►│   Worker 4  │◄──►│   Worker N  │     │
-│  │  (Ollama)   │    │  (Custom)   │    │   (API X)   │     │
-│  └─────────────┘    └─────────────┘    └─────────────┘     │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  SYSTEM INTEGRATION                         │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
-│  │eBPF Monitor │  │ Vector DB   │  │  Messaging  │         │
-│  │  (Kernel)   │  │  (FAISS)    │  │(TG/WhatsApp)│         │
-│  └─────────────┘  └─────────────┘  └─────────────┘         │
-└─────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    HYBRID HIVE                              â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”‚
+â”‚  â”‚  Manager    â”‚â—„â”€â”€â–ºâ”‚   Worker 1  â”‚â—„â”€â”€â–ºâ”‚   Worker 2  â”‚     â”‚
+â”‚  â”‚  (GPT-4)    â”‚    â”‚ (Claude-3)  â”‚    â”‚  (Gemini)   â”‚     â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â”‚
+â”‚         â”‚                                                   â”‚
+â”‚         â–¼                                                   â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”‚
+â”‚  â”‚   Worker 3  â”‚â—„â”€â”€â–ºâ”‚   Worker 4  â”‚â—„â”€â”€â–ºâ”‚   Worker N  â”‚     â”‚
+â”‚  â”‚  (Ollama)   â”‚    â”‚  (Custom)   â”‚    â”‚   (API X)   â”‚     â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                              â”‚
+                              â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                  SYSTEM INTEGRATION                         â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”         â”‚
+â”‚  â”‚eBPF Monitor â”‚  â”‚ Vector DB   â”‚  â”‚  Messaging  â”‚         â”‚
+â”‚  â”‚  (Kernel)   â”‚  â”‚  (FAISS)    â”‚  â”‚(TG/WhatsApp)â”‚         â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜         â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-## 🔧 Configuration
+## ðŸ”§ Configuration
 
 ### API Configuration
 
@@ -154,7 +165,7 @@ messaging:
     allowed_numbers: ["+1234567890"]
 ```
 
-## 💬 Usage
+## ðŸ’¬ Usage
 
 ### Interactive Chat
 
@@ -184,31 +195,31 @@ Send commands to your bot:
 /memory Show memory statistics
 ```
 
-## 🛠️ Development
+## ðŸ› ï¸ Development
 
 ### Project Structure
 
 ```
 omniclaw/
-├── core/                    # Core Python modules
-│   ├── orchestrator.py      # Hybrid Hive orchestrator
-│   ├── manager.py           # Manager agent
-│   ├── worker.py            # Worker agents
-│   ├── memory.py            # Vector memory system
-│   ├── api_pool.py          # API management
-│   └── messaging_gateway.py # Telegram/WhatsApp integration
-├── kernel_bridge/           # C++/eBPF kernel monitor
-│   ├── src/bpf/            # eBPF programs
-│   ├── src/cpp/            # C++ bridge
-│   └── python_bridge.py    # Python bindings
-├── mobile_app/             # React Native super-app
-│   ├── src/screens/        # UI screens
-│   ├── src/services/       # Background services
-│   └── src/store/          # State management
-├── scripts/                # Deployment scripts
-├── omniclaw.py            # Main entry point
-├── install.sh             # Installation script
-└── requirements.txt       # Python dependencies
+â”œâ”€â”€ core/                    # Core Python modules
+â”‚   â”œâ”€â”€ orchestrator.py      # Hybrid Hive orchestrator
+â”‚   â”œâ”€â”€ manager.py           # Manager agent
+â”‚   â”œâ”€â”€ worker.py            # Worker agents
+â”‚   â”œâ”€â”€ memory.py            # Vector memory system
+â”‚   â”œâ”€â”€ api_pool.py          # API management
+â”‚   â””â”€â”€ messaging_gateway.py # Telegram/WhatsApp integration
+â”œâ”€â”€ kernel_bridge/           # C++/eBPF kernel monitor
+â”‚   â”œâ”€â”€ src/bpf/            # eBPF programs
+â”‚   â”œâ”€â”€ src/cpp/            # C++ bridge
+â”‚   â””â”€â”€ python_bridge.py    # Python bindings
+â”œâ”€â”€ mobile_app/             # React Native super-app
+â”‚   â”œâ”€â”€ src/screens/        # UI screens
+â”‚   â”œâ”€â”€ src/services/       # Background services
+â”‚   â””â”€â”€ src/store/          # State management
+â”œâ”€â”€ scripts/                # Deployment scripts
+â”œâ”€â”€ omniclaw.py            # Main entry point
+â”œâ”€â”€ install.sh             # Installation script
+â””â”€â”€ requirements.txt       # Python dependencies
 ```
 
 ### Building Kernel Bridge
@@ -227,14 +238,14 @@ npm install
 npx react-native run-android  # or run-ios
 ```
 
-## 🔒 Security
+## ðŸ”’ Security
 
 - **API Key Encryption**: All API keys are encrypted at rest
 - **Sandboxed Execution**: Shell commands run in restricted environment
 - **User Authorization**: Messaging gateway requires explicit user allowlisting
 - **Audit Logging**: All actions logged for review
 
-## 🌐 Hardware Detection
+## ðŸŒ Hardware Detection
 
 The installer automatically detects your hardware and configures appropriately:
 
@@ -244,7 +255,7 @@ The installer automatically detects your hardware and configures appropriately:
 | Medium | 8GB | 4+ cores | llama2:7b / GPT-3.5 |
 | Low/Mobile | <8GB | 2-4 cores | phi / API fallback |
 
-## 📊 Performance
+## ðŸ“Š Performance
 
 Benchmarks on different hardware configurations:
 
@@ -255,7 +266,7 @@ Benchmarks on different hardware configurations:
 | Research Task | 5.3s | 12.0s | 25.0s |
 | Multi-API Coordination | 3.2s | 7.0s | 15.0s |
 
-## 🤝 Contributing
+## ðŸ¤ Contributing
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
@@ -273,28 +284,28 @@ git commit -m "Add amazing feature"
 git push origin feature/amazing-feature
 ```
 
-## 📜 License
+## ðŸ“œ License
 
 MIT License - see [LICENSE](LICENSE) file.
 
-## 🙏 Acknowledgments
+## ðŸ™ Acknowledgments
 
 - [eBPF](https://ebpf.io/) for kernel monitoring capabilities
 - [FAISS](https://github.com/facebookresearch/faiss) for vector search
 - [LangChain](https://langchain.com/) for AI orchestration patterns
 - [React Native](https://reactnative.dev/) for mobile framework
 
-## 📞 Support
+## ðŸ“ž Support
 
-- 📧 Email: support@omniclaw.ai
-- 💬 Discord: [discord.gg/omniclaw](https://discord.gg/omniclaw)
-- 🐛 Issues: [GitHub Issues](https://github.com/omniclaw/omniclaw/issues)
-- 📖 Docs: [docs.omniclaw.ai](https://docs.omniclaw.ai)
+- ðŸ“§ Email: support@omniclaw.ai
+- ðŸ’¬ Discord: [discord.gg/omniclaw](https://discord.gg/omniclaw)
+- ðŸ› Issues: [GitHub Issues](https://github.com/omniclaw/omniclaw/issues)
+- ðŸ“– Docs: [docs.omniclaw.ai](https://docs.omniclaw.ai)
 
 ---
 
 <p align="center">
   <b>OmniClaw</b> - The Future of Autonomous AI Agents
   <br>
-  <sub>Built with ❤️ by Me</sub>
+  <sub>Built with â¤ï¸ by Me</sub>
 </p>
