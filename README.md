@@ -195,9 +195,15 @@ omniclaw daemon
 systemctl --user start omniclaw  # With systemd
 ```
 
-### Telegram Control
+### Telegram Control (OpenClaw / Moltbot Interface)
 
-Send commands to your bot:
+You can run OmniClaw as your own personal **Moltbot / OpenClaw Assistant** directly from Telegram or WhatsApp. By connecting the messaging gateway in `config.yaml`, the agent will listen and respond to chats securely:
+
+1. Use [@BotFather](https://t.me/BotFather) on Telegram to create a bot and get a Token.
+2. Put the Token in `config.yaml` > `messaging` > `telegram`.
+3. Put your own Telegram User ID in `allowed_users` so nobody else can control your machine.
+4. Send commands to your bot to trigger agentic behaviors:
+
 ```
 /task Research quantum computing advances
 /status Check agent status
