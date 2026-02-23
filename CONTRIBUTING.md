@@ -6,6 +6,11 @@ First off, thank you for considering contributing to OmniClaw! It's people like 
 
 Before contributing, please be aware that OmniClaw is currently in **Beta and is highly experimental**. Because of its deep system access capabilities (including Kernel features via eBPF), please ensure you develop and test your changes inside a safe Virtual Machine (VMware, VirtualBox, etc.). 
 
+## 🤖 Local AI Support (Privacy First)
+
+OmniClaw natively supports running **Local AI Models** as fully autonomous agents! You do not have to rely on paid APIs like OpenAI or Anthropic. 
+If you want to contribute using completely free, offline models, simply install [Ollama](https://ollama.com/), pull your preferred local model (e.g., `llama3` or `mistral`), and ensure it is selected in your `config.yaml`. Local Agentic AIs ensure 100% data privacy while running the hybrid architecture.
+
 ## How to Contribute
 
 ### 1. Reporting Bugs
