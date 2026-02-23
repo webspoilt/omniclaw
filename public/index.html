@@ -5,17 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OmniClaw | Hybrid Hive AI System</title>
+
+    <!-- Dynamic Favicon Integration -->
+    <link rel="icon" href="./logo.svg" type="image/svg+xml">
+
     <!-- Modern Font -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --bg: #050505;
             --glass-bg: rgba(20, 20, 20, 0.4);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --accent: #4facfe;
-            --accent-glow: rgba(79, 172, 254, 0.5);
+            --glass-hover: rgba(40, 40, 40, 0.6);
+            --accent: #00f2fe;
+            --accent-glow: rgba(0, 242, 254, 0.5);
+            --danger: #ff4b4b;
+            --danger-glow: rgba(255, 75, 75, 0.3);
             --text-main: #f0f0f0;
-            --text-muted: #888888;
+            --text-muted: #a0a0a0;
         }
 
         * {
@@ -29,277 +37,523 @@
             background-color: var(--bg);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
 
         /* Ambient 3D Glow Backgrounds */
         .ambient-glow {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
+            position: fixed;
+            width: 80vw;
+            height: 80vw;
+            max-width: 800px;
+            max-height: 800px;
             border-radius: 50%;
-            filter: blur(80px);
-            z-index: 0;
-            animation: pulse 8s infinite alternate ease-in-out;
+            filter: blur(100px);
+            z-index: -1;
+            animation: pulse-ambient 10s infinite alternate ease-in-out;
+            pointer-events: none;
         }
 
         .glow-1 {
             top: -20%;
             left: -10%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
         }
 
         .glow-2 {
             bottom: -20%;
             right: -10%;
-            background: radial-gradient(circle, rgba(0, 242, 254, 0.3) 0%, transparent 60%);
-            animation-delay: -4s;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.2) 0%, transparent 60%);
+            animation-delay: -5s;
         }
 
-        @keyframes pulse {
+        .glow-3 {
+            top: 40%;
+            left: 30%;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.15) 0%, transparent 50%);
+            animation: float-ambient 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulse-ambient {
             0% {
-                transform: scale(0.8) translate(0, 0);
-                opacity: 0.5;
+                transform: scale(0.8);
+                opacity: 0.4;
             }
 
             100% {
-                transform: scale(1.2) translate(50px, 50px);
-                opacity: 0.8;
+                transform: scale(1.1);
+                opacity: 0.7;
             }
         }
 
-        /* Glassmorphism Card (Hero Section) */
-        .glass-card {
+        @keyframes float-ambient {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(100px, -100px);
+            }
+        }
+
+        /* Layout Architecture */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        /* Glassmorphism Structural Classes */
+        .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 50px 60px;
-            width: 90%;
-            max-width: 800px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        /* Navigation Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-logo img {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 10px var(--accent-glow));
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Hero Section */
+        .hero {
             text-align: center;
-            z-index: 10;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transform: translateY(0);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
         }
 
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        /* Logo Configuration */
-        .logo-container {
-            margin-bottom: 20px;
+        .hero-3d-logo {
             perspective: 1000px;
+            margin-bottom: 30px;
         }
 
-        .logo-container img {
-            width: 140px;
-            height: 140px;
-            filter: drop-shadow(0 0 20px var(--accent-glow));
+        .hero-3d-logo img {
+            width: 200px;
+            height: 200px;
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 30px var(--accent-glow));
             transform-style: preserve-3d;
-            animation: float 6s ease-in-out infinite;
+            animation: hero-float 6s ease-in-out infinite;
         }
 
-        @keyframes float {
+        @keyframes hero-float {
 
             0%,
             100% {
-                transform: translateY(0) rotateX(0) rotateY(0);
+                transform: translateY(0) rotateX(5deg) rotateY(-5deg);
             }
 
             50% {
-                transform: translateY(-15px) rotateX(5deg) rotateY(5deg);
+                transform: translateY(-20px) rotateX(-5deg) rotateY(10deg);
             }
         }
 
-        /* Typography */
-        h1 {
-            font-size: 3.5rem;
+        .hero h1 {
+            font-size: 4.5rem;
             font-weight: 800;
-            background: linear-gradient(to right, #00f2fe, #4facfe);
+            background: linear-gradient(to right, #ffffff, #00f2fe, #4facfe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
-            letter-spacing: -1px;
+            line-height: 1.1;
+            letter-spacing: -2px;
         }
 
-        .tagline {
-            font-size: 1.2rem;
+        .hero p {
+            font-size: 1.3rem;
             color: var(--text-muted);
-            font-weight: 300;
-            margin-bottom: 40px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
         }
 
         /* Installation Code Box */
-        .code-container {
-            background: rgba(0, 0, 0, 0.6);
+        .install-box {
+            background: rgba(0, 0, 0, 0.7);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
-            padding: 20px;
-            display: flex;
+            padding: 5px 5px 5px 20px;
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 40px;
+            gap: 20px;
+            box-shadow: inset 0 5px 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.1);
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.5);
+            max-width: 100%;
         }
 
-        .code-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            animation: scanline 3s infinite linear;
-        }
-
-        @keyframes scanline {
-            100% {
-                left: 200%;
-            }
-        }
-
-        code {
+        .install-box code {
             font-family: 'Courier New', Courier, monospace;
             font-size: 1.1rem;
             color: #a8d0e6;
-            user-select: all;
             white-space: nowrap;
-            overflow-x: auto;
         }
 
-        .copy-btn {
-            background: var(--accent);
-            color: #fff;
+        .btn-glow {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: #000;
             border: none;
             border-radius: 8px;
-            padding: 10px 16px;
-            font-family: 'Outfit';
-            font-weight: 600;
+            padding: 12px 24px;
+            font-weight: 800;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: all 0.3s;
+            box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        .copy-btn:hover {
-            background: #00f2fe;
+        .btn-glow:hover {
             transform: scale(1.05);
+            box-shadow: 0 0 25px var(--accent);
         }
 
-        .copy-btn:active {
+        .btn-glow:active {
             transform: scale(0.95);
         }
 
-        /* Links */
-        .links-container {
+        /* Typography & Headings */
+        h2.section-title {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            display: inline-block;
+            background: linear-gradient(to right, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Feature Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            padding: 30px;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(0, 242, 254, 0.3);
+            transform: translateY(-5px);
+            background: var(--glass-hover);
+            box-shadow: 0 20px 40px rgba(0, 242, 254, 0.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
             display: flex;
-            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        /* Warning / Safety Section */
+        .danger-panel {
+            border-left: 4px solid var(--danger);
+            background: linear-gradient(90deg, var(--danger-glow) 0%, transparent 20%);
+        }
+
+        .danger-panel h3 {
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .danger-panel p {
+            color: #fcc;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Setup Steps */
+        .setup-steps {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
         }
 
-        .btn-outline {
-            display: inline-block;
-            text-decoration: none;
-            color: var(--text-main);
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-weight: 400;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .btn-outline:hover {
-            border-color: var(--accent);
-            background: rgba(79, 172, 254, 0.1);
-            color: var(--accent);
-            box-shadow: 0 0 20px rgba(79, 172, 254, 0.2);
+        .step-number {
+            background: var(--accent);
+            color: #000;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .step-content h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .step-content p {
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 40px;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
         }
 
         /* Responsive */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2.5rem;
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
             }
 
-            .glass-card {
-                padding: 40px 20px;
-            }
-
-            code {
-                font-size: 0.9rem;
-            }
-
-            .code-container {
+            .install-box {
                 flex-direction: column;
+                padding: 20px;
+                padding-bottom: 10px;
+                border-radius: 20px;
                 gap: 15px;
             }
 
-            .links-container {
-                flex-direction: column;
+            .install-box code {
+                font-size: 0.9rem;
+                overflow-x: auto;
+                max-width: 100%;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Ambient Backgrounds -->
+    <!-- Ambient 3D Glows -->
     <div class="ambient-glow glow-1"></div>
     <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
 
-    <!-- Main Glass Card -->
-    <div class="glass-card">
-        <div class="logo-container">
+    <!-- Navigation Header -->
+    <header class="glass-panel" style="padding: 15px 30px;">
+        <a href="#" class="nav-logo">
             <img src="./logo.svg" alt="OmniClaw Logo">
+            OmniClaw
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#safety">Safety</a>
+            <a href="https://github.com/webspoilt/omniclaw" target="_blank">GitHub</a>
         </div>
+    </header>
 
-        <h1>OmniClaw</h1>
-        <div class="tagline">The Universal Hybrid Hive AI Agent System.</div>
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="glass-panel hero">
+            <div class="hero-3d-logo">
+                <img src="./logo.svg" alt="OmniClaw 3D Orb">
+            </div>
+            <h1>The Hybrid Hive AI System</h1>
+            <p>Deploy a decentralized, peer-reviewed swarm of autonomous agents directly to a Linux kernel wrapper.
+                Monitor your system, execute tasks, and natively connect via Omni-Channel gateways instantly.</p>
 
-        <div class="code-container" id="codeBox">
-            <code id="installCommand">curl -fsSL https://omniclaw.ai/setup.sh | bash</code>
-            <button class="copy-btn" onclick="copyCode()">Copy</button>
-        </div>
+            <div class="install-box">
+                <code id="installCommand">curl -fsSL https://omniclaw.ai/setup.sh | bash</code>
+                <button class="btn-glow" onclick="copyCode(this)">Copy Script</button>
+            </div>
+        </section>
 
-        <div class="links-container">
-            <a href="https://github.com/webspoilt/omniclaw" target="_blank" class="btn-outline">View on GitHub</a>
-            <a href="https://github.com/webspoilt/omniclaw/blob/main/DEPLOYMENT_GUIDE.md" target="_blank"
-                class="btn-outline">24/7 Deployment Guide</a>
-        </div>
-    </div>
+        <!-- What Makes It Unique Grid -->
+        <section id="features">
+            <h2 class="section-title">Why OmniClaw is Unique</h2>
+            <div class="grid-2">
+                <div class="glass-panel feature-card">
+                    <h3>🦠 eBPF Kernel Bridge</h3>
+                    <p>Unlike standard generic command-runners, OmniClaw operates with deep C/Rust-level Linux kernel
+                        access. It monitors network packets, system calls, and file descriptors natively.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🧠 Peer-Reviewed Swarm</h3>
+                    <p>Tasks are not handed to a single AI. They are delegated by a "Manager" model to "Worker" models
+                        who execute and vote on accuracy. True multi-agent cognitive loops.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>📱 Multi-Channel Gateway</h3>
+                    <p>Command your PC natively via Telegram, WhatsApp, Discord, Slack, Matrix, and native macOS
+                        iMessage without complex network routing.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🎙️ Desktop Voice Wake</h3>
+                    <p>A persistent background thread listens for local hot-words (e.g., "Hey Omni") to wake the system
+                        globally across your operating system interfaces.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How To Use / Setup Guide -->
+        <section class="glass-panel">
+            <h2 class="section-title">24/7 Deployment Pipeline</h2>
+            <div class="setup-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Create The Walkie-Talkie</h4>
+                        <p>Go to Telegram, search for <code>@BotFather</code>, and send <code>/newbot</code>. Copy the
+                            secure Token it provides.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Secure the Communications</h4>
+                        <p>Search <code>@userinfobot</code> in Telegram and type <code>/start</code>. Get your personal
+                            User ID. Add both the Token and this ID to the OmniClaw <code>config.yaml</code>.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Execute The Blueprint</h4>
+                        <p>Run the exact install code from the top of this page on your computer or a cheap cloud VPS.
+                            It automatically measures your RAM, downloads the right AI size, and starts it permanently
+                            in the background.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experimental Safety Warning -->
+        <section id="safety" class="glass-panel danger-panel">
+            <h3>🚨 Experimental & Beta Software Warning</h3>
+            <p>
+                <b>DO NOT run OmniClaw as root on your daily-driver host machine!</b><br><br>
+                Because OmniClaw utilizes auto-compiling eBPF bridges and completely autonomous terminal execution
+                loops, it has the power to modify kernel components. <br><br>
+                If an underlying AI model hallucinates a destructive command (e.g., <code>rm -rf</code>), data loss will
+                occur. <b>You MUST run this software inside a heavily isolated Virtual Machine (VirtualBox, VMware, or
+                    Proxmox) or a strict Docker boundary.</b> Treat the agent as an extremely powerful hazard.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>OmniClaw &copy; 2026. Built for Advanced Cybernetic Architecture. <a
+                href="https://github.com/webspoilt/omniclaw" style="color:var(--accent);">View Open Source Repo</a>.</p>
+    </footer>
 
     <script>
         // Use exact domain name if visited on Vercel
         document.addEventListener("DOMContentLoaded", () => {
             const host = window.location.hostname;
-            // Only swap if it's not local file viewing and not the hardcoded domain yet
             if (host && host !== "" && host !== "localhost") {
                 document.getElementById('installCommand').innerText = `curl -fsSL https://${host}/setup.sh | bash`;
             }
         });
 
-        function copyCode() {
+        function copyCode(btn) {
             const text = document.getElementById('installCommand').innerText;
             navigator.clipboard.writeText(text).then(() => {
-                const btn = document.querySelector('.copy-btn');
                 const originalText = btn.innerText;
-                btn.innerText = 'Copied!';
-                btn.style.background = '#4CAF50';
+                btn.innerText = 'Copied Securely!';
+                btn.style.background = '#00f2fe';
+                btn.style.color = '#000';
+                btn.style.boxShadow = '0 0 30px #00f2fe';
                 setTimeout(() => {
                     btn.innerText = originalText;
-                    btn.style.background = 'var(--accent)';
+                    btn.style.background = 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)';
+                    btn.style.boxShadow = '0 0 15px rgba(0, 242, 254, 0.5)';
                 }, 2000);
             });
         }
