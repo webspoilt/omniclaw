@@ -55,15 +55,14 @@
 
 ## 🚀 Quick Start
 
-### One-Line Installation
+> **🍼 NEW TO ALL THIS?** Read our **[Explain Like I'm 10: 24/7 Deployment Guide](DEPLOYMENT_GUIDE.md)** for a complete step-by-step walkthrough on how to set up Telegram, rent a Cloud Computer, and install OmniClaw easily using the `setup.sh` Blueprint.
 
-```bash
-curl -fsSL https://omniclaw.ai/install.sh | bash
-```
+### One-Click Installer Blueprint (Local)
 
-Or with custom directory:
+Simply run our included blueprint script to automatically detect your OS, verify your RAM, pill the correct size AI model via Ollama, and launch the defensive bridge:
 ```bash
-curl -fsSL https://omniclaw.ai/install.sh | OMNICLAW_DIR=/opt/omniclaw bash
+chmod +x setup.sh
+./setup.sh
 ```
 
 ### Manual Installation
