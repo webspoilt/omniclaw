@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/webspoilt/omniclaw/main/public/logo.svg" width="120" height="120" alt="OmniClaw Logo">
+</p>
+
 # Contributing to OmniClaw
 
 First off, thank you for considering contributing to OmniClaw! It's people like you that make OmniClaw such a great tool.
