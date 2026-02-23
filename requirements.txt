@@ -50,6 +50,10 @@ cryptography>=41.0.0
 # transformers>=4.35.0
 # torch>=2.1.0
 
+# Voice & Audio
+SpeechRecognition>=3.10.0
+PyAudio>=0.2.13
+
 # Development
 pytest>=7.4.0
 pytest-asyncio>=0.21.0

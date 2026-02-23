@@ -261,9 +261,15 @@ class WhatsAppBot:
         """Add a message handler"""
         self.message_handlers.append(handler)
     
-    async def send_message(self, chat_id: str, text: str):
         """Send a message"""
         logger.info(f"WhatsApp send to {chat_id}: {text}")
+
+
+try:
+    import discord
+    DISCORD_AVAILABLE = True
+except ImportError:
+    DISCORD_AVAILABLE = False
 
 
 class DiscordBot:
@@ -274,26 +280,79 @@ class DiscordBot:
         self.client = None
         self.message_handlers: List[Callable[[Message], None]] = []
         self.ready = False
+        self._task = None
     
     async def initialize(self):
-        try:
-            logger.info("Discord bot initialized (discord.py required)")
-            return True
-        except Exception as e:
-            logger.error(f"Failed to initialize Discord bot: {e}")
+        if not DISCORD_AVAILABLE:
+            logger.error("discord.py missing. Run `pip install discord.py`")
             return False
             
+        intents = discord.Intents.default()
+        intents.message_content = True
+        self.client = discord.Client(intents=intents)
+        
+        @self.client.event
+        async def on_ready():
+            self.ready = True
+            logger.info(f"Discord bot logged in as {self.client.user}")
+            
+        @self.client.event
+        async def on_message(message: discord.Message):
+            if message.author == self.client.user:
+                return
+                
+            omni_msg = Message(
+                id=str(message.id),
+                text=message.content,
+                sender_id=str(message.author.id),
+                sender_name=message.author.name,
+                chat_id=str(message.channel.id),
+                timestamp=message.created_at.timestamp(),
+                platform=Platform.DISCORD
+            )
+            
+            for handler in self.message_handlers:
+                await handler(omni_msg)
+                
+        return True
+            
     async def start(self):
-        logger.info("Discord bot started")
+        if not self.client:
+            return
+            
+        logger.info("Starting Discord bot loop")
+        self._task = asyncio.create_task(self.client.start(self.token))
         
     async def stop(self):
-        logger.info("Discord bot stopped")
+        if self.client:
+            logger.info("Stopping Discord bot")
+            await self.client.close()
+            if self._task:
+                self._task.cancel()
         
     def add_message_handler(self, handler: Callable[[Message], None]):
         self.message_handlers.append(handler)
         
     async def send_message(self, chat_id: str, text: str):
-        logger.info(f"Discord send to {chat_id}: {text}")
+        if not self.client or not self.ready:
+            return
+            
+        try:
+            channel = self.client.get_channel(int(chat_id))
+            if not channel:
+                # If cannot get channel directly from cache, try fetch
+                channel = await self.client.fetch_channel(int(chat_id))
+            
+            if channel:
+                # Chunk big code responses
+                if len(text) > 1900:
+                    chunks = [text[i:i+1900] for i in range(0, len(text), 1900)]
+                    for chunk in chunks:
+                        await channel.send(chunk)
+                else:
+                    await channel.send(text)
+        except Exception as e:
+            logger.error(f"Failed to send to Discord: {e}")
 
 
 class SlackBot:
