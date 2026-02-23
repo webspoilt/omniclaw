@@ -63,7 +63,7 @@
 
 ## 🚀 Quick Start
 
-> **🍼 NEW TO ALL THIS?** Read our **[Explain Like I'm 10: 24/7 Deployment Guide](DEPLOYMENT_GUIDE.md)** for a complete step-by-step walkthrough on how to set up Telegram, rent a Cloud Computer, and install OmniClaw easily using the `setup.sh` Blueprint.
+> **🍼 NEW TO ALL THIS?** Read our **[Very Simple: 24/7 Deployment Guide](DEPLOYMENT_GUIDE.md)** for a complete step-by-step walkthrough on how to set up Telegram, rent a Cloud Computer, and install OmniClaw easily using the `setup.sh` Blueprint.
 
 ### One-Click Installer Blueprint (Local)
 
@@ -91,14 +91,27 @@ nano config.yaml  # Add your API keys
 python omniclaw.py chat
 ```
 
-## 📱 Platform Support
+## 📱 Platform Support & Comprehensive Guides
 
-| Platform | Status | Features |
-|----------|--------|----------|
-| **Linux (Desktop/Server)** | ✅ Full | All features including eBPF kernel bridge |
-| **Android (Termux)** | ✅ Full | Mobile super-app, messaging gateway |
-| **macOS** | ✅ Partial | Core features (no eBPF) |
-| **Windows (WSL)** | ⚠️ Experimental | Core features only |
+We believe you shouldn't have to watch a YouTube tutorial to set this up. Everything is documented here.
+
+| Platform | Features | Setup Guide |
+|----------|----------|-------------|
+| **Linux (Desktop/VPS)** | Full (eBPF root access, Terminal tools) | [View the 24/7 Deployment Guide](DEPLOYMENT_GUIDE.md) |
+| **Android (Termux)** | Full (Mobile Super-App, 24/7 cheap hosting) | [The Ultimate Termux/SSH Zero-to-Hero Guide](DEPLOYMENT_GUIDE.md#choice-c-an-android-phone-using-termux---the-complete-guide) |
+| **macOS** | Partial (Voice Wake, CLI access) | Clone and run `./setup.sh` |
+| **Windows (WSL)** | Experimental | Install WSL2 Ubuntu, then run `./setup.sh` |
+
+### 🛠️ Deep Dive: How The Features Actually Work
+
+**Termux WiFi Host (The 2 Watt AI Server)**
+Why leave a 500W PC running when an old Android phone uses 2 Watts? By installing F-Droid, downloading Termux, executing `termux-setup-storage`, and installing OpenSSH (`pkg install openssh`), you can cast your phone's terminal instantly to your Windows/Mac PC over WiFi (`ssh -p 8022`). From there, OmniClaw runs flawlessly 24/7 as a background agent. [Read the step-by-step Termux guide here](DEPLOYMENT_GUIDE.md#choice-c-an-android-phone-using-termux---the-complete-guide).
+
+**eBPF Kernel Bridge (Linux Only)**
+If you are running on a true Linux kernel (Ubuntu VPS, Debian, etc.) with root access, OmniClaw is not restricted to standard chat-bot APIs. It compiles a C/Rust binary that attaches directly to the operating system kernel. It intercepts packet traffic and traces system calls in real time. *Note: Doing this inside Termux without a rooted Android is restricted.*
+
+**Multi-Channel Gateway (Telegram & Discord)**
+You command the hive using standard chat apps. You simply message `@BotFather` on Telegram, create a token, get your ID from `@userinfobot`, and place them in the `config.yaml`. The agent will now securely reply only to you.
 
 ## 🏗️ Architecture
 
