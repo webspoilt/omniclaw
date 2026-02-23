@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/webspoilt/omniclaw/main/docs/assets/architecture.png" alt="OmniClaw Banner" width="100%" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-</p>
+
 
 <h1 align="center" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 3em; color: #4A90E2; margin-bottom: 0;">🌐 OmniClaw</h1>
 <h3 align="center" style="font-weight: 300; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #666; margin-top: 5px;">The Hybrid Hive AI Agent System</h3>
@@ -20,6 +18,15 @@
 </p>
 
 ---
+
+> [!WARNING]
+> **🚨 EXPERIMENTAL & BETA SOFTWARE**
+> 
+> This system is currently in **Beta** and is highly experimental. 
+> - **Security:** Do **NOT** share private keys, passwords, or personal things with the agent.
+> - **Environment:** Kindly use this *only* inside a Virtual Machine (VM).
+> - **Kernel Level:** For eBPF/Kernel level access, please use Linux inside **VMware** or **VirtualBox**.
+> - **Liability:** Use at your own risk!
 
 ## 🌟 Features
 
@@ -62,7 +69,7 @@ curl -fsSL https://omniclaw.ai/install.sh | OMNICLAW_DIR=/opt/omniclaw bash
 
 ```bash
 # Clone repository
-git clone https://github.com/omniclaw/omniclaw.git
+git clone https://github.com/webspoilt/omniclaw.git
 cd omniclaw
 
 # Install dependencies
@@ -273,7 +280,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ```bash
 # Fork and clone
-git clone https://github.com/YOUR_USERNAME/omniclaw.git
+git clone https://github.com/webspoilt/omniclaw.git
 
 # Create branch
 git checkout -b feature/amazing-feature
@@ -298,10 +305,10 @@ MIT License - see [LICENSE](LICENSE) file.
 
 ## 📞 Support
 
-- 📧 Email: support@omniclaw.ai
+- 📧 Email: heyzerodayhere@gmail.com
 - 💬 Discord: [discord.gg/omniclaw](https://discord.gg/omniclaw)
-- 🐛 Issues: [GitHub Issues](https://github.com/omniclaw/omniclaw/issues)
-- 📖 Docs: [docs.omniclaw.ai](https://docs.omniclaw.ai)
+- 🐛 Issues: [GitHub Issues](https://github.com/webspoilt/omniclaw/issues)
+- 📖 Docs: [Host your docs using Vercel & Nextra!](https://vercel.com/new)
 
 ---
 
