@@ -35,6 +35,7 @@
 - **Task Division**: Automatic decomposition of complex goals into sub-tasks
 - **Self-Correction**: Peer-review system where workers check each other's work
 - **Single-API Mode**: Chain-of-Thought processing for bug-free results with one API
+- **Local Agentic AI**: Natively supports strictly offline, privacy-first Local LLMs (via Ollama) executing autonomously as full agents.
 
 ### 2. System & Kernel Integration
 - **Kernel Bridge (C++/eBPF)**: Real-time Linux/Android system call and network monitoring
