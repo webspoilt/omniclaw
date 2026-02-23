@@ -25,6 +25,9 @@ sentence-transformers>=2.2.0
 
 # Messaging
 python-telegram-bot>=20.0
+discord.py>=2.3.0
+slack_sdk>=3.25.0
+matrix-nio>=0.23.0
 # whatsapp-web.js requires Node.js
 
 # System Monitoring

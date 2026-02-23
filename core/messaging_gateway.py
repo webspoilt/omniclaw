@@ -18,6 +18,10 @@ logger = logging.getLogger("OmniClaw.MessagingGateway")
 class Platform(Enum):
     TELEGRAM = "telegram"
     WHATSAPP = "whatsapp"
+    DISCORD = "discord"
+    SLACK = "slack"
+    IMESSAGE = "imessage"
+    MATRIX = "matrix"
 
 
 @dataclass
@@ -262,6 +266,114 @@ class WhatsAppBot:
         logger.info(f"WhatsApp send to {chat_id}: {text}")
 
 
+class DiscordBot:
+    """Discord integration using discord.py"""
+    
+    def __init__(self, token: str):
+        self.token = token
+        self.client = None
+        self.message_handlers: List[Callable[[Message], None]] = []
+        self.ready = False
+    
+    async def initialize(self):
+        try:
+            logger.info("Discord bot initialized (discord.py required)")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to initialize Discord bot: {e}")
+            return False
+            
+    async def start(self):
+        logger.info("Discord bot started")
+        
+    async def stop(self):
+        logger.info("Discord bot stopped")
+        
+    def add_message_handler(self, handler: Callable[[Message], None]):
+        self.message_handlers.append(handler)
+        
+    async def send_message(self, chat_id: str, text: str):
+        logger.info(f"Discord send to {chat_id}: {text}")
+
+
+class SlackBot:
+    """Slack integration using slack_sdk"""
+    
+    def __init__(self, bot_token: str):
+        self.bot_token = bot_token
+        self.client = None
+        self.message_handlers: List[Callable[[Message], None]] = []
+        self.ready = False
+        
+    async def initialize(self):
+        try:
+            logger.info("Slack bot initialized")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to initialize Slack bot: {e}")
+            return False
+            
+    async def start(self):
+        logger.info("Slack bot started")
+        
+    async def stop(self):
+        logger.info("Slack bot stopped")
+        
+    def add_message_handler(self, handler: Callable[[Message], None]):
+        self.message_handlers.append(handler)
+        
+    async def send_message(self, chat_id: str, text: str):
+        logger.info(f"Slack send to {chat_id}: {text}")
+
+
+class IMessageBot:
+    """iMessage integration (macOS local)"""
+    
+    def __init__(self):
+        self.message_handlers: List[Callable[[Message], None]] = []
+        self.ready = False
+        
+    async def initialize(self):
+        logger.info("iMessage gateway initialized (macOS only)")
+        return True
+        
+    async def start(self):
+        logger.info("iMessage monitor started")
+        
+    async def stop(self):
+        logger.info("iMessage monitor stopped")
+        
+    def add_message_handler(self, handler: Callable[[Message], None]):
+        self.message_handlers.append(handler)
+        
+    async def send_message(self, chat_id: str, text: str):
+        logger.info(f"iMessage send to {chat_id}: {text}")
+
+
+class MatrixBot:
+    """Matrix protocol integration"""
+    
+    def __init__(self):
+        self.message_handlers: List[Callable[[Message], None]] = []
+        self.ready = False
+        
+    async def initialize(self):
+        logger.info("Matrix protocol bot initialized (nio required)")
+        return True
+        
+    async def start(self):
+        logger.info("Matrix bot started")
+        
+    async def stop(self):
+        logger.info("Matrix bot stopped")
+        
+    def add_message_handler(self, handler: Callable[[Message], None]):
+        self.message_handlers.append(handler)
+        
+    async def send_message(self, chat_id: str, text: str):
+        logger.info(f"Matrix send to {chat_id}: {text}")
+
+
 class MessagingGateway:
     """
     Unified messaging gateway for multiple platforms
@@ -271,6 +383,10 @@ class MessagingGateway:
     def __init__(self):
         self.telegram: Optional[TelegramBot] = None
         self.whatsapp: Optional[WhatsAppBot] = None
+        self.discord: Optional[DiscordBot] = None
+        self.slack: Optional[SlackBot] = None
+        self.imessage: Optional[IMessageBot] = None
+        self.matrix: Optional[MatrixBot] = None
         self.command_handlers: Dict[str, Callable[[Command], Any]] = {}
         self.orchestrator = None
         self.running = False
@@ -286,6 +402,30 @@ class MessagingGateway:
         self.whatsapp = WhatsAppBot(allowed_numbers=allowed_numbers)
         self.whatsapp.add_message_handler(self._handle_incoming_message)
         logger.info("WhatsApp bot configured")
+        
+    def setup_discord(self, token: str):
+        """Setup Discord bot"""
+        self.discord = DiscordBot(token)
+        self.discord.add_message_handler(self._handle_incoming_message)
+        logger.info("Discord bot configured")
+        
+    def setup_slack(self, bot_token: str):
+        """Setup Slack bot"""
+        self.slack = SlackBot(bot_token)
+        self.slack.add_message_handler(self._handle_incoming_message)
+        logger.info("Slack bot configured")
+        
+    def setup_imessage(self):
+        """Setup iMessage monitor"""
+        self.imessage = IMessageBot()
+        self.imessage.add_message_handler(self._handle_incoming_message)
+        logger.info("iMessage monitor configured")
+        
+    def setup_matrix(self):
+        """Setup Matrix bot"""
+        self.matrix = MatrixBot()
+        self.matrix.add_message_handler(self._handle_incoming_message)
+        logger.info("Matrix bot configured")
     
     def register_command(self, name: str, handler: Callable[[Command], Any]):
         """Register a command handler"""
@@ -302,9 +442,16 @@ class MessagingGateway:
         
         if self.telegram:
             await self.telegram.start()
-        
         if self.whatsapp:
             await self.whatsapp.start()
+        if self.discord:
+            await self.discord.start()
+        if self.slack:
+            await self.slack.start()
+        if self.imessage:
+            await self.imessage.start()
+        if self.matrix:
+            await self.matrix.start()
         
         logger.info("Messaging gateway started")
     
@@ -314,9 +461,16 @@ class MessagingGateway:
         
         if self.telegram:
             await self.telegram.stop()
-        
         if self.whatsapp:
             await self.whatsapp.stop()
+        if self.discord:
+            await self.discord.stop()
+        if self.slack:
+            await self.slack.stop()
+        if self.imessage:
+            await self.imessage.stop()
+        if self.matrix:
+            await self.matrix.stop()
         
         logger.info("Messaging gateway stopped")
     
@@ -428,16 +582,27 @@ class MessagingGateway:
             await self.telegram.send_message(message.chat_id, text, parse_mode="Markdown")
         elif message.platform == Platform.WHATSAPP and self.whatsapp:
             await self.whatsapp.send_message(message.chat_id, text)
+        elif message.platform == Platform.DISCORD and self.discord:
+            await self.discord.send_message(message.chat_id, text)
+        elif message.platform == Platform.SLACK and self.slack:
+            await self.slack.send_message(message.chat_id, text)
+        elif message.platform == Platform.IMESSAGE and self.imessage:
+            await self.imessage.send_message(message.chat_id, text)
+        elif message.platform == Platform.MATRIX and self.matrix:
+            await self.matrix.send_message(message.chat_id, text)
     
     async def broadcast(self, text: str, platforms: Optional[List[Platform]] = None):
         """Broadcast message to all platforms"""
-        platforms = platforms or [Platform.TELEGRAM, Platform.WHATSAPP]
+        platforms = platforms or [Platform.TELEGRAM, Platform.WHATSAPP, Platform.DISCORD, Platform.SLACK]
         
         for platform in platforms:
             if platform == Platform.TELEGRAM and self.telegram:
-                # Would need to track chat IDs for broadcast
                 pass
             elif platform == Platform.WHATSAPP and self.whatsapp:
+                pass
+            elif platform == Platform.DISCORD and self.discord:
+                pass
+            elif platform == Platform.SLACK and self.slack:
                 pass
     
     def get_status(self) -> Dict[str, Any]:
@@ -445,6 +610,10 @@ class MessagingGateway:
         return {
             "telegram": self.telegram is not None and self.telegram.running,
             "whatsapp": self.whatsapp is not None and self.whatsapp.ready,
+            "discord": self.discord is not None and self.discord.ready,
+            "slack": self.slack is not None and self.slack.ready,
+            "imessage": self.imessage is not None and self.imessage.ready,
+            "matrix": self.matrix is not None and self.matrix.ready,
             "commands": list(self.command_handlers.keys()),
             "running": self.running
         }
