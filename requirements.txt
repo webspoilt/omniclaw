@@ -1,0 +1,54 @@
+# OmniClaw Core Dependencies
+# Install with: pip install -r requirements.txt
+
+# Async & Networking
+asyncio>=3.4.3
+aiohttp>=3.9.0
+websockets>=12.0
+httpx>=0.25.0
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+
+# AI/ML APIs
+openai>=1.0.0
+anthropic>=0.8.0
+google-generativeai>=0.3.0
+
+# Vector Database
+faiss-cpu>=1.7.4
+# Or use faiss-gpu for CUDA support
+
+# Embeddings
+sentence-transformers>=2.2.0
+
+# Messaging
+python-telegram-bot>=20.0
+# whatsapp-web.js requires Node.js
+
+# System Monitoring
+psutil>=5.9.0
+
+# Configuration
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+
+# Utilities
+tqdm>=4.66.0
+rich>=13.0.0
+colorama>=0.4.6
+
+# Security
+cryptography>=41.0.0
+
+# Optional: For local LLMs
+# llama-cpp-python>=0.2.0
+# transformers>=4.35.0
+# torch>=2.1.0
+
+# Development
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+mypy>=1.7.0

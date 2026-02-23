@@ -1,0 +1,160 @@
+# OmniClaw Configuration Example
+# Copy this file to config.yaml and customize for your setup
+
+version: "1.0.0"
+
+# Device settings - auto-detected if not specified
+device:
+  class: "auto"  # auto, high, medium, low, mobile
+  max_workers: 4
+  memory_limit: "2GB"
+
+# API Configurations
+# Add your API keys here to enable cloud AI models
+apis:
+  # OpenAI Configuration
+  - provider: openai
+    key: "sk-your-openai-key-here"
+    model: gpt-4
+    priority: 1
+    capabilities: ["text", "chat", "code"]
+    enabled: true
+
+  # Anthropic Claude Configuration
+  - provider: anthropic
+    key: "sk-ant-your-anthropic-key-here"
+    model: claude-3-opus-20240229
+    priority: 2
+    capabilities: ["text", "chat", "code", "analysis"]
+    enabled: true
+
+  # Google Gemini Configuration
+  - provider: google
+    key: "your-google-api-key-here"
+    model: gemini-pro
+    priority: 3
+    capabilities: ["text", "chat"]
+    enabled: false
+
+  # Ollama (Local LLM) Configuration
+  - provider: ollama
+    key: "ollama"
+    model: llama2:13b
+    base_url: http://localhost:11434
+    priority: 4
+    capabilities: ["text", "chat", "code"]
+    enabled: true
+
+# Memory Configuration
+memory:
+  db_path: "./memory_db"
+  embedding_provider: "ollama"  # openai, ollama, or fallback
+  max_history: 1000
+  persist: true
+
+# Kernel Bridge Configuration
+kernel_bridge:
+  enabled: true
+  lib_path: "./kernel_bridge/build/libomniclaw_bridge.so"
+  monitor_syscalls: true
+  monitor_files: false
+  monitor_network: false
+  monitor_all: false
+  target_pid: 0  # 0 = monitor all processes
+  ringbuf_size: 262144  # 256 KB
+
+# Messaging Gateway Configuration
+messaging:
+  telegram:
+    enabled: false
+    token: "YOUR_BOT_TOKEN_HERE"
+    allowed_users:
+      - "your_telegram_user_id"
+    
+  whatsapp:
+    enabled: false
+    allowed_numbers:
+      - "+1234567890"
+
+# Trading Configuration
+trading:
+  enabled: false
+  platforms:
+    - name: binance
+      platform: binance
+      api_key: "your-binance-api-key"
+      api_secret: "your-binance-api-secret"
+      market_type: spot  # spot, future, margin
+      testnet: true
+      watch_symbols:
+        - BTC/USDT
+        - ETH/USDT
+      update_interval: 5
+      
+    - name: alpaca
+      platform: alpaca
+      api_key: "your-alpaca-key"
+      api_secret: "your-alpaca-secret"
+      base_url: https://paper-api.alpaca.markets
+
+# Bug Bounty Configuration
+bug_bounty:
+  enabled: false
+  targets:
+    - domain: example.com
+      program_name: Example Program
+      platform: hackerone
+      scope:
+        - "*.example.com"
+      out_of_scope:
+        - "blog.example.com"
+      max_bounty: 10000
+      notes: "Focus on web vulnerabilities"
+
+# Automation Settings
+automation:
+  # Scheduled tasks
+  schedules:
+    - name: daily_report
+      cron: "0 9 * * *"  # 9 AM daily
+      task: "Generate daily activity report"
+      
+    - name: security_scan
+      cron: "0 0 * * 0"  # Weekly on Sunday
+      task: "Run security vulnerability scan"
+
+# Logging Configuration
+logging:
+  level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "./logs/omniclaw.log"
+  max_size: "100MB"
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  console: true
+
+# Security Settings
+security:
+  encrypt_api_keys: true
+  key_file: "./.omniclaw_key"
+  sandbox_shell: true
+  allowed_shell_commands:
+    - ls
+    - cat
+    - grep
+    - find
+    - ps
+    - top
+    - df
+    - du
+  blocked_shell_commands:
+    - rm -rf /
+    - mkfs
+    - dd
+
+# UI Settings (for mobile app)
+ui:
+  theme: "cyberpunk"  # default, cyberpunk, minimal
+  accent_color: "#6366f1"
+  font_size: "medium"  # small, medium, large
+  animations: true
+  haptic_feedback: true
