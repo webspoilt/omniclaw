@@ -734,7 +734,7 @@ class OmniClawLauncher:
 {Colors.BOLD}For More Info:{Colors.RESET}
   • README.md - Full documentation
   • GitHub - github.com/webspoilt/omniclaw
-  • Discord - discord.gg/omniclaw
+  • Discord - discord.gg/ZU4mQaqh
 
 {Colors.BRIGHT_GREEN}Happy Hacking! 🔐{Colors.RESET}
 """

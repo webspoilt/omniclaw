@@ -62,6 +62,6 @@ python omniclaw.py chat
 
 If you want to discuss your ideas before building them, or if you need help with the architecture:
 - 📧 Email: heyzerodayhere@gmail.com
-- 💬 Discord: [discord.gg/omniclaw](https://discord.gg/omniclaw)
+- 💬 Discord: [discord.gg/ZU4mQaqh](https://discord.gg/ZU4mQaqh)
 
 Thank you for contributing!

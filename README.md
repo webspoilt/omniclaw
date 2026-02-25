@@ -409,7 +409,7 @@ MIT License - see [LICENSE](LICENSE) file.
 ## 📞 Support
 
 - 📧 Email: heyzerodayhere@gmail.com
-- 💬 Discord: [discord.gg/omniclaw](https://discord.gg/omniclaw)
+- 💬 Discord: [discord.gg/ZU4mQaqh](https://discord.gg/ZU4mQaqh)
 - 🐛 Issues: [GitHub Issues](https://github.com/webspoilt/omniclaw/issues)
 - 📖 Docs: [Host your docs using Vercel & Nextra!](https://vercel.com/new)
 
