@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-cyber-gray;
+  }
+  
+  body {
+    @apply bg-cyber-black text-white antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  ::selection {
+    @apply bg-cyber-accent text-cyber-black;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-glass backdrop-blur-md border border-white/10 rounded-xl;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  
+  .glass-card {
+    @apply bg-cyber-dark/80 backdrop-blur-sm border border-cyber-accent/20 rounded-lg;
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.9) 0%, rgba(10, 10, 15, 0.95) 100%);
+  }
+  
+  .neon-border {
+    @apply relative;
+  }
+  
+  .neon-border::before {
+    content: '';
+    @apply absolute inset-0 rounded-lg;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(255, 0, 160, 0.3));
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .neon-border:hover::before {
+    opacity: 1;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px currentColor;
+  }
+  
+  .grid-bg {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  }
+  
+  .scanline-overlay {
+    @apply pointer-events-none fixed inset-0 z-50;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 0, 0, 0.1) 50%
+    );
+    background-size: 100% 4px;
+  }
+  
+  .crt-flicker {
+    animation: flicker 0.15s infinite;
+  }
+  
+  @keyframes flicker {
+    0% { opacity: 0.97; }
+    50% { opacity: 1; }
+    100% { opacity: 0.98; }
+  }
+  
+  .terminal-text {
+    font-family: 'JetBrains Mono', monospace;
+    @apply text-sm leading-relaxed;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-cyber-dark rounded;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-cyber-accent/30 rounded;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-cyber-accent/50;
+  }
+}
+
+/* XTerm.js Customization */
+.xterm {
+  padding: 12px;
+}
+
+.xterm-viewport {
+  background-color: transparent !important;
+}
+
+.xterm-screen {
+  background-color: transparent !important;
+}
+
+/* Custom Scrollbar for Terminal */
+.xterm-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+
+.xterm-viewport::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.3);
+  border-radius: 4px;
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.5);
+}

@@ -166,7 +166,8 @@ install_system_deps() {
                 python3-pip python3-venv python3-dev \
                 build-essential libffi-dev libssl-dev \
                 clang llvm libbpf-dev linux-headers-$(uname -r) \
-                nodejs npm \
+                nodejs npm cargo rustc libwebkit2gtk-4.1-dev \
+                build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
                 ffmpeg \
                 2>&1 | tee -a "$LOG_FILE"
             ;;
@@ -175,7 +176,7 @@ install_system_deps() {
                 python3-pip python3-devel \
                 gcc gcc-c++ make \
                 clang llvm bpftrace kernel-devel \
-                nodejs npm \
+                nodejs npm cargo rust gtk3-devel webkit2gtk4.1-devel \
                 ffmpeg \
                 2>&1 | tee -a "$LOG_FILE"
             ;;
@@ -183,13 +184,13 @@ install_system_deps() {
             sudo pacman -S --noconfirm \
                 python-pip python-virtualenv base-devel \
                 clang llvm libbpf linux-headers \
-                nodejs npm \
+                nodejs npm cargo rust webkit2gtk-4.1 \
                 ffmpeg \
                 2>&1 | tee -a "$LOG_FILE"
             ;;
         macos)
             if command -v brew &> /dev/null; then
-                brew install python node ffmpeg 2>&1 | tee -a "$LOG_FILE"
+                brew install python node rust ffmpeg 2>&1 | tee -a "$LOG_FILE"
             else
                 log_error "Homebrew not found. Please install Homebrew first."
                 exit 1
@@ -199,7 +200,7 @@ install_system_deps() {
             pkg update
             pkg install -y \
                 python python-pip clang llvm \
-                nodejs ffmpeg \
+                nodejs rust ffmpeg \
                 git curl wget \
                 2>&1 | tee -a "$LOG_FILE"
             ;;
@@ -207,6 +208,12 @@ install_system_deps() {
             log_warning "Unknown OS. Please install dependencies manually."
             ;;
     esac
+    
+    # Ensure Rust is fully available if we didn't get it via package manager
+    if ! command -v cargo &> /dev/null; then
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        source $HOME/.cargo/env
+    fi
     
     log_success "System dependencies installed"
 }
@@ -428,6 +435,22 @@ EOF
     log_info "Enable auto-start: sudo systemctl enable omniclaw"
 }
 
+# Setup Tauri Mission Control GUI
+setup_mission_control() {
+    log "Setting up Tauri Mission Control GUI..."
+    
+    if [[ -d "$INSTALL_DIR/mission-control" ]]; then
+        cd "$INSTALL_DIR/mission-control"
+        npm install 2>&1 | tee -a "$LOG_FILE" || log_warning "npm install for GUI failed"
+        
+        # We don't build it during global install to save time
+        # Users can run 'npm run tauri build' when desired
+        log_success "Mission Control GUI dependencies installed"
+    else
+        log_warning "Mission Control GUI source not found"
+    fi
+}
+
 # Create launcher scripts
 create_launchers() {
     log "Creating launcher scripts..."
@@ -495,6 +518,9 @@ main() {
     
     # Create service
     create_service "$os"
+    
+    # Setup Mission Control GUI
+    setup_mission_control
     
     # Create launchers
     create_launchers

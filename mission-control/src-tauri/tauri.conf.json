@@ -1,0 +1,66 @@
+{
+    "productName": "OmniClaw Mission Control",
+    "version": "0.1.0",
+    "identifier": "com.omniclaw.missioncontrol",
+    "build": {
+        "beforeDevCommand": "npm run dev",
+        "beforeBuildCommand": "npm run build",
+        "devUrl": "http://localhost:1420",
+        "frontendDist": "../dist"
+    },
+    "app": {
+        "windows": [
+            {
+                "title": "OmniClaw Mission Control",
+                "width": 1400,
+                "height": 900,
+                "minWidth": 1000,
+                "minHeight": 700,
+                "center": true,
+                "resizable": true,
+                "fullscreen": false,
+                "decorations": true,
+                "transparent": false,
+                "theme": "Dark"
+            }
+        ],
+        "security": {
+            "csp": null
+        }
+    },
+    "bundle": {
+        "active": true,
+        "targets": "all",
+        "icon": [
+            "icons/32x32.png",
+            "icons/128x128.png",
+            "icons/128x128@2x.png",
+            "icons/icon.icns",
+            "icons/icon.ico"
+        ],
+        "resources": [],
+        "externalBin": [],
+        "copyright": "",
+        "category": "DeveloperTool",
+        "shortDescription": "Mission Control for OmniClaw",
+        "longDescription": "A unified dashboard for managing OmniClaw AI agents across security, trading, and research domains",
+        "deb": {
+            "depends": []
+        },
+        "macOS": {
+            "frameworks": [],
+            "minimumSystemVersion": "10.13",
+            "license": ""
+        },
+        "windows": {
+            "certificateThumbprint": null,
+            "digestAlgorithm": "sha256",
+            "timestampUrl": ""
+        }
+    },
+    "plugins": {
+        "shell": {
+            "open": true
+        }
+    }
+}

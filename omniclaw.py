@@ -8,8 +8,12 @@ import asyncio
 import argparse
 import json
 import logging
-import os
 import sys
+import os
+import json
+import logging
+import websockets
+from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -52,6 +56,10 @@ class OmniClaw:
         self.api_pool: APIPool = None
         self.messaging: MessagingGateway = None
         self.running = False
+        self.ws_clients = set()
+        self.ws_server = None
+        self.original_stdout = sys.stdout
+        self.original_stderr = sys.stderr
         
         # Advanced Features
         self.reasoning_lock: ReasoningLock = None
@@ -98,6 +106,128 @@ class OmniClaw:
         
         return defaults
     
+    async def websocket_handler(self, websocket, path=None):
+        """Handle incoming WebSocket connections from the Tauri Mission Control GUI."""
+        self.ws_clients.add(websocket)
+        client_id = f"Client-{len(self.ws_clients)}"
+        logger.info(f"GUI {client_id} connected via WebSocket")
+        
+        try:
+            # Send initial swarm status
+            status_update = json.dumps({
+                "type": "swarm_status",
+                "engines": [
+                    {
+                        "id": "omniclaw-core",
+                        "name": "OmniClaw Core Engine",
+                        "provider": "local",
+                        "model": "Hybrid",
+                        "status": "online",
+                        "load": len(self.orchestrator.active_tasks) / 10 if hasattr(self.orchestrator, 'active_tasks') else 0.1,
+                        "temperature": 0.0,
+                        "lastPing": int(datetime.now().timestamp() * 1000),
+                        "capabilities": ["control", "orchestration"]
+                    }
+                ],
+                "activeWorkers": len([w for w in self.orchestrator.agent_pool if w.status == "busy"]) if hasattr(self.orchestrator, 'agent_pool') else 0,
+                "queueDepth": len(self.orchestrator.task_queue._queue) if hasattr(self.orchestrator, 'task_queue') else 0,
+                "totalTokens": 0
+            })
+            await websocket.send(status_update)
+
+            async for message in websocket:
+                data = json.loads(message)
+                msg_type = data.get("type")
+                payload = data.get("payload", {})
+                msg_id = data.get("id")
+
+                if msg_type == "chat_message":
+                    user_msg = payload.get("message", "")
+                    tool_id = payload.get("toolId", "general")
+                    
+                    # Log message to terminal stream automatically
+                    await self.broadcast_terminal("command", user_msg, tool_id)
+                    
+                    # Ensure orchestrator processes the task
+                    task = await self.execute_task(user_msg)
+                    result = task.final_result if task else "No result generated."
+                    if isinstance(result, dict):
+                         result = result.get("summary", "") or result.get("detailed_results", str(result))
+
+                    # Broadcast the response back to chat stream
+                    response_payload = {
+                        "type": "chat_response",
+                        "content": result,
+                        "toolId": tool_id,
+                        "metadata": {
+                            "engine": task.assigned_engine if hasattr(task, 'assigned_engine') else "System"
+                        }
+                    }
+                    await websocket.send(json.dumps(response_payload))
+
+                elif msg_type == "activate_tool":
+                    tool = payload.get("toolId")
+                    logger.info(f"Tauri GUI requested activation of profile: {tool}")
+                    await self.broadcast_terminal("system", f"Activating Profile: {tool}")
+
+                elif msg_type == "deactivate_tool":
+                    tool = payload.get("toolId")
+                    logger.info(f"Tauri GUI requested deactivation of profile: {tool}")
+                    await self.broadcast_terminal("system", f"Deactivating Profile: {tool}")
+
+        except websockets.exceptions.ConnectionClosedOK:
+            pass
+        except Exception as e:
+            logger.error(f"WebSocket Error: {e}")
+        finally:
+            self.ws_clients.remove(websocket)
+            logger.info(f"GUI {client_id} disconnected")
+
+    async def broadcast_terminal(self, msg_type: str, content: str, tool_id: str = None):
+        """Broadcast terminal messages to all connected Tauri GUI clients"""
+        if not self.ws_clients:
+            return
+            
+        payload = {
+            "type": "terminal_output",
+            "message": {
+                "id": f"msg-{int(datetime.now().timestamp()*1000)}",
+                "timestamp": int(datetime.now().timestamp() * 1000),
+                "type": msg_type,
+                "content": content,
+                "toolId": tool_id
+            }
+        }
+        message_str = json.dumps(payload)
+        for client in self.ws_clients:
+            try:
+                await client.send(message_str)
+            except Exception:
+                pass
+
+    class OutputStreamAdapter:
+        """Custom stream adapter to capture terminal output and send to websockets."""
+        def __init__(self, original_stream, broadcast_func, msg_type):
+            self.original_stream = original_stream
+            self.broadcast_func = broadcast_func
+            self.msg_type = msg_type
+
+        def write(self, data):
+            self.original_stream.write(data)
+            if data and data.strip():
+                # Strip ANSI escape codes if present
+                clean_data = data.encode('ascii', 'ignore').decode('ascii').strip()
+                if clean_data:
+                    # Creating a fire-and-forget task for broadcasting
+                    try:
+                        loop = asyncio.get_running_loop()
+                        loop.create_task(self.broadcast_func(self.msg_type, clean_data))
+                    except RuntimeError:
+                        pass # Loop might be closed
+
+        def flush(self):
+            self.original_stream.flush()
+
     async def initialize(self):
         """Initialize all components"""
         logger.info("Initializing OmniClaw...")
@@ -364,6 +494,17 @@ FAISS Enabled: {stats['faiss_enabled']}
         """Start all services"""
         logger.info("Starting OmniClaw services...")
         self.running = True
+
+        # Start WebSocket server for Tauri GUI on port 8765
+        try:
+            self.ws_server = await websockets.serve(self.websocket_handler, "localhost", 8765)
+            logger.info("WebSocket Server listening on ws://localhost:8765 for Tauri GUI.")
+            
+            # Intercept stdout/stderr for GUI telemetry
+            sys.stdout = self.OutputStreamAdapter(self.original_stdout, self.broadcast_terminal, "stdout")
+            sys.stderr = self.OutputStreamAdapter(self.original_stderr, self.broadcast_terminal, "stderr")
+        except Exception as e:
+            logger.error(f"Failed to start WebSocket server on 8765: {e}")
         
         # Start messaging gateway
         if self.messaging:
@@ -383,6 +524,14 @@ FAISS Enabled: {stats['faiss_enabled']}
         """Stop all services"""
         logger.info("Stopping OmniClaw services...")
         self.running = False
+        
+        # Restore original streams
+        sys.stdout = self.original_stdout
+        sys.stderr = self.original_stderr
+        
+        if self.ws_server:
+            self.ws_server.close()
+            await self.ws_server.wait_closed()
         
         if self.messaging:
             await self.messaging.stop()
