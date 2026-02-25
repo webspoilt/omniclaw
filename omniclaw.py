@@ -21,6 +21,18 @@ from core.memory import VectorMemory
 from core.api_pool import APIPool
 from core.messaging_gateway import MessagingGateway
 
+# Advanced Features
+from core.reasoning_config import ReasoningLock, ReasoningConfig
+from core.context_mapper import ContextMapper
+from core.autonomous_fix import AutonomousFix
+from core.audit_diff import AuditDiff
+from core.temporal_memory import TemporalContext
+from core.decision_archaeology import DecisionArchaeologist
+from core.pattern_sentinel import PatternSentinel
+from core.echo_chambers import EchoChamber
+from core.living_docs import LivingDocumentation
+from core.semantic_diff import SemanticDiff
+
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
@@ -39,6 +51,18 @@ class OmniClaw:
         self.api_pool: APIPool = None
         self.messaging: MessagingGateway = None
         self.running = False
+        
+        # Advanced Features
+        self.reasoning_lock: ReasoningLock = None
+        self.context_mapper: ContextMapper = None
+        self.autonomous_fix: AutonomousFix = None
+        self.audit_diff: AuditDiff = None
+        self.temporal_context: TemporalContext = None
+        self.decision_archaeologist: DecisionArchaeologist = None
+        self.pattern_sentinel: PatternSentinel = None
+        self.echo_chamber: EchoChamber = None
+        self.living_docs: LivingDocumentation = None
+        self.semantic_diff: SemanticDiff = None
     
     def _load_config(self, config_path: str = None) -> Dict[str, Any]:
         """Load configuration from file or use defaults"""
@@ -132,10 +156,69 @@ class OmniClaw:
         self.messaging.set_orchestrator(self.orchestrator)
         logger.info("Messaging gateway initialized")
         
+        # --- Advanced Features ---
+        adv_config = self.config.get("advanced", {})
+        
+        # Reasoning Lock
+        reasoning_cfg = adv_config.get("reasoning", {})
+        self.reasoning_lock = ReasoningLock(ReasoningConfig(
+            min_tokens_per_response=reasoning_cfg.get("min_tokens", 500),
+            enforce_chain_of_thought=reasoning_cfg.get("chain_of_thought", True),
+            require_self_verification=reasoning_cfg.get("self_verification", True),
+        ))
+        
+        # Context Mapper
+        self.context_mapper = ContextMapper()
+        
+        # Autonomous Fix
+        self.autonomous_fix = AutonomousFix(
+            max_retries=adv_config.get("autofix", {}).get("max_retries", 3),
+            sandbox_mode=adv_config.get("autofix", {}).get("sandbox", True),
+        )
+        
+        # Audit Diff
+        self.audit_diff = AuditDiff(
+            backup_root=adv_config.get("audit_diff", {}).get("backup_root", "./.omniclaw_backups")
+        )
+        
+        # Temporal Context
+        self.temporal_context = TemporalContext(
+            storage_dir=os.path.join(memory_config.get("db_path", "./memory_db"), "snapshots"),
+            memory=self.memory,
+        )
+        
+        # Decision Archaeology
+        self.decision_archaeologist = DecisionArchaeologist(
+            storage_dir=os.path.join(memory_config.get("db_path", "./memory_db"), "decisions"),
+            memory=self.memory,
+        )
+        self.context_mapper.decision_store = self.decision_archaeologist
+        
+        # Pattern Sentinel
+        self.pattern_sentinel = PatternSentinel(
+            storage_dir=os.path.join(memory_config.get("db_path", "./memory_db"), "patterns"),
+            memory=self.memory,
+        )
+        
+        # Echo Chambers
+        self.echo_chamber = EchoChamber(
+            default_strategies=adv_config.get("echo_chambers", {}).get(
+                "strategies", ["speed", "readability", "robust"]
+            )
+        )
+        
+        # Living Documentation
+        self.living_docs = LivingDocumentation()
+        
+        # Semantic Diff
+        self.semantic_diff = SemanticDiff()
+        
+        logger.info("Advanced features initialized")
+        
         # Register default commands
         self._register_commands()
         
-        logger.info("OmniClaw initialization complete")
+        logger.info("OmniClaw v2.0 initialization complete")
     
     def _register_commands(self):
         """Register default messaging commands"""
@@ -188,6 +271,82 @@ FAISS Enabled: {stats['faiss_enabled']}
                 result += f"   Requests: {ep_stats['requests']}, Errors: {ep_stats['errors']}\n\n"
             
             return result
+        
+        # --- Advanced Feature Commands ---
+        
+        @self.messaging.register_command("context")
+        async def cmd_context(command):
+            root = command.kwargs.get("dir", ".")
+            doc = self.context_mapper.generate_project_doc(root)
+            return f"📋 Project Context Generated\n\n{doc[:3000]}..."
+        
+        @self.messaging.register_command("snapshot")
+        async def cmd_snapshot(command):
+            if not command.args:
+                # Resume mode
+                projects = self.temporal_context.list_projects()
+                if not projects:
+                    return "📸 No snapshots found. Use: /snapshot <project> <task>"
+                result = "📸 Available Projects:\n\n"
+                for p in projects:
+                    result += f"  • {p['project']} ({p['snapshot_count']} snapshots)\n"
+                    result += f"    Last: {p['latest_task']}\n"
+                return result
+            
+            project = command.args[0]
+            task_desc = " ".join(command.args[1:]) if len(command.args) > 1 else "Manual snapshot"
+            snap_id = self.temporal_context.save_snapshot(
+                project=project, task=task_desc, state={"source": "messaging"}
+            )
+            return f"📸 Snapshot saved: {snap_id}"
+        
+        @self.messaging.register_command("decisions")
+        async def cmd_decisions(command):
+            if command.args:
+                query = " ".join(command.args)
+                results = await self.decision_archaeologist.query_decisions(query)
+                if not results:
+                    return "🏛️ No matching decisions found."
+                result = f"🏛️ Decisions matching '{query}':\n\n"
+                for d in results[:5]:
+                    result += f"  [{d['impact'].upper()}] {d['decision']}\n"
+                    result += f"  └─ {d['reasoning'][:100]}\n\n"
+                return result
+            
+            recent = self.decision_archaeologist.get_recent(limit=5)
+            if not recent:
+                return "🏛️ No decisions recorded yet."
+            result = "🏛️ Recent Decisions:\n\n"
+            for d in recent:
+                result += f"  [{d['impact'].upper()}] {d['decision']}\n"
+            return result
+        
+        @self.messaging.register_command("patterns")
+        async def cmd_patterns(command):
+            stats = self.pattern_sentinel.get_stats()
+            return (f"🛡️ Pattern Sentinel\n\n"
+                    f"Learned patterns: {stats['learned_patterns']}\n"
+                    f"Built-in patterns: {stats['builtin_patterns']}")
+        
+        @self.messaging.register_command("explore")
+        async def cmd_explore(command):
+            if not command.args:
+                return "🔮 Usage: /explore <task description>"
+            task = " ".join(command.args)
+            return f"🔮 Spawning shadow agents for: {task[:100]}...\n(Use programmatic API for full results)"
+        
+        @self.messaging.register_command("docs")
+        async def cmd_docs(command):
+            root = command.kwargs.get("dir", ".")
+            generated = self.living_docs.update_docs(root)
+            return f"📚 Documentation updated: {len(generated)} diagrams generated"
+        
+        @self.messaging.register_command("diff")
+        async def cmd_diff(command):
+            stats = self.semantic_diff.get_stats()
+            return (f"🔬 Semantic Diff\n\n"
+                    f"Analyses performed: {stats['total_analyses']}\n"
+                    f"LLM available: {stats['has_llm']}")
     
     async def start(self):
         """Start all services"""

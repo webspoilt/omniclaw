@@ -15,6 +15,31 @@ omniclaw/
 │   ├── memory.py                 # Vector database for persistent memory (350+ lines)
 │   ├── api_pool.py               # Multi-API management with load balancing (300+ lines)
 │   ├── messaging_gateway.py      # Telegram/WhatsApp integration (350+ lines)
+│   ├── reasoning_config.py       # 🧠 Reasoning Lock (300+ lines)
+│   ├── context_mapper.py         # 📋 Context Mapper (350+ lines)
+│   ├── autonomous_fix.py         # 🔧 Autonomous Fix (500+ lines)
+│   ├── audit_diff.py             # 📝 Audit Diff (350+ lines)
+│   ├── temporal_memory.py        # 📸 Temporal Context (350+ lines)
+│   ├── decision_archaeology.py   # 🏛️ Decision Archaeology (350+ lines)
+│   ├── pattern_sentinel.py       # 🛡️ Pattern Sentinel (450+ lines)
+│   ├── echo_chambers.py          # 🔮 Echo Chambers (350+ lines)
+│   ├── living_docs.py            # 📐 Living Documentation (400+ lines)
+│   ├── semantic_diff.py          # 🔬 Semantic Diff (500+ lines)
+│   ├── advanced_features/        # 🚀 Advanced Features Package
+│   │   ├── consciousness_collision.py  # Multi-perspective code review
+│   │   ├── code_dna.py                 # CodeDNA Interpreter
+│   │   ├── time_machine.py             # Time Machine Debugger
+│   │   ├── memory_graph.py             # Memory Graph Network
+│   │   ├── predictor.py                # Predictor Engine
+│   │   ├── contract_enforcer.py        # Contract Enforcer
+│   │   ├── paradigm_translator.py      # Paradigm Translator
+│   │   ├── natural_language_infra.py   # Natural Language Infra
+│   │   ├── living_diagram.py           # Living Architecture Diagrams
+│   │   ├── autonomous_pm.py            # Autonomous PM
+│   │   ├── self_evolving_core.py       # Self-Evolving Intelligence Core
+│   │   ├── security_research.py        # Security Research Hub
+│   │   ├── web_interface.py            # Web Interface
+│   │   └── launcher.py                 # OmniClaw Launcher
 │   └── automation/               # Automation modules
 │       ├── __init__.py
 │       ├── trading.py            # Trading platform integration (400+ lines)
@@ -42,14 +67,14 @@ omniclaw/
 │           └── PermissionsScreen.tsx # Permission request (250+ lines)
 │
 ├── install.sh                    # Deployment script with hardware detection (400+ lines)
-├── omniclaw.py                   # Main CLI entry point (300+ lines)
+├── omniclaw.py                   # Main CLI entry point (500+ lines)
 ├── setup.py                      # Python package setup
 ├── requirements.txt              # Python dependencies
 ├── config.example.yaml           # Configuration template
-├── README.md                     # Comprehensive documentation (300+ lines)
+├── README.md                     # Comprehensive documentation (400+ lines)
 └── LICENSE                       # MIT License
 
-Total Lines of Code: ~6,000+
+Total Lines of Code: ~15,000+
 ```
 
 ## Key Features Implemented
@@ -96,6 +121,33 @@ Total Lines of Code: ~6,000+
 - **Hardware Detection**: Automatic device class detection
 - **Dependency Management**: OS-specific package installation
 - **Service Integration**: systemd service creation
+
+### 8. Advanced AI Features — Core Enhancements (v2.0) ✅
+- **🧠 Reasoning Lock**: Forces deep chain-of-thought reasoning on every LLM call
+- **📋 Context Mapper**: Auto-generates project documentation by scanning code and dependencies
+- **🔧 Autonomous Fix**: Auto-parses errors → asks LLM for fix → applies → retries
+- **📝 Audit Diff**: Multi-file edit review with unified diff, atomic apply, and rollback
+- **📸 Temporal Context**: Cross-session work snapshots with full state capture
+- **🏛️ Decision Archaeology**: Logs reasoning behind decisions, queryable with semantic search
+- **🛡️ Pattern Sentinel**: Learns from past bugs and warns proactively (5 built-in detectors)
+- **🔮 Echo Chambers**: Spawns 7 shadow agents to explore alternatives in parallel
+- **📐 Living Documentation**: AST-based Mermaid diagrams that auto-update with code changes
+- **🔬 Semantic Diff**: Understands meaning of code changes (behavioral, API contract, SOLID)
+
+### 9. Advanced Features Package (v2.0) ✅
+- **🔮 Consciousness Collision**: 5-agent multi-perspective code review
+- **🧬 CodeDNA Interpreter**: Understands WHY code was written, preserves business logic
+- **⏰ Time Machine Debugger**: Traces bugs to exact git commit that introduced them
+- **🕸️ Memory Graph Network**: Full knowledge graph with "What breaks if I change X?"
+- **🔮 Predictor Engine**: Learns from codebase bug history, prevents repeat mistakes
+- **⚖️ Contract Enforcer**: Blocks code violating architectural rules
+- **🌐 Paradigm Translator**: Converts between frameworks/languages semantically
+- **🏗️ Natural Language Infra**: "Set up production k8s" → Terraform + Helm + CI/CD
+- **👔 Autonomous PM**: Single sentence → SPEC + Architecture + Code + Tests + Docs
+- **🔒 Security Research Hub**: Autonomous vulnerability scanning and assessment
+- **🧬 Self-Evolving Core**: System that improves itself based on usage patterns
+- **📐 Living Architecture Diagrams**: Auto-generated Mermaid diagrams from AST analysis
+- **🚀 OmniClaw Launcher**: Unified launcher for all features and web interface
 
 ## API Support
 

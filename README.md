@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-1.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-2.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
@@ -60,6 +60,33 @@
 - **Financial Automation**: Trading platform hooks and earning workflows
 - **Persistent Memory**: Local Vector Database for context retention
 - **Bug Bounty Hunting**: Automated research and vulnerability detection
+
+### 5. Advanced AI Features (v2.0) 🆕
+
+#### Core System Enhancements
+- **🧠 Reasoning Lock**: Forces deep chain-of-thought reasoning on every LLM call with configurable depth levels
+- **📋 Context Mapper**: Auto-generates `OMNICLAW.md` project documentation by scanning code, rules, and dependencies
+- **🔧 Autonomous Fix**: Auto-parses errors → asks LLM for fix → applies → retries (no human intervention)
+- **📝 Audit Diff**: Multi-file edit review with unified diff view, atomic apply, and full rollback
+- **📸 Temporal Context**: Cross-session work snapshots — resume exactly where you left off, even weeks later
+- **🏛️ Decision Archaeology**: Logs the reasoning behind decisions, queryable forever with semantic search
+- **🛡️ Pattern Sentinel**: Learns from past bugs in YOUR codebase and warns proactively (5 built-in detectors)
+- **🔮 Echo Chambers**: Spawns 7 shadow agents (speed, readability, security, etc.) to explore alternatives in parallel
+- **📐 Living Docs**: AST-based Mermaid diagrams that auto-update as code changes
+- **🔬 Semantic Diff**: Understands the MEANING of code changes (behavioral, API contract, SOLID violations)
+
+#### Revolutionary Features
+- **🔮 Consciousness Collision**: 5-agent multi-perspective code review (Skeptic, Security Expert, Architect, etc.)
+- **🧬 CodeDNA Interpreter**: Understands WHY code was written, preserves business logic during refactoring
+- **⏰ Time Machine Debugger**: Traces bugs to the exact git commit and requirement that introduced them
+- **🕸️ Memory Graph Network**: Full knowledge graph — "What breaks if I change X?" with dependency chains
+- **🔮 Predictor Engine**: Learns from YOUR codebase's bug history, warns before you repeat mistakes
+- **⚖️ Contract Enforcer**: Blocks code that violates architectural rules (no direct DB calls, no hardcoded secrets)
+- **🌐 Paradigm Translator**: Converts between frameworks/languages semantically (React→Vue, Python→JS)
+- **🏗️ Natural Language Infra**: "Set up production k8s" → Full Terraform + Helm + CI/CD
+- **👔 Autonomous PM**: Single sentence → SPEC + Architecture + Code + Tests + Docs
+- **🔒 Security Research Hub**: Autonomous vulnerability scanning and security assessment
+- **🧬 Self-Evolving Core**: System that improves itself over time based on usage patterns
 
 ## 🌐 Real-World Use Cases
 Wondering what you can actually build with an autonomous agent swarm? 
@@ -260,25 +287,42 @@ You can run OmniClaw as your own personal **Moltbot / OpenClaw Assistant** direc
 
 ```
 omniclaw/
-├── core/                    # Core Python modules
-│   ├── orchestrator.py      # Hybrid Hive orchestrator
-│   ├── manager.py           # Manager agent
-│   ├── worker.py            # Worker agents
-│   ├── memory.py            # Vector memory system
-│   ├── api_pool.py          # API management
-│   └── messaging_gateway.py # Telegram/WhatsApp integration
-├── kernel_bridge/           # C++/eBPF kernel monitor
-│   ├── src/bpf/            # eBPF programs
-│   ├── src/cpp/            # C++ bridge
-│   └── python_bridge.py    # Python bindings
-├── mobile_app/             # React Native super-app
-│   ├── src/screens/        # UI screens
-│   ├── src/services/       # Background services
-│   └── src/store/          # State management
-├── scripts/                # Deployment scripts
-├── omniclaw.py            # Main entry point
-├── install.sh             # Installation script
-└── requirements.txt       # Python dependencies
+├── core/                         # Core Python modules
+│   ├── orchestrator.py           # Hybrid Hive orchestrator
+│   ├── manager.py                # Manager agent
+│   ├── worker.py                 # Worker agents
+│   ├── memory.py                 # Vector memory system
+│   ├── api_pool.py               # API management
+│   ├── messaging_gateway.py      # Telegram/WhatsApp integration
+│   ├── reasoning_config.py       # 🧠 Reasoning Lock
+│   ├── context_mapper.py         # 📋 Context Mapper
+│   ├── autonomous_fix.py         # 🔧 Autonomous Fix
+│   ├── audit_diff.py             # 📝 Audit Diff
+│   ├── temporal_memory.py        # 📸 Temporal Context
+│   ├── decision_archaeology.py   # 🏛️ Decision Archaeology
+│   ├── pattern_sentinel.py       # 🛡️ Pattern Sentinel
+│   ├── echo_chambers.py          # 🔮 Echo Chambers
+│   ├── living_docs.py            # 📐 Living Documentation
+│   ├── semantic_diff.py          # 🔬 Semantic Diff
+│   └── advanced_features/        # 🚀 Advanced Features Package
+│       ├── consciousness_collision.py
+│       ├── code_dna.py
+│       ├── time_machine.py
+│       ├── memory_graph.py
+│       ├── predictor.py
+│       ├── contract_enforcer.py
+│       ├── paradigm_translator.py
+│       ├── natural_language_infra.py
+│       ├── living_diagram.py
+│       ├── autonomous_pm.py
+│       ├── self_evolving_core.py
+│       ├── security_research.py
+│       └── launcher.py
+├── kernel_bridge/                # C++/eBPF kernel monitor
+├── mobile_app/                   # React Native super-app
+├── omniclaw.py                   # Main entry point
+├── setup.sh                      # One-click installer
+└── requirements.txt              # Python dependencies
 ```
 
 ### Building Kernel Bridge

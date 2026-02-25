@@ -158,3 +158,62 @@ ui:
   font_size: "medium"  # small, medium, large
   animations: true
   haptic_feedback: true
+
+# ========================================
+# Advanced Features Configuration
+# ========================================
+advanced:
+  # Reasoning Lock — Force deep thinking on all LLM calls
+  reasoning:
+    thinking_level: "max"       # max, high, standard, quick
+    min_tokens: 500             # Minimum response length
+    chain_of_thought: true      # Require step-by-step reasoning
+    self_verification: true     # Require self-verification in responses
+    trace_depth: "full"         # full, summary, none
+
+  # Autonomous Fix — Auto-fix failed commands
+  autofix:
+    enabled: true
+    max_retries: 3
+    sandbox: true               # Block dangerous commands
+
+  # Audit Diff — Multi-file edit review
+  audit_diff:
+    backup_root: "./.omniclaw_backups"
+
+  # Temporal Context — Cross-session snapshots
+  temporal:
+    auto_snapshot: true         # Auto-save before shutdown
+    max_snapshots_per_project: 50
+
+  # Decision Archaeology — Reasoning log
+  decision_archaeology:
+    auto_record: true           # Automatically log significant decisions
+    min_impact: "medium"        # Only log decisions at this impact or above
+
+  # Pattern Sentinel — Bug pattern detection
+  pattern_sentinel:
+    scan_on_edit: true          # Scan files automatically on edit
+    include_builtins: true      # Include built-in pattern library
+
+  # Echo Chambers — Alternative solution exploration
+  echo_chambers:
+    strategies:
+      - speed
+      - readability
+      - robust
+    parallel: true              # Run shadow agents in parallel
+
+  # Living Documentation — Auto-generated diagrams
+  living_docs:
+    auto_update: false          # Regenerate on code changes
+    output_dir: "./docs/diagrams"
+    formats:
+      - architecture
+      - classes
+
+  # Semantic Diff — Semantic change analysis
+  semantic_diff:
+    auto_analyze: true          # Analyze diffs automatically
+    detect_breaking: true       # Flag breaking changes
+    solid_check: true           # Check for SOLID violations

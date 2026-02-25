@@ -446,6 +446,9 @@
                 <img src="./logo.svg" alt="OmniClaw 3D Orb">
             </div>
             <h1>The Hybrid Hive AI System</h1>
+            <p style="margin-bottom: 10px;"><span
+                    style="background: linear-gradient(135deg, #00f2fe, #4facfe); color:#000; padding: 4px 14px; border-radius: 20px; font-weight: 800; font-size: 0.85rem;">v2.0
+                    — 20+ Advanced Features</span></p>
             <p>Deploy a decentralized, peer-reviewed swarm of autonomous agents directly to a Linux kernel wrapper.
                 Monitor your system, execute tasks, and natively connect via Omni-Channel gateways instantly.</p>
 
@@ -517,6 +520,95 @@
             </div>
         </section>
 
+        <!-- Advanced AI Features Section -->
+        <section id="advanced">
+            <h2 class="section-title">🚀 Advanced AI Features (v2.0)</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;">20+ revolutionary features that
+                make OmniClaw the most powerful AI agent system.</p>
+            <div class="grid-2">
+                <div class="glass-panel feature-card">
+                    <h3>🧠 Reasoning Lock</h3>
+                    <p>Forces deep chain-of-thought reasoning on every LLM call. Rejects shallow responses
+                        automatically. Configurable depth levels from QUICK to MAX.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🔧 Autonomous Fix</h3>
+                    <p>Command fails? Auto-parses the error, asks LLM for a fix, applies the patch, and retries — zero
+                        human intervention. Sandbox mode blocks dangerous ops.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🔮 Consciousness Collision</h3>
+                    <p>Spawns 5 shadow agents (Skeptic, Security Expert, Performance Freak, Junior Dev, Architect) to
+                        review code simultaneously from different perspectives.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🧬 CodeDNA Interpreter</h3>
+                    <p>Understands WHY code was written, not just WHAT. Preserves business logic invariants during
+                        refactoring. Catches broken intent with risk scoring.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>⏰ Time Machine Debugger</h3>
+                    <p>Answers "when and why did it break?" — traces bugs to the exact git commit and original
+                        requirement that introduced them.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🕸️ Memory Graph Network</h3>
+                    <p>Full knowledge graph of your project. Ask "what breaks if I change X?" and get the complete
+                        dependency chain with risk scoring.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🛡️ Pattern Sentinel</h3>
+                    <p>Learns from YOUR past bugs. Ships with 5 built-in detectors (SQL injection, hardcoded secrets,
+                        mutable defaults). Warns before you repeat mistakes.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>⚖️ Contract Enforcer</h3>
+                    <p>Static analysis that enforces architectural rules: "No direct DB calls outside DAL", "No
+                        hardcoded secrets", "No print in production". Blocks bad code.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🏛️ Decision Archaeology</h3>
+                    <p>Logs the reasoning behind every significant decision. Future sessions can query: "Why did we
+                        choose this approach?" with full reasoning chains.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>📸 Temporal Context</h3>
+                    <p>Cross-session work snapshots. Resume exactly where you left off — even weeks later. Full state
+                        capture with environment diffing.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🌐 Paradigm Translator</h3>
+                    <p>Converts code between frameworks and languages semantically, not just syntax. Python →
+                        JavaScript, React → Vue, Express → FastAPI.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🏗️ Natural Language Infra</h3>
+                    <p>"Set up production k8s with auto-scaling" → Full Terraform + Helm + CI/CD generated
+                        automatically. Supports AWS, GCP, Azure.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>📐 Living Architecture Diagrams</h3>
+                    <p>Auto-generates Mermaid diagrams from AST analysis. Architecture, class hierarchy, and call-graph
+                        diagrams that stay accurate as code changes.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🔬 Semantic Diff</h3>
+                    <p>Understands the MEANING of code changes. Detects behavioral changes, API contract breaks, SOLID
+                        violations — not just line-level diffs.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>👔 Autonomous PM</h3>
+                    <p>"Add user auth with OAuth" → Full SPEC.md + Architecture + Code + Tests + Docs. Complete feature
+                        implementation from a single sentence.</p>
+                </div>
+                <div class="glass-panel feature-card">
+                    <h3>🔒 Security Research Hub</h3>
+                    <p>Autonomous vulnerability scanning, exploit analysis, and security assessment. Full-stack security
+                        research automation.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Comprehensive Documentation Sections -->
         <section id="docs-container" style="display: flex; flex-direction: column; gap: 40px; margin-top: 40px;">
             <h2 class="section-title" style="text-align: center; width: 100%;">Comprehensive Knowledge Base</h2>
@@ -550,7 +642,8 @@
                         like 192.168.x.x)</li>
                     <li>Find your username: <code>whoami</code> (usually looks like u0_a123)</li>
                     <li><b>On your Windows/Mac PC</b> open a terminal and type:
-                        <code>ssh -p 8022 your_username@192.168.x.x</code></li>
+                        <code>ssh -p 8022 your_username@192.168.x.x</code>
+                    </li>
                 </ul>
                 <br>
                 <h4>4. Install Dependencies & Ollama</h4>
@@ -578,14 +671,16 @@
                         Token.</li>
                     <li>Message <b>@userinfobot</b> on Telegram to get your personal ID.</li>
                     <li>Open <code>config.yaml</code> and paste the Token and your personal ID under the
-                        <code>messaging.telegram</code> block.</li>
+                        <code>messaging.telegram</code> block.
+                    </li>
                 </ul>
                 <br>
                 <h4>Discord Setup</h4>
                 <p style="color: var(--text-muted);">Go to the Discord Developer Portal. Create an Application -> Add a
                     Bot. Check all "Privileged Gateway Intents". Copy the Token and paste it into
                     <code>config.yaml</code> under <code>discord</code>. Use the OAuth2 URL generator to invite it to
-                    your server.</p>
+                    your server.
+                </p>
             </div>
 
             <!-- Linux native Doc -->
@@ -595,7 +690,8 @@
                     web chatbot. It drops an autonomous Python `Worker` process directly into a terminal shell.</p>
                 <ul style="color: var(--text-muted); margin-left: 20px; line-height: 1.8;">
                     <li><b>Tool Calling:</b> The LLM outputs structured JSON asking to run commands like
-                        <code>nmap -sV target.com</code> or <code>curl</code>.</li>
+                        <code>nmap -sV target.com</code> or <code>curl</code>.
+                    </li>
                     <li><b>Execution:</b> The OmniClaw orchestrator runs this in a sandboxed subprocess and feeds the
                         stdout/stderr back into the LLM context limits.</li>
                     <li><b>Scripting:</b> If a generic tool doesn't exist, OmniClaw is instructed to write a Python or

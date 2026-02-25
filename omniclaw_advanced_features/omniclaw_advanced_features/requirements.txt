@@ -1,0 +1,24 @@
+# OmniClaw Advanced Features
+# Requirements
+
+# Core
+pyyaml>=6.0
+
+# Git integration (for Time Machine Debugger)
+GitPython>=3.1
+
+# Database (for Memory Graph, Predictor)
+# sqlite3 is built-in
+
+# Watching (for Living Diagram auto-update)
+watchdog>=3.0
+
+# Optional: For better AST parsing
+# (ast is built-in)
+
+# For Natural Language Infra (optional)
+# hcl2>=1.0  # For Terraform parsing
+
+# Testing
+pytest>=7.0
+pytest-asyncio>=0.21
