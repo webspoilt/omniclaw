@@ -105,3 +105,18 @@ The `FutureTechExplorer` module allows OmniClaw to behave as an autonomous post-
 2. **Deep Dive:** OmniClaw dispatches researcher workers to scour academic journals and patent filings. 
 3. **Synthesis & Innovation:** Utilizing advanced LLMs (like Claude 4.6 or GPT-5), it not only summarizes the data but generates novel theoretical implementation diagrams via `Living Docs`.
 4. **Privacy:** Built-in absolute privacy headers ensure your proprietary research and prompts are completely invisible to external API telemetry and training loops.
+
+---
+
+## 🖥️ Use Case 7: Visual Mission Control (Tauri GUI)
+
+**The Problem:** Command-line interfaces can be overwhelming when monitoring multiple autonomous agents simultaneously. Managing an algorithmic trading bot, a bug bounty hunter, and an AI companion at the same time requires a unified dashboard, but web apps often restrict system access.
+
+**The OmniClaw Solution:**
+OmniClaw includes a built-in, lightning-fast native desktop application powered by Tauri and React. It hooks directly into the core daemon via WebSockets.
+
+**How it works:**
+1. **Activation:** You run the OmniClaw daemon (`omniclaw-daemon`) and launch the Tauri Mission Control UI.
+2. **Swarm Monitoring:** A beautiful cyberpunk-themed dashboard displays real-time metrics—showing exactly which agent models are active, CPU loads, and token usage across your offline (Ollama) and cloud APIs.
+3. **Live Execution:** Natively integrated `xterm.js` terminals stream raw stdout and eBPF kernel logs directly into your Mission Control view, meaning you can watch the Bug Bounty tool run `nmap` in real-time.
+4. **Instant Interaction:** Click on the "AI Companion" specific chat window to message your custom persona, leaving the other agents undisturbed running background tasks.

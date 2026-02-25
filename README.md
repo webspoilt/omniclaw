@@ -64,10 +64,18 @@
 ### 5. Absolute Data Privacy 🛡️
 - **No Training Guarantee**: All core API integrations (OpenAI, Anthropic, Gemini, etc.) programmatically opt-out of data retention and engine training, strictly enforcing data isolation.
 
-### 6. Future Tech Research Module 🔮
+### 6. OmniClaw Mission Control (Tauri Native GUI) 🖥️
+- **Cross-Platform Dashboard**: A performant React/Tauri desktop application built to monitor Swarm operations, view live Xterm.js terminal streams, and manually activate agent tools (like Bug Bounty or Algo Trader) seamlessly.
+- **WebSocket Telemetry**: OmniClaw streams reasoning logs and stdout intercepts directly to the UI dynamically without any clunky polling. 
+
+### 7. AI Companion & Custom Personas 💖
+- **Interactive Roleplay**: Set your Agent to act as a friend, partner, or specialized assistant.
+- **Proactive Engagement**: The `CompanionLoop` background thread monitors the time and spontaneously checks on you (e.g., asking if you've eaten lunch), forging a true companion connection.
+
+### 8. Future Tech Research Module 🔮
 - **Advanced Domains**: Simulates deep research into Quantum computing, DNA computing, 1nm lithography-free chips, and GPU manufacturing without human intervention.
 
-### 7. Advanced AI Features (v2.0) 🆕
+### 9. Advanced AI Features (v2.0) 🆕
 
 #### Core System Enhancements
 - **🧠 Reasoning Lock**: Forces deep chain-of-thought reasoning on every LLM call with configurable depth levels
