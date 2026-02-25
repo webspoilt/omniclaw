@@ -463,6 +463,9 @@ def main():
     # Chat command
     subparsers.add_parser("chat", help="Start interactive chat")
     
+    # GUI command
+    subparsers.add_parser("gui", help="Launch the Mission Control Web GUI")
+    
     # Daemon command
     subparsers.add_parser("daemon", help="Run as daemon")
     
@@ -542,6 +545,24 @@ def main():
             }, indent=2))
         
         asyncio.run(run_task())
+        
+    elif args.command == "gui":
+        print("\n🚀 Launching OmniClaw Mission Control GUI...\n")
+        asyncio.run(app.initialize())
+        
+        try:
+            from core.dashboard import MissionControl
+            from nicegui import ui, app as nicegui_app
+            
+            dashboard = MissionControl(app)
+            
+            # Hook shutting down OmniClaw into NiceGUI's shutdown event
+            nicegui_app.on_shutdown(app.stop)
+            
+            ui.run(title="OmniClaw Mission Control", port=8080, dark=True, reload=False)
+        except ImportError:
+            print("❌ NiceGUI is not installed. Please run: pip install nicegui")
+            sys.exit(1)
     
     elif args.command == "status":
         asyncio.run(app.initialize())
