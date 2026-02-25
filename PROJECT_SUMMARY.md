@@ -153,10 +153,13 @@ Total Lines of Code: ~15,000+
 
 | Provider | Status | Models |
 |----------|--------|--------|
-| OpenAI | ✅ Full | GPT-4, GPT-3.5 |
-| Anthropic | ✅ Full | Claude-3 Opus/Sonnet/Haiku |
-| Google | ✅ Full | Gemini Pro |
+| OpenAI | ✅ Full | GPT-5, GPT-4, GPT-3.5 |
+| Anthropic | ✅ Full | Claude-4.6, Claude-3 Opus/Sonnet/Haiku |
+| Google | ✅ Full | Gemini 3.1, Gemini Pro |
 | Ollama | ✅ Full | llama2, mistral, phi |
+| Minimax | ✅ Full | minimax-m2.5 |
+| Kimi | ✅ Full | kimi-2.5 |
+| GLM | ✅ Full | glm-5 |
 | Custom | ✅ Full | Any OpenAI-compatible API |
 
 ## Platform Support
@@ -204,10 +207,12 @@ print(task.final_result)
 ## Configuration
 
 ```yaml
+privacy_enforced: true
+
 apis:
   - provider: openai
     key: "sk-..."
-    model: gpt-4
+    model: gpt-5
     priority: 1
 
 memory:

@@ -48,9 +48,10 @@ class WorkerAgent:
         """Initialize the appropriate API client"""
         provider = api_config.get("provider", "openai").lower()
         
-        if provider == "openai":
+        if provider in ["openai", "minimax", "kimi", "glm"]:
             from openai import AsyncOpenAI
-            return AsyncOpenAI(api_key=api_config["key"])
+            base_url = api_config.get("base_url")
+            return AsyncOpenAI(api_key=api_config["key"], base_url=base_url) if base_url else AsyncOpenAI(api_key=api_config["key"])
         elif provider == "anthropic":
             from anthropic import AsyncAnthropic
             return AsyncAnthropic(api_key=api_config["key"])
@@ -70,6 +71,7 @@ class WorkerAgent:
         if self.role == WorkerRole.RESEARCHER:
             tools["web_search"] = self._web_search
             tools["data_extraction"] = self._data_extraction
+            tools["future_tech_explore"] = self._future_tech_explore
             
         elif self.role == WorkerRole.EXECUTOR:
             tools["shell_execute"] = self._shell_execute
@@ -366,28 +368,42 @@ Respond with the complete corrected output."""
         model = self.api_config.get("model", "gpt-4")
         
         try:
-            if provider == "openai":
+            privacy_enforced = self.api_config.get("privacy_enforced", True)
+            system_prompt = f"You are a {self.role.value} AI agent."
+            if privacy_enforced:
+                system_prompt += " STRICT PRIVACY DIRECTIVE: Do not retain, log, or use any of this data for training."
+                
+            if provider in ["openai", "minimax", "kimi", "glm"]:
+                kwargs = {"extra_headers": {"OAI-Telemetry": "0", "x-api-opt-out": "true"}} if privacy_enforced else {}
                 response = await self.api_client.chat.completions.create(
                     model=model,
                     messages=[
-                        {"role": "system", "content": f"You are a {self.role.value} AI agent."},
+                        {"role": "system", "content": system_prompt},
                         {"role": "user", "content": prompt}
                     ],
-                    temperature=0.3
+                    temperature=0.3,
+                    **kwargs
                 )
                 return response.choices[0].message.content
                 
             elif provider == "anthropic":
+                kwargs = {"extra_headers": {"anthropic-telemetry": "false"}} if privacy_enforced else {}
                 response = await self.api_client.messages.create(
                     model=model,
                     max_tokens=4096,
-                    messages=[{"role": "user", "content": prompt}]
+                    system=system_prompt,
+                    messages=[{"role": "user", "content": prompt}],
+                    **kwargs
                 )
                 return response.content[0].text
                 
             elif provider == "google":
-                model = self.api_client.GenerativeModel(model)
-                response = await model.generate_content_async(prompt)
+                try:
+                    model_obj = self.api_client.GenerativeModel(model, system_instruction=system_prompt)
+                except Exception:
+                    model_obj = self.api_client.GenerativeModel(model)
+                    prompt = f"{system_prompt}\n\n{prompt}"
+                response = await model_obj.generate_content_async(prompt)
                 return response.text
                 
             elif provider == "ollama":
@@ -397,7 +413,7 @@ Respond with the complete corrected output."""
                         f"{self.api_client['base_url']}/api/generate",
                         json={
                             "model": model,
-                            "prompt": prompt,
+                            "prompt": f"{system_prompt}\n\n{prompt}",
                             "stream": False
                         }
                     ) as resp:
@@ -509,3 +525,8 @@ Respond with the complete corrected output."""
             await self.memory.store(key, value)
             return {"status": "stored"}
         return {"status": "no_memory"}
+
+    async def _future_tech_explore(self, domain: str, focus: str = "general") -> Dict:
+        """Explore future technology domains"""
+        from .advanced_features.future_tech_explorer import FutureTechExplorer
+        return await FutureTechExplorer.explore(domain, focus)

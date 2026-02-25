@@ -38,9 +38,10 @@ class ManagerAgent:
         """Initialize the appropriate API client"""
         provider = api_config.get("provider", "openai").lower()
         
-        if provider == "openai":
+        if provider in ["openai", "minimax", "kimi", "glm"]:
             from openai import AsyncOpenAI
-            return AsyncOpenAI(api_key=api_config["key"])
+            base_url = api_config.get("base_url")
+            return AsyncOpenAI(api_key=api_config["key"], base_url=base_url) if base_url else AsyncOpenAI(api_key=api_config["key"])
         elif provider == "anthropic":
             from anthropic import AsyncAnthropic
             return AsyncAnthropic(api_key=api_config["key"])
@@ -252,30 +253,52 @@ Respond in JSON format:
         provider = self.api_config.get("provider", "openai").lower()
         model = self.api_config.get("model", "gpt-4")
         
+        # Privacy enforcement
+        privacy_enforced = self.api_config.get("privacy_enforced", True)
+        system_prompt = "You are an AI orchestration manager."
+        if privacy_enforced:
+            system_prompt += " STRICT PRIVACY DIRECTIVE: Do not retain, log, or use any of this data for training."
+            
         try:
-            if provider == "openai":
+            if provider in ["openai", "minimax", "kimi", "glm"]:
+                kwargs = {}
+                if privacy_enforced:
+                    kwargs["extra_headers"] = {"OAI-Telemetry": "0", "x-api-opt-out": "true"}
+                
                 response = await self.api_client.chat.completions.create(
                     model=model,
                     messages=[
-                        {"role": "system", "content": "You are an AI orchestration manager."},
+                        {"role": "system", "content": system_prompt},
                         {"role": "user", "content": prompt}
                     ],
                     temperature=0.3,
-                    response_format={"type": "json_object"}
+                    response_format={"type": "json_object"},
+                    **kwargs
                 )
                 return response.choices[0].message.content
                 
             elif provider == "anthropic":
+                kwargs = {}
+                if privacy_enforced:
+                    kwargs["extra_headers"] = {"anthropic-telemetry": "false"}
+                    
                 response = await self.api_client.messages.create(
                     model=model,
                     max_tokens=4096,
-                    messages=[{"role": "user", "content": prompt}]
+                    system=system_prompt,
+                    messages=[{"role": "user", "content": prompt}],
+                    **kwargs
                 )
                 return response.content[0].text
                 
             elif provider == "google":
-                model = self.api_client.GenerativeModel(model)
-                response = await model.generate_content_async(prompt)
+                try:
+                    model_obj = self.api_client.GenerativeModel(model, system_instruction=system_prompt)
+                except Exception:
+                    # Fallback for older SDK
+                    model_obj = self.api_client.GenerativeModel(model)
+                    prompt = f"{system_prompt}\n\n{prompt}"
+                response = await model_obj.generate_content_async(prompt)
                 return response.text
                 
             elif provider == "ollama":
@@ -285,7 +308,7 @@ Respond in JSON format:
                         f"{self.api_client['base_url']}/api/generate",
                         json={
                             "model": model,
-                            "prompt": prompt,
+                            "prompt": f"{system_prompt}\n\n{prompt}",
                             "stream": False
                         }
                     ) as resp:

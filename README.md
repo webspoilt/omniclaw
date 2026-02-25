@@ -61,7 +61,13 @@
 - **Persistent Memory**: Local Vector Database for context retention
 - **Bug Bounty Hunting**: Automated research and vulnerability detection
 
-### 5. Advanced AI Features (v2.0) 🆕
+### 5. Absolute Data Privacy 🛡️
+- **No Training Guarantee**: All core API integrations (OpenAI, Anthropic, Gemini, etc.) programmatically opt-out of data retention and engine training, strictly enforcing data isolation.
+
+### 6. Future Tech Research Module 🔮
+- **Advanced Domains**: Simulates deep research into Quantum computing, DNA computing, 1nm lithography-free chips, and GPU manufacturing without human intervention.
+
+### 7. Advanced AI Features (v2.0) 🆕
 
 #### Core System Enhancements
 - **🧠 Reasoning Lock**: Forces deep chain-of-thought reasoning on every LLM call with configurable depth levels
@@ -157,7 +163,7 @@ You command the hive using standard chat apps. You simply message `@BotFather` o
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐      │
 │  │  Manager    │◄──►│   Worker 1  │◄──►│   Worker 2  │      │
-│  │  (GPT-4)    │    │ (Claude-3)  │    │  (Gemini)   │      │
+│  │  (GPT-5)    │    │ (Claude-4.6)│    │(Gemini-3.1) │      │
 │  └──────┬──────┘    └─────────────┘    └─────────────┘      │
 │         │                                                   │
 │         ▼                                                   │
@@ -184,20 +190,22 @@ You command the hive using standard chat apps. You simply message `@BotFather` o
 
 ```yaml
 # config.yaml
+privacy_enforced: true
+
 apis:
   - provider: openai
     key: "sk-..."
-    model: gpt-4
+    model: gpt-5
     priority: 1
     
   - provider: anthropic
     key: "sk-ant-..."
-    model: claude-3-opus-20240229
+    model: claude-4.6-opus
     priority: 2
     
   - provider: google
     key: "..."
-    model: gemini-pro
+    model: gemini-3.1
     priority: 3
     
   - provider: ollama
@@ -354,8 +362,8 @@ The installer automatically detects your hardware and configures appropriately:
 
 | Hardware | RAM | CPU | Model |
 |----------|-----|-----|-------|
-| High-End | 16GB+ | 8+ cores | llama2:13b / GPT-4 |
-| Medium | 8GB | 4+ cores | llama2:7b / GPT-3.5 |
+| High-End | 16GB+ | 8+ cores | llama2:13b / GPT-5 |
+| Medium | 8GB | 4+ cores | llama2:7b / GPT-4 |
 | Low/Mobile | <8GB | 2-4 cores | phi / API fallback |
 
 ## 📊 Performance

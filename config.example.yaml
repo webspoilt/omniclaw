@@ -11,28 +11,56 @@ device:
 
 # API Configurations
 # Add your API keys here to enable cloud AI models
+
+# OmniClaw enforces STRICT data privacy for all external API endpoints
+privacy_enforced: true
+
 apis:
   # OpenAI Configuration
   - provider: openai
     key: "sk-your-openai-key-here"
-    model: gpt-4
+    model: gpt-5
     priority: 1
-    capabilities: ["text", "chat", "code"]
+    capabilities: ["text", "chat", "code", "future_tech"]
     enabled: true
 
   # Anthropic Claude Configuration
   - provider: anthropic
     key: "sk-ant-your-anthropic-key-here"
-    model: claude-3-opus-20240229
+    model: claude-4.6-opus
     priority: 2
-    capabilities: ["text", "chat", "code", "analysis"]
+    capabilities: ["text", "chat", "code", "analysis", "future_tech"]
     enabled: true
 
   # Google Gemini Configuration
   - provider: google
     key: "your-google-api-key-here"
-    model: gemini-pro
+    model: gemini-3.1
     priority: 3
+    capabilities: ["text", "chat", "future_tech"]
+    enabled: false
+
+  # Minimax Configuration
+  - provider: minimax
+    key: "your-minimax-api-key"
+    model: minimax-m2.5
+    priority: 4
+    capabilities: ["text", "chat"]
+    enabled: false
+
+  # Kimi Configuration
+  - provider: kimi
+    key: "your-kimi-api-key"
+    model: kimi-2.5
+    priority: 5
+    capabilities: ["text", "chat"]
+    enabled: false
+
+  # GLM Configuration
+  - provider: glm
+    key: "your-glm-api-key"
+    model: glm-5
+    priority: 6
     capabilities: ["text", "chat"]
     enabled: false
 
@@ -41,7 +69,7 @@ apis:
     key: "ollama"
     model: llama2:13b
     base_url: http://localhost:11434
-    priority: 4
+    priority: 7
     capabilities: ["text", "chat", "code"]
     enabled: true
 

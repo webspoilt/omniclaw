@@ -336,12 +336,19 @@ class APIPool:
         """Get cost estimate across providers"""
         # Approximate pricing (should be updated regularly)
         pricing = {
+            "gpt-5": {"input": 0.05, "output": 0.10},
             "gpt-4": {"input": 0.03, "output": 0.06},
             "gpt-4-turbo": {"input": 0.01, "output": 0.03},
             "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
+            "claude-4.6-opus": {"input": 0.015, "output": 0.075},
+            "claude-4.6-sonnet": {"input": 0.003, "output": 0.015},
             "claude-3-opus": {"input": 0.015, "output": 0.075},
             "claude-3-sonnet": {"input": 0.003, "output": 0.015},
-            "claude-3-haiku": {"input": 0.00025, "output": 0.00125}
+            "claude-3-haiku": {"input": 0.00025, "output": 0.00125},
+            "gemini-3.1": {"input": 0.0015, "output": 0.005},
+            "minimax-m2.5": {"input": 0.001, "output": 0.002},
+            "kimi-2.5": {"input": 0.001, "output": 0.002},
+            "glm-5": {"input": 0.001, "output": 0.002}
         }
         
         estimates = {}
