@@ -369,7 +369,14 @@ Respond with the complete corrected output."""
         
         try:
             privacy_enforced = self.api_config.get("privacy_enforced", True)
-            system_prompt = f"You are a {self.role.value} AI agent."
+            
+            # Load persona
+            persona = self.api_config.get("persona", {}) if "persona" in self.api_config else {}
+            ai_name = persona.get("ai_name", "OmniClaw") or "OmniClaw"
+            user_name = persona.get("user_name", "User") or "User"
+            base_role = persona.get("ai_role", "AI companion") or "AI companion"
+            
+            system_prompt = f"You are {ai_name}, acting as a {base_role} to {user_name}. Your primary task execution role right now is: {self.role.value}."
             if privacy_enforced:
                 system_prompt += " STRICT PRIVACY DIRECTIVE: Do not retain, log, or use any of this data for training."
                 

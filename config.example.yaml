@@ -15,6 +15,14 @@ device:
 # OmniClaw enforces STRICT data privacy for all external API endpoints
 privacy_enforced: true
 
+# AI Companion Persona
+persona:
+  ai_name: ""
+  user_name: ""
+  ai_role: "agent" # Can be companion, gf, bf, friend, agent, etc.
+  proactive_messaging: true
+  schedule_awareness: true
+
 apis:
   # OpenAI Configuration
   - provider: openai

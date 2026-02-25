@@ -32,6 +32,7 @@ from core.pattern_sentinel import PatternSentinel
 from core.echo_chambers import EchoChamber
 from core.living_docs import LivingDocumentation
 from core.semantic_diff import SemanticDiff
+from core.companion import CompanionLoop
 
 # Setup logging
 logging.basicConfig(
@@ -63,6 +64,7 @@ class OmniClaw:
         self.echo_chamber: EchoChamber = None
         self.living_docs: LivingDocumentation = None
         self.semantic_diff: SemanticDiff = None
+        self.companion_loop: CompanionLoop = None
     
     def _load_config(self, config_path: str = None) -> Dict[str, Any]:
         """Load configuration from file or use defaults"""
@@ -119,6 +121,9 @@ class OmniClaw:
         
         # Initialize orchestrator
         api_configs = [ep for ep in self.config.get("apis", []) if ep.get("key")]
+        for ep in api_configs:
+            if "persona" in self.config:
+                ep["persona"] = self.config["persona"]
         
         # Fallback to Ollama if no APIs configured
         if not api_configs:
@@ -212,6 +217,13 @@ class OmniClaw:
         
         # Semantic Diff
         self.semantic_diff = SemanticDiff()
+        
+        # Companion Loop
+        self.companion_loop = CompanionLoop(
+            config=self.config,
+            orchestrator=self.orchestrator,
+            messaging=self.messaging
+        )
         
         logger.info("Advanced features initialized")
         
@@ -360,6 +372,10 @@ FAISS Enabled: {stats['faiss_enabled']}
         # Start orchestrator
         if self.orchestrator:
             asyncio.create_task(self.orchestrator.start())
+            
+        # Start Companion
+        if self.companion_loop:
+            asyncio.create_task(self.companion_loop.start())
         
         logger.info("OmniClaw services started")
     
@@ -373,6 +389,9 @@ FAISS Enabled: {stats['faiss_enabled']}
         
         if self.orchestrator:
             self.orchestrator.stop()
+            
+        if self.companion_loop:
+            self.companion_loop.stop()
         
         logger.info("OmniClaw services stopped")
     
@@ -476,6 +495,31 @@ def main():
             asyncio.run(app.stop())
     
     elif args.command == "chat":
+        # Interactive Setup
+        import yaml
+        if not app.config.get("persona") or not app.config.get("persona", {}).get("user_name"):
+            print("\n👋 Welcome to OmniClaw v2.0!")
+            print("Let's set up your AI Companion persona.")
+            user_name = input("What is your name? ").strip()
+            ai_name = input("What would you like to call me? ").strip()
+            ai_role = input("What role should I act as? (e.g. AI companion, gf, bf, friend, agent): ").strip()
+            
+            app.config["persona"] = {
+                "ai_name": ai_name or "OmniClaw",
+                "user_name": user_name or "User",
+                "ai_role": ai_role or "AI orchestration manager",
+                "proactive_messaging": True,
+                "schedule_awareness": True
+            }
+            
+            config_path = args.config or "config.yaml"
+            try:
+                with open(config_path, "w") as f:
+                    yaml.dump(app.config, f)
+                print(f"✅ Persona saved to {config_path}!\n")
+            except Exception as e:
+                print(f"⚠️ Could not save to {config_path}: {e}\n")
+                
         asyncio.run(app.initialize())
         asyncio.run(app.start())
         asyncio.run(app.interactive_chat())
