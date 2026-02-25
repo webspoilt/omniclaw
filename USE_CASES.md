@@ -60,3 +60,48 @@ You run OmniClaw locally on a Mac Mini or a Raspberry Pi in your living room. It
 4. OmniClaw's native TTS (Text-To-Speech) responds out loud: *"Movie mode activated. Enjoy your film."*
 
 Because OmniClaw writes its own code, you don't need official plugins. If a device has an API or a command-line tool, OmniClaw can control it instantly via voice.
+
+---
+
+## 💻 Use Case 4: Autonomous Hacking & Penetration Testing
+
+**The Problem:** Penetration testers spend countless hours manually fingerprinting networks, exploiting known CVEs, running SQLmap, and pivoting through internal networks.
+
+**The OmniClaw Solution:**
+OmniClaw uses its `Terminal Execution` capabilities paired with advanced `Security Research Hub` modules to act as a fully autonomous junior pentester.
+
+**How it works:**
+1. You provide a scope: *"OmniClaw, perform a penetration test on `10.0.0.0/24`. Find exploitable services but do not execute destructive payloads."*
+2. **Reconnaissance:** OmniClaw's Worker nodes run `nmap`, parse the XML output, and discover an outdated Apache Struts server.
+3. **Exploitation:** It uses its internal memory to cross-reference the CVE, writes a custom Python exploit script or utilizes Metasploit via the CLI, and gains a reverse shell.
+4. **Reporting:** It compiles the attack path, the exact bash commands used, and remediation steps into a markdown report and sends it to your Slack.
+
+---
+
+## 📈 Use Case 5: Algorithmic Quant Trading
+
+**The Problem:** Building trading bots requires setting up complex infrastructure, writing websocket data ingestors, and manually coding new strategies every time the market shifts.
+
+**The OmniClaw Solution:**
+OmniClaw integrates directly into exchange APIs (Binance, Alpaca, Coinbase) to dynamically adjust trading strategies by observing real-time crypto or stock trends autonomously.
+
+**How it works:**
+1. **Continuous Analysis:** The agent's `trading.py` module constantly pulls live tick data.
+2. **Strategy Generation:** Instead of hardcoded MACD scripts, OmniClaw reads daily financial news (via Web Search), analyzes sentiment, and writes/tests new algorithmic trading logic on the fly.
+3. **Execution:** If it detects a sudden volume spike in ETH/USDT, it can automatically execute a market buy based on its self-written predictive model. 
+4. **Risk Management:** Peer-review agents guarantee the bot never risks more than 5% of your portfolio per trade.
+
+---
+
+## 🧬 Use Case 6: Advanced Future Tech Research
+
+**The Problem:** Keeping up with cutting-edge academic papers in heavily specialized fields (like Quantum or DNA Computing) takes a massive amount of manual reading and synthesis.
+
+**The OmniClaw Solution:**
+The `FutureTechExplorer` module allows OmniClaw to behave as an autonomous post-doc researcher natively simulating concepts.
+
+**How it works:**
+1. You prompt: *"OmniClaw, synthesize the latest breakthroughs in DNA data storage and 1nm lithography-free chip fabrication."*
+2. **Deep Dive:** OmniClaw dispatches researcher workers to scour academic journals and patent filings. 
+3. **Synthesis & Innovation:** Utilizing advanced LLMs (like Claude 4.6 or GPT-5), it not only summarizes the data but generates novel theoretical implementation diagrams via `Living Docs`.
+4. **Privacy:** Built-in absolute privacy headers ensure your proprietary research and prompts are completely invisible to external API telemetry and training loops.
