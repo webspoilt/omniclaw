@@ -12,6 +12,8 @@ We will go step-by-step. No confusing words, no assumed knowledge. You will not 
 3. [The Ultimate Android Termux Guide (Zero to Hero)](#choice-c-an-android-phone-using-termux---the-complete-guide)
 4. [Connecting the Brain (Ollama)](#-step-4-giving-omniclaw-the-brain-ollama)
 5. [Starting the System](#-step-5-turning-on-the-robot-247-mode)
+6. [Talk to Your Robot!](#-step-6-talk-to-your-robot)
+7. [Mission Control (The Visual Dashboard)](#-step-7-mission-control-the-visual-dashboard)
 
 ---
 
@@ -172,6 +174,20 @@ Try typing exactly this:
 - `/status`
 
 Congratulations! You now own an autonomous, 24/7 AI employee that lives in a computer or phone and takes orders from anywhere in the world! 🎉
+
+---
+
+## 🖥️ Step 7: Mission Control (The Visual Dashboard)
+
+Want a beautiful cyberpunk command center to watch your AI Agents work in real-time? OmniClaw comes with a lightning-fast Native UI built on Tauri and React.
+
+**If you installed OmniClaw on your PC / Mac:**
+1. Make sure the OmniClaw daemon is running (`omniclaw-daemon`).
+2. Navigate to the `mission-control` folder inside your `omniclaw` directory.
+3. Run `npm run tauri dev` to launch the live dashboard (or `npm run tauri build` to generate a standalone executable app for your OS).
+4. A beautiful native window will pop up showing live swarm metrics, live terminal outputs (stdout), and specialized Agent chat panels!
+
+*(Note: If OmniClaw is running headlessly on a VPS or Termux phone, you primarily use the Telegram "Walkie Talkie". The Mission Control GUI is designed for local desktop monitoring).*
 
 ---
 ### 🛑 Strict Legal Warning
