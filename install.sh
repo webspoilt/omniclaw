@@ -230,7 +230,7 @@ install_python_deps() {
         numpy pandas \
         requests httpx \
         python-telegram-bot \
-        psutil \
+        psutil nicegui \
         2>&1 | tee -a "$LOG_FILE"
     
     # AI/ML libraries based on device class
