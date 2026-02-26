@@ -150,3 +150,18 @@ The V3 OmniClaw Recommendation Engine uses Ad-Tech principles (Deep Interest Evo
 2. The AI natively detects you are in "GHOST_MODE".
 3. When you submit your next vague prompt: *"Investigate the weird traffic"*, OmniClaw doesn't waste tokens loading unrelated trading or creative tools.
 4. It dynamically surfaces the `kernel_alerts` and `shell_execute` vectors from ChromaDB as prime candidates, vastly speeding up execution time and lowering cloud API costs.
+
+---
+
+## 🏗️ Use Case 10: Mission Control Manager (The LLM Council)
+
+**The Problem:** Running OmniClaw 24/7 on raw Cloud APIs (OpenAI/Anthropic) can quickly burn through budget limits if tasks stall. Developers lack a simple GUI to see cost thresholds, agent actions, and sub-task handoffs between "Architect" and "Coder" models.
+
+**The OmniClaw Solution:**
+OmniClaw uses a centralized FastAPI and React Application named `Mission Control` to act as an orchestrator and financial observability dashboard. 
+
+**How it works:**
+1. **The Request:** You input: *"Read the `README.md` and upgrade the setup script logic."*
+2. **Provider Agnosticism:** The backend utilizes OpenRouter and LiteLLM to dynamically switch between low-cost Ollama models for reading and Claude 3.5 Sonnet for writing, automatically tracking cost-per-token within a local SQLite database. 
+3. **The Council:** Instead of immediately trusting output, the `ArchitectAgent` creates a plan and passes it to the `CoderAgent`. A final `ReviewerAgent` automatically enforces compliance, preventing the AI from breaking the project logic. 
+4. **Visual Tracking:** You open the React frontend (`localhost:3000`) and visually monitor the Cumulative Cost Charts and Agent Statuses natively.

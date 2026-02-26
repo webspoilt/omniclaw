@@ -1,6 +1,6 @@
 [package]
 name = "omniclaw-mission-control"
-version = "0.1.0"
+version = "4.0.0"
 description = "Unified Mission Control for OmniClaw AI Framework"
 authors = ["you"]
 edition = "2021"

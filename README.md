@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-3.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-4.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
@@ -112,6 +112,13 @@
 - **🎯 DIEN Recommendation Engine**: A 3-layer architecture (Candidate Gen -> DIN Attention -> DIEN Evolution) that tracks your intent over time to predict the perfect `browser-use` or `kernel_alerts` tool to load before you even ask.
 - **👻 The Immortal Kernel (Experimental)**: eBPF Segfault tracers that dump failed memory segments to the LLM, prompting it to auto-generate a C++ hot-patch. 
 - **🧬 Biometric Vibe Lock**: Only unlocks "Ghost Mode" tools if the user's keystroke dynamics or voiceprint match the baseline trust score. 
+
+### 11. Mission Control & Strategic Architecture (v4.0.0)
+- **OpenRouter/LiteLLM Agnosticism**: Seamlessly switch between Claude, GPT, and custom models with automated sub-cent cost tracking.
+- **Financial Observability**: FastAPI + React dashboard that tracks token usage and task success rates, ensuring the agent doesn't overspend API credits.
+- **Peer-Reviewed Multi-Agent Workflows**: LangGraph-inspired pipelines where Architect, Coder, and Reviewer agents debate code changes autonomously.
+- **MCP (Model Context Protocol) Tools**: Agents access system functions through standardized MCP endpoints (e.g., the root eBPF monitor).
+- **Persistent Trigger Memory**: Agents save and recall important states via specific "trigger phrases".
 
 ## 🌐 Real-World Use Cases
 Wondering what you can actually build with an autonomous agent swarm? 

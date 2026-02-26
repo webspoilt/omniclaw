@@ -26,4 +26,10 @@ parts/
 sdist/
 var/
 wheels/
-share/python-wheels/
+
+# Node dependencies
+node_modules/
+public/node_modules/
+.next/
+out/
+dist/

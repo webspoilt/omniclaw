@@ -149,6 +149,21 @@ Total Lines of Code: ~15,000+
 - **📐 Living Architecture Diagrams**: Auto-generated Mermaid diagrams from AST analysis
 - **🚀 OmniClaw Launcher**: Unified launcher for all features and web interface
 
+### 10. The God-Tier Expansion (v3.0) ✅
+- **🕰️ Temporal Memory (Entropy Decay)**: FAISS indices that automatically prune old, unused context vectors
+- **📈 Hardware-Aware Orchestration**: Dynamic routing via psutil based on local CPU/RAM spikes
+- **🧠 The Shadow Kernel**: Direct eBPF Linux Syscall hooks using `bcc`
+- **⚛️ Quantum Gateway**: OpenQASM 3 circuits to IBM Quantum hardware/simulators
+- **🎯 DIEN Recommendation Engine**: AI predicting the exact tool you need via a 3-layer architecture
+- **👻 The Immortal Kernel (Experimental)**: eBPF Segfault tracers auto-generating C++ hot-patches
+- **🧬 Biometric Vibe Lock**: Only unlocks "Ghost Mode" tools based on keystroke/voice trust scores
+
+### 11. Mission Control & Strategic Architecture (v4.0.0) ✅
+- **💸 Financial Observability**: FastAPI + React dashboard tracking token usage and cost burn
+- **⚖️ LLM Council**: LangGraph-style workflow where Architect, Coder, and Reviewer agents debate
+- **🔌 MCP Tool Integration**: Standardized servers exposing kernel monitors to external models
+- **🔀 Provider Agnostic Switcher**: OpenRouter & LiteLLM fallback support to local Ollama models
+
 ## API Support
 
 | Provider | Status | Models |
