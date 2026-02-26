@@ -1,14 +1,11 @@
 import logging
 import litellm
 
+from collections import OrderedDict
+
 logger = logging.getLogger("OmniClaw.RecommendationEngine")
 
-try:
-    import chromadb
-    CHROMA_AVAILABLE = True
-except ImportError:
-    CHROMA_AVAILABLE = False
-    logger.warning("chromadb not installed. Recommendation Engine degraded.")
+CHROMA_AVAILABLE = None # Evaluated lazily
 
 class OmniClawState:
     """
@@ -50,13 +47,36 @@ class RecommendationEngine:
         self.state = OmniClawState()
         
         self.collection = None
-        if CHROMA_AVAILABLE:
-            try:
-                self.client = chromadb.Client()
-                self.collection = self.client.create_collection(name="omniclaw_tools_v2")
-                self._seed_tools()
-            except Exception as e:
-                logger.error(f"Failed to initialize ChromaDB for Recommendations: {e}")
+        self._chroma_initialized = False
+        
+        # Simple LRU cache for LLM ranking to save tokens
+        self._rank_cache = OrderedDict()
+        self._cache_size = 50
+
+    def _init_chroma(self):
+        global CHROMA_AVAILABLE
+        if self._chroma_initialized:
+            return
+            
+        try:
+            import chromadb
+            CHROMA_AVAILABLE = True
+            logger.info("ChromaDB imported successfully.")
+        except ImportError:
+            CHROMA_AVAILABLE = False
+            logger.warning("chromadb not installed. Recommendation Engine degraded.")
+            self._chroma_initialized = True
+            return
+            
+        try:
+            import chromadb
+            self.client = chromadb.Client()
+            self.collection = self.client.create_collection(name="omniclaw_tools_v2")
+            self._seed_tools()
+        except Exception as e:
+            logger.error(f"Failed to initialize ChromaDB for Recommendations: {e}")
+        finally:
+            self._chroma_initialized = True
 
     def _seed_tools(self):
         """Seed initial tools into the vector database"""
@@ -83,7 +103,9 @@ class RecommendationEngine:
 
     def get_candidates(self, user_query: str, n=3) -> list:
         """1. Candidate Generation via Vector Search"""
-        if not self.collection:
+        self._init_chroma()
+        
+        if not CHROMA_AVAILABLE or not self.collection:
             return ["All local tools (Vector DB unavailable)"]
             
         try:
@@ -98,11 +120,19 @@ class RecommendationEngine:
         """2. Deep Interest (DIN Style) Ranking via LLM Attention"""
         history = self.state.interest_evolution
         mode = self.state.predict_mode()
+        recent_history = tuple(history[-3:]) if history else ('None',)
         
+        # Check cache early to save tokens and latency
+        cache_key = (query, mode, recent_history, tuple(candidates))
+        if cache_key in self._rank_cache:
+            # Move to end to show it was recently used
+            self._rank_cache.move_to_end(cache_key)
+            return self._rank_cache[cache_key]
+            
         prompt = f"""
         User Task: {query}
         Current Agent Mode: {mode}
-        Session History (Recent Actions): {history[-3:] if history else 'None'}
+        Session History (Recent Actions): {recent_history}
         Candidate Tools: {candidates}
         
         Based on the user's intent and history, pick the SINGLE BEST tool from the candidates to use next.
@@ -114,7 +144,14 @@ class RecommendationEngine:
                 model=self.llm_model,
                 messages=[{"role": "user", "content": prompt}]
             )
-            return response.choices[0].message.content.strip()
+            result = response.choices[0].message.content.strip()
+            
+            # Update cache
+            self._rank_cache[cache_key] = result
+            if len(self._rank_cache) > self._cache_size:
+                self._rank_cache.popitem(last=False)
+                
+            return result
         except Exception as e:
             logger.error(f"Action ranking failed: {e}")
             if candidates:

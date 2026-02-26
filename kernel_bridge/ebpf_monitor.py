@@ -1,6 +1,7 @@
 import logging
 import threading
 import time
+import random
 
 logger = logging.getLogger("OmniClaw.eBPFMonitor")
 
@@ -81,8 +82,15 @@ class EBPFMonitor:
                     logger.error(f"eBPF polling error: {e}")
                     time.sleep(1)
             else:
-                # Simulation mode
-                time.sleep(60)
+                # Simulation mode: inject mock alerts periodically
+                time.sleep(random.uniform(30.0, 120.0))
+                mock_cmds = ["curl", "wget", "nmap", "nc", "bash", "ssh"]
+                cmd = random.choice(mock_cmds)
+                pid = random.randint(1000, 9999)
+                alert = f"[Shadow Kernel Simulation] Suspicious process started: PID {pid}, Command: {cmd}"
+                self.alerts.append(alert)
+                if len(self.alerts) > 50:
+                    self.alerts.pop(0)
 
     def stop(self):
         self.running = False
@@ -90,8 +98,8 @@ class EBPFMonitor:
             self.thread.join(timeout=1)
 
     def get_recent_alerts(self, count=10) -> list:
-        if not self.bpf:
-            return ["eBPF Monitor is in simulation mode (BCC unavailable or no root privileges). No real alerts."]
+        if not self.bpf and not self.alerts:
+            return ["eBPF Monitor is in simulation mode (BCC unavailable or no root privileges). Waiting for mock events..."]
         return self.alerts[-count:]
 
 # Singleton instance

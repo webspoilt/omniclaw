@@ -2,6 +2,7 @@ import logging
 import time
 import threading
 import os
+import random
 
 logger = logging.getLogger("OmniClaw.SegfaultTracer")
 
@@ -60,8 +61,13 @@ class SegfaultTracer:
                 except Exception:
                     time.sleep(1)
             else:
-                # Simulation mode
-                time.sleep(60)
+                # Simulation mode: occasionally mock a segfault
+                time.sleep(random.uniform(60.0, 180.0))
+                mock_procs = ["nginx", "redis-server", "node", "php-fpm"]
+                proc = random.choice(mock_procs)
+                pid = random.randint(1000, 9999)
+                logger.warning(f"[Immortal Kernel Simulation] Caught SIGSEGV in {proc} (PID {pid})")
+                self.analyze_crash(pid, proc)
                 
     def analyze_crash(self, pid: int, process_name: str) -> str:
         """
@@ -77,7 +83,10 @@ void safe_function() {{
     }}
 }}
 """
-        patch_path = os.path.abspath(f"patch_{process_name}_{pid}.c")
+        # In simulation, don't continually append PIDs to filenames to prevent disk filling
+        filename = f"patch_{process_name}.c" if not self.bpf else f"patch_{process_name}_{pid}.c"
+        patch_path = os.path.abspath(filename)
+        
         with open(patch_path, "w") as f:
             f.write(patch_code)
             

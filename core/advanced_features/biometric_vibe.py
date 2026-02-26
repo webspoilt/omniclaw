@@ -27,7 +27,8 @@ class BiometricVibe:
     def __init__(self):
         self.trust_score = 50.0 # Starts neutral
         self.last_keystroke_time = time.time()
-        self.keystroke_intervals = []
+        self.ema_interval = 0.5  # Base typing interval estimation
+        self.alpha = 0.1         # EMA Smoothing factor
         
         self.listener = None
         if PYNPUT_AVAILABLE:
@@ -44,17 +45,21 @@ class BiometricVibe:
         interval = now - self.last_keystroke_time
         self.last_keystroke_time = now
         
-        if interval < 2.0: # Only count continuous typing
-            self.keystroke_intervals.append(interval)
-            if len(self.keystroke_intervals) > 100:
-                self.keystroke_intervals.pop(0)
+        if interval < 3.0: # Active continuous typing
+            # Update Exponential Moving Average
+            self.ema_interval = (self.alpha * interval) + ((1 - self.alpha) * self.ema_interval)
                 
-            # Naive verification: if typing speed is consistent with owner, increase trust
-            # Production would use ML model (e.g. Isolation Forest) on timing vectors
-            self.trust_score = min(100.0, self.trust_score + 0.1)
+            # Naive verification: steady typing EMA indicates the standard owner
+            # Production would use ML model (e.g. Isolation Forest) on vectors
+            self.trust_score = min(100.0, self.trust_score + 0.05)
         else:
-            # Long pause, slightly decay trust to verify presence
-            self.trust_score = max(0.0, self.trust_score - 0.5)
+             # Cooling period: tiered decay to prevent jarring drops when reading
+            if interval > 60.0:
+                # Suspected absence
+                self.trust_score = max(0.0, self.trust_score - 5.0)
+            elif interval > 10.0:
+                # Moderate pause
+                self.trust_score = max(0.0, self.trust_score - 0.5)
 
     def verify_voice(self, audio_file: str = None) -> bool:
         """
