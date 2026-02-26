@@ -120,3 +120,33 @@ OmniClaw includes a built-in, lightning-fast native desktop application powered 
 2. **Swarm Monitoring:** A beautiful cyberpunk-themed dashboard displays real-time metrics—showing exactly which agent models are active, CPU loads, and token usage across your offline (Ollama) and cloud APIs.
 3. **Live Execution:** Natively integrated `xterm.js` terminals stream raw stdout and eBPF kernel logs directly into your Mission Control view, meaning you can watch the Bug Bounty tool run `nmap` in real-time.
 4. **Instant Interaction:** Click on the "AI Companion" specific chat window to message your custom persona, leaving the other agents undisturbed running background tasks.
+
+---
+
+## ⚛️ Use Case 8: Quantum Computing via Chat
+
+**The Problem:** Writing and executing quantum circuits usually involves setting up complex Jupyter notebooks, managing API tokens, and parsing cryptic resulting probability distributions.
+
+**The OmniClaw Solution:**
+OmniClaw's V3 Quantum Gateway connects directly to IBM Quantum platforms.
+
+**How it works:**
+1. You say: *"OmniClaw, generate a 3-qubit Bell State circuit in QASM and run it on IBM's simulator to show me the entanglement results."*
+2. **Generation:** Over the chat interface, the AI models a perfect OpenQASM 3 script.
+3. **Execution:** The `quantum_gateway.py` pushes the script to Qiskit Runtime Sessions and pulls down the `quasi-probabilities`. 
+4. **Analysis:** The AI automatically interprets the return data (e.g., {"000": 51%, "111": 49%}) and summarizes the entanglement state in plain English.
+
+---
+
+## 🎯 Use Case 9: Predictive Automation (DIEN Recommendation)
+
+**The Problem:** Having 30+ agentic tools (web search, browser automation, nmap, eBPF readers) clutters the LLM's context window. An AI shouldn't need a list of everything it can do if you just want to browse the web.
+
+**The OmniClaw Solution:**
+The V3 OmniClaw Recommendation Engine uses Ad-Tech principles (Deep Interest Evolution Network - DIEN) to track your usage patterns.
+
+**How it works:**
+1. Over the last 4 hours, you've been asking OmniClaw to read kernel anomalies.
+2. The AI natively detects you are in "GHOST_MODE".
+3. When you submit your next vague prompt: *"Investigate the weird traffic"*, OmniClaw doesn't waste tokens loading unrelated trading or creative tools.
+4. It dynamically surfaces the `kernel_alerts` and `shell_execute` vectors from ChromaDB as prime candidates, vastly speeding up execution time and lowering cloud API costs.

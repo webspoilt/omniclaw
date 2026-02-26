@@ -16,6 +16,10 @@ import websockets
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Add core to path
 sys.path.insert(0, str(Path(__file__).parent))

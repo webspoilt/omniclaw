@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-2.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-3.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
@@ -100,7 +100,18 @@
 - **🏗️ Natural Language Infra**: "Set up production k8s" → Full Terraform + Helm + CI/CD
 - **👔 Autonomous PM**: Single sentence → SPEC + Architecture + Code + Tests + Docs
 - **🔒 Security Research Hub**: Autonomous vulnerability scanning and security assessment
-- **🧬 Self-Evolving Core**: System that improves itself over time based on usage patterns
+- [x] **Self-Evolving Core**: System that improves itself over time based on usage patterns
+
+### 10. Advanced AI Features (v3.0) - The God-Tier Expansion 🚀
+
+#### Architectural Paradigms
+- **🕰️ Temporal Memory (Entropy Decay)**: FAISS indices that automatically prune old, unused context vectors to prevent hallucination loops.
+- **📈 Hardware-Aware Orchestration**: Dynamic routing via psutil — automatically offloads standard LLM requests to Cloud APIs if local CPU/RAM is spiking.
+- **🧠 The Shadow Kernel**: Direct eBPF Linux Syscall hooks using `bcc`. The AI can now physically monitor `execve` anomalies and network reads in ring-0.
+- **⚛️ Quantum Gateway**: Seamlessly routes OpenQASM 3 circuits to IBM Quantum hardware/simulators right from a chat prompt.
+- **🎯 DIEN Recommendation Engine**: A 3-layer architecture (Candidate Gen -> DIN Attention -> DIEN Evolution) that tracks your intent over time to predict the perfect `browser-use` or `kernel_alerts` tool to load before you even ask.
+- **👻 The Immortal Kernel (Experimental)**: eBPF Segfault tracers that dump failed memory segments to the LLM, prompting it to auto-generate a C++ hot-patch. 
+- **🧬 Biometric Vibe Lock**: Only unlocks "Ghost Mode" tools if the user's keystroke dynamics or voiceprint match the baseline trust score. 
 
 ## 🌐 Real-World Use Cases
 Wondering what you can actually build with an autonomous agent swarm? 

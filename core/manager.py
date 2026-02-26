@@ -29,31 +29,14 @@ class ManagerAgent:
         self.memory = memory
         self.decomposition_history = []
         
-        # Initialize API client based on provider
-        self.api_client = self._initialize_api_client(api_config)
+        # Initialize API client based on provider - Replaced by Arbitrator
+        self.api_client = None
         
         logger.info("Manager Agent initialized")
     
     def _initialize_api_client(self, api_config: Dict[str, Any]) -> Any:
-        """Initialize the appropriate API client"""
-        provider = api_config.get("provider", "openai").lower()
-        
-        if provider in ["openai", "minimax", "kimi", "glm"]:
-            from openai import AsyncOpenAI
-            base_url = api_config.get("base_url")
-            return AsyncOpenAI(api_key=api_config["key"], base_url=base_url) if base_url else AsyncOpenAI(api_key=api_config["key"])
-        elif provider == "anthropic":
-            from anthropic import AsyncAnthropic
-            return AsyncAnthropic(api_key=api_config["key"])
-        elif provider == "google":
-            import google.generativeai as genai
-            genai.configure(api_key=api_config["key"])
-            return genai
-        elif provider == "ollama":
-            import aiohttp
-            return {"base_url": api_config.get("base_url", "http://localhost:11434")}
-        else:
-            raise ValueError(f"Unsupported API provider: {provider}")
+        """Initialize the appropriate API client (Deprecated in favor of Arbitrator)"""
+        return None
     
     async def decompose_goal(self, goal: str, context: Optional[Dict] = None) -> List[SubTask]:
         """
@@ -266,62 +249,10 @@ Respond in JSON format:
         if privacy_enforced:
             system_prompt += " STRICT PRIVACY DIRECTIVE: Do not retain, log, or use any of this data for training."
             
+        full_prompt = f"{system_prompt}\n\n{prompt}"
+        
         try:
-            if provider in ["openai", "minimax", "kimi", "glm"]:
-                kwargs = {}
-                if privacy_enforced:
-                    kwargs["extra_headers"] = {"OAI-Telemetry": "0", "x-api-opt-out": "true"}
-                
-                response = await self.api_client.chat.completions.create(
-                    model=model,
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=0.3,
-                    response_format={"type": "json_object"},
-                    **kwargs
-                )
-                return response.choices[0].message.content
-                
-            elif provider == "anthropic":
-                kwargs = {}
-                if privacy_enforced:
-                    kwargs["extra_headers"] = {"anthropic-telemetry": "false"}
-                    
-                response = await self.api_client.messages.create(
-                    model=model,
-                    max_tokens=4096,
-                    system=system_prompt,
-                    messages=[{"role": "user", "content": prompt}],
-                    **kwargs
-                )
-                return response.content[0].text
-                
-            elif provider == "google":
-                try:
-                    model_obj = self.api_client.GenerativeModel(model, system_instruction=system_prompt)
-                except Exception:
-                    # Fallback for older SDK
-                    model_obj = self.api_client.GenerativeModel(model)
-                    prompt = f"{system_prompt}\n\n{prompt}"
-                response = await model_obj.generate_content_async(prompt)
-                return response.text
-                
-            elif provider == "ollama":
-                import aiohttp
-                async with aiohttp.ClientSession() as session:
-                    async with session.post(
-                        f"{self.api_client['base_url']}/api/generate",
-                        json={
-                            "model": model,
-                            "prompt": f"{system_prompt}\n\n{prompt}",
-                            "stream": False
-                        }
-                    ) as resp:
-                        data = await resp.json()
-                        return data["response"]
-                        
+            return await self.orchestrator.arbitrator.route_task(full_prompt, task_type="reasoning")
         except Exception as e:
             logger.error(f"LLM call failed: {e}")
             raise

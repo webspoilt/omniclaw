@@ -15,6 +15,9 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 
+from .arbitrator import Arbitrator
+from .llm_council import LLMCouncil
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("OmniClaw.Orchestrator")
 
@@ -95,6 +98,13 @@ class HybridHiveOrchestrator:
         self.peer_review_enabled = True
         self.self_correction_enabled = True
         
+        # Initialize Arbitrator and Council
+        self.arbitrator = Arbitrator(
+            local_model="ollama/llama2",
+            default_cloud_model="gpt-4o"
+        )
+        self.council = LLMCouncil()
+        
         # Initialize components
         self._initialize_hive()
         
@@ -122,7 +132,8 @@ class HybridHiveOrchestrator:
                 role=WorkerRole.GENERAL,
                 api_config=self.api_configs[0],
                 memory=self.memory,
-                mode="chain_of_thought"
+                mode="chain_of_thought",
+                orchestrator=self
             )
             self.workers["cot_worker_001"] = worker
         else:
@@ -139,7 +150,8 @@ class HybridHiveOrchestrator:
                     role=role,
                     api_config=api_config,
                     memory=self.memory,
-                    mode="specialized"
+                    mode="specialized",
+                    orchestrator=self
                 )
                 self.workers[worker_id] = worker
                 logger.info(f"Created worker: {worker_id} with role {role.value}")

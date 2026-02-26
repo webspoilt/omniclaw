@@ -11,6 +11,8 @@ import time
 import asyncio
 
 from .orchestrator import SubTask, TaskStatus, WorkerRole
+from .temporal_memory_v2 import TemporalMemoryV2
+from .advanced_features.recommendation_engine import recommendation_engine
 
 logger = logging.getLogger("OmniClaw.Worker")
 
@@ -24,45 +26,33 @@ class WorkerAgent:
     """
     
     def __init__(self, worker_id: str, role: WorkerRole, 
-                 api_config: Dict[str, Any], memory=None, mode: str = "specialized"):
+                 api_config: Dict[str, Any], memory=None, mode: str = "specialized", orchestrator=None):
         self.worker_id = worker_id
         self.role = role
         self.api_config = api_config
         self.memory = memory
         self.mode = mode  # "chain_of_thought" or "specialized"
+        self.orchestrator = orchestrator
         
         # Execution state
         self.current_load = 0
         self.status = "idle"
         self.execution_history = []
         
-        # Initialize API client
-        self.api_client = self._initialize_api_client(api_config)
+        # Initialize API client - Replaced by Arbitrator
+        self.api_client = None
         
         # Role-specific tools
         self.tools = self._initialize_tools()
         
+        # Temporal memory
+        self.temporal_memory = TemporalMemoryV2()
+        
         logger.info(f"Worker {worker_id} initialized with role {role.value} in {mode} mode")
     
     def _initialize_api_client(self, api_config: Dict[str, Any]) -> Any:
-        """Initialize the appropriate API client"""
-        provider = api_config.get("provider", "openai").lower()
-        
-        if provider in ["openai", "minimax", "kimi", "glm"]:
-            from openai import AsyncOpenAI
-            base_url = api_config.get("base_url")
-            return AsyncOpenAI(api_key=api_config["key"], base_url=base_url) if base_url else AsyncOpenAI(api_key=api_config["key"])
-        elif provider == "anthropic":
-            from anthropic import AsyncAnthropic
-            return AsyncAnthropic(api_key=api_config["key"])
-        elif provider == "google":
-            import google.generativeai as genai
-            genai.configure(api_key=api_config["key"])
-            return genai
-        elif provider == "ollama":
-            return {"base_url": api_config.get("base_url", "http://localhost:11434")}
-        else:
-            raise ValueError(f"Unsupported API provider: {provider}")
+        """Initialize the appropriate API client (Deprecated in favor of Arbitrator)"""
+        return None
     
     def _initialize_tools(self) -> Dict[str, Any]:
         """Initialize role-specific tools"""
@@ -178,8 +168,15 @@ Be thorough and check for errors."""
     
     async def _execute_specialized(self, subtask: SubTask, context: Dict) -> Any:
         """Execute using role-specific specialization"""
+        # DIEN Tracking
+        recommendation_engine.state.update_state(subtask.description)
+        
+        # Candidate Generation & DIN Ranking
+        candidates = recommendation_engine.get_candidates(subtask.description)
+        recommended_tool = await recommendation_engine.rank_actions(subtask.description, candidates)
+        
         # Build role-specific prompt
-        role_prompt = self._build_role_prompt(subtask, context)
+        role_prompt = self._build_role_prompt(subtask, context, recommended_tool)
         
         # Execute with potential tool use
         response = await self._call_llm(role_prompt)
@@ -190,15 +187,16 @@ Be thorough and check for errors."""
         
         return response
     
-    def _build_role_prompt(self, subtask: SubTask, context: Dict) -> str:
+    def _build_role_prompt(self, subtask: SubTask, context: Dict, recommended_tool: str = None) -> str:
         """Build role-specific execution prompt"""
         base_prompt = f"""You are a {self.role.value.upper()} agent in the OmniClaw system.
 
 Task: {subtask.description}
 
 Context: {json.dumps(context, indent=2)}
-
 """
+        if recommended_tool and recommended_tool != "unknown":
+            base_prompt += f"\n[AI Recommendation Engine Suggests: You should strongly consider using TOOL:{recommended_tool} for this task]\n"
         
         role_instructions = {
             WorkerRole.RESEARCHER: """Your role is to research and gather information.
@@ -380,52 +378,12 @@ Respond with the complete corrected output."""
             if privacy_enforced:
                 system_prompt += " STRICT PRIVACY DIRECTIVE: Do not retain, log, or use any of this data for training."
                 
-            if provider in ["openai", "minimax", "kimi", "glm"]:
-                kwargs = {"extra_headers": {"OAI-Telemetry": "0", "x-api-opt-out": "true"}} if privacy_enforced else {}
-                response = await self.api_client.chat.completions.create(
-                    model=model,
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=0.3,
-                    **kwargs
-                )
-                return response.choices[0].message.content
-                
-            elif provider == "anthropic":
-                kwargs = {"extra_headers": {"anthropic-telemetry": "false"}} if privacy_enforced else {}
-                response = await self.api_client.messages.create(
-                    model=model,
-                    max_tokens=4096,
-                    system=system_prompt,
-                    messages=[{"role": "user", "content": prompt}],
-                    **kwargs
-                )
-                return response.content[0].text
-                
-            elif provider == "google":
-                try:
-                    model_obj = self.api_client.GenerativeModel(model, system_instruction=system_prompt)
-                except Exception:
-                    model_obj = self.api_client.GenerativeModel(model)
-                    prompt = f"{system_prompt}\n\n{prompt}"
-                response = await model_obj.generate_content_async(prompt)
-                return response.text
-                
-            elif provider == "ollama":
-                import aiohttp
-                async with aiohttp.ClientSession() as session:
-                    async with session.post(
-                        f"{self.api_client['base_url']}/api/generate",
-                        json={
-                            "model": model,
-                            "prompt": f"{system_prompt}\n\n{prompt}",
-                            "stream": False
-                        }
-                    ) as resp:
-                        data = await resp.json()
-                        return data["response"]
+            full_prompt = f"{system_prompt}\n\n{prompt}"
+            
+            if self.mode == "chain_of_thought":
+                return await self.orchestrator.arbitrator.route_task(full_prompt, task_type="reasoning")
+            else:
+                return await self.orchestrator.arbitrator.route_task(full_prompt, task_type="complex")
                         
         except Exception as e:
             logger.error(f"LLM call failed: {e}")
@@ -521,16 +479,36 @@ Respond with the complete corrected output."""
     
     async def _memory_search(self, query: str, limit: int = 5) -> Dict:
         """Search memory"""
+        results = []
+        
+        # Search persistent memory
         if self.memory:
-            results = await self.memory.search(query, limit)
-            return {"results": results, "status": "success"}
+            results.extend(await self.memory.search(query, limit))
+            
+        # Search temporal memory
+        temporal_results = self.temporal_memory.query(query, limit)
+        results.extend([{"content": t, "source": "temporal"} for t in temporal_results])
+        
+        if results:
+            return {"results": results[:limit], "status": "success"}
         return {"results": [], "status": "no_memory"}
     
     async def _memory_store(self, key: str, value: Any) -> Dict:
         """Store in memory"""
+        status = []
+        
+        # Store in persistent memory
         if self.memory:
             await self.memory.store(key, value)
-            return {"status": "stored"}
+            status.append("persistent")
+            
+        # Store in temporal memory
+        content = f"{key}: {value}" if isinstance(value, str) else f"{key}: {json.dumps(value)}"
+        self.temporal_memory.add(content)
+        status.append("temporal")
+        
+        if status:
+            return {"status": f"stored in {', '.join(status)}"}
         return {"status": "no_memory"}
 
     async def _future_tech_explore(self, domain: str, focus: str = "general") -> Dict:
