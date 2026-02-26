@@ -61,6 +61,7 @@ export function ToolGrid() {
         { id: 'defensive', label: 'Defensive Security', color: 'text-blue-400' },
         { id: 'analysis', label: 'Analysis & Research', color: 'text-green-400' },
         { id: 'companion', label: 'AI Companions', color: 'text-pink-400' },
+        { id: 'system', label: 'System & Quantum Operations', color: 'text-purple-400' },
     ];
 
     return (
