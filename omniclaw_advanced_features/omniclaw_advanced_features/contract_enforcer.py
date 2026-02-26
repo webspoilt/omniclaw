@@ -372,8 +372,8 @@ class ContractEnforcer:
             ]
         }
     
-    def create_git_hook_path: str):
-(self, project        """Generate pre-commit hook to enforce contracts"""
+    def create_git_hook(self, project_path: str):
+        """Generate pre-commit hook to enforce contracts"""
         
         hook_content = '''#!/bin/bash
 # OmniClaw Contract Enforcer - Pre-commit Hook

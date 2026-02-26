@@ -390,7 +390,7 @@ HTML_TEMPLATE = '''
 <body>
     <header>
         <div class="logo">
-            OMNICLAW <span>v2.0 | Advanced Features</span>
+            OMNICLAW <span>v3.2.0 | Advanced Features</span>
         </div>
         <div class="header-actions">
             <button class="btn" onclick="showSection('all')">🏠 Home</button>
@@ -447,7 +447,7 @@ HTML_TEMPLATE = '''
                 <span style="margin-left: 1rem; color: var(--text-dim);">OmniClaw Terminal</span>
             </div>
             <div class="console">
-                <div class="console-output" id="consoleOutput">OmniClaw v2.0 - Type 'help' for available commands
+                <div class="console-output" id="consoleOutput">OmniClaw v3.2.0 - Type 'help' for available commands
 
 $ </div>
                 <div class="console-input">
@@ -553,7 +553,7 @@ $ </div>
             
             if (commands[cmd]) {
                 if (commands[cmd] === 'clear') {
-                    output.innerHTML = 'OmniClaw v2.0 - Type \\'help\\' for available commands<br><br>$ ';
+                    output.innerHTML = 'OmniClaw v3.2.0 - Type \\'help\\' for available commands<br><br>$ ';
                 } else {
                     output.innerHTML += commands[cmd] + '<br><br>$ ';
                 }
@@ -615,7 +615,7 @@ def api_status():
     """Get system status"""
     return jsonify({
         "status": "online",
-        "version": "2.0",
+        "version": "3.2.0",
         "tools_count": 35,
         "seic_active": True,
         "memory_usage": "256 MB"

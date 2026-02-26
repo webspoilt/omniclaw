@@ -42,8 +42,8 @@ if [ -f "requirements.txt" ]; then
 fi
 
 # Example Command to run the agent in the background (nohup)
-echo "Launching OmniClaw..."
-nohup python3 omniclaw.py chat > omniclaw.log 2>&1 &
+# Launch it as a daemon for background operation
+nohup python3 omniclaw.py daemon > omniclaw.log 2>&1 &
 
 echo "========================================================="
 echo "✅ OmniClaw is READY!"

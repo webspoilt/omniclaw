@@ -10,8 +10,6 @@ import json
 import logging
 import sys
 import os
-import json
-import logging
 import websockets
 from datetime import datetime
 from pathlib import Path
@@ -133,7 +131,7 @@ class OmniClaw:
                         "capabilities": ["control", "orchestration"]
                     }
                 ],
-                "activeWorkers": len([w for w in self.orchestrator.agent_pool if w.status == "busy"]) if hasattr(self.orchestrator, 'agent_pool') else 0,
+                "activeWorkers": len([w for w in self.orchestrator.workers.values() if w.status == "busy"]) if hasattr(self.orchestrator, 'workers') else 0,
                 "queueDepth": len(self.orchestrator.task_queue._queue) if hasattr(self.orchestrator, 'task_queue') else 0,
                 "totalTokens": 0
             })
@@ -364,7 +362,7 @@ class OmniClaw:
         # Register default commands
         self._register_commands()
         
-        logger.info("OmniClaw v2.0 initialization complete")
+        logger.info("OmniClaw v3.2.0 initialization complete")
     
     def _register_commands(self):
         """Register default messaging commands"""
@@ -654,7 +652,7 @@ def main():
         # Interactive Setup
         import yaml
         if not app.config.get("persona") or not app.config.get("persona", {}).get("user_name"):
-            print("\n👋 Welcome to OmniClaw v2.0!")
+            print("\n👋 Welcome to OmniClaw v3.2.0!")
             print("Let's set up your AI Companion persona.")
             user_name = input("What is your name? ").strip()
             ai_name = input("What would you like to call me? ").strip()

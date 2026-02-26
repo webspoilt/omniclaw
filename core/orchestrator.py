@@ -18,7 +18,7 @@ import hashlib
 from .arbitrator import Arbitrator
 from .llm_council import LLMCouncil
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO) # Handled in main app
 logger = logging.getLogger("OmniClaw.Orchestrator")
 
 

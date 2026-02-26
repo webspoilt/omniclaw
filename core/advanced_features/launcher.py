@@ -8,7 +8,7 @@
 ║   ██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝    ██████╔╝██║  ██║██║██║        ██║   ║
 ║   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝        ╚═╝   ║
 ║                                                                              ║
-║                      OMNICLAW ADVANCED LAUNCHER v2.0                         ║
+║                      OMNICLAW ADVANCED LAUNCHER v3.2                         ║
 ║                     The Ultimate AI-Powered Toolkit                          ║
 ║                                                                              ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
@@ -449,7 +449,7 @@ class OmniClawLauncher:
 ║   ██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝    ██████╔╝██║  ██║██║██║        ██║   ║
 ║   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝        ╚═╝   ║
 ║                                                                              ║
-║                      {Colors.BRIGHT_GREEN}OMNICLAW ADVANCED LAUNCHER v2.0{Colors.BRIGHT_CYAN}                         ║
+║                      {Colors.BRIGHT_GREEN}OMNICLAW ADVANCED LAUNCHER v3.2.0{Colors.BRIGHT_CYAN}                         ║
 ║                     {Colors.BRIGHT_YELLOW}The Ultimate AI-Powered Toolkit{Colors.BRIGHT_CYAN}                          ║
 ║                                                                              ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
@@ -753,7 +753,7 @@ class OmniClawLauncher:
 
 Checking for updates...
 
-{Colors.BRIGHT_YELLOW}Current Version: v2.0.0{Colors.RESET}
+{Colors.BRIGHT_YELLOW}Current Version: v3.2.0{Colors.RESET}
 {Colors.BRIGHT_GREEN}You are up to date!{Colors.RESET}
 
 For manual update:

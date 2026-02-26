@@ -216,6 +216,31 @@ If your Git icon shows 10k+ changes, your `.gitignore` is missing the `node_modu
 ### 3. "Port 8022" Connection Refused (Termux)
 Ensure you ran `sshd` inside the Termux app on the phone first. If you reboot the phone, you must open Termux and type `sshd` again.
 
+### 4. API Key Not Working (401 Unauthorized)
+If your robot says it can't talk to the AI, check your `config.yaml`.
+**The Fix:** Make sure there are no extra spaces in your API key and that your billing/credits are active on the provider's website (OpenAI, Anthropic, etc.).
+
+### 5. Ollama "Connection Refused"
+If you are using a local brain and it won't connect.
+**The Fix:** Ensure Ollama is running. On PC, check the system tray icon. On Termux, run `ollama serve &` again.
+
+### 6. Robot is "Sleeping" on Android
+Android often kills background apps to save battery.
+**The Fix:** Go to your phone's **Settings > Battery > Battery Optimization**. Find Termux and set it to **"Don't Optimize"**. Also, keep the Termux notification visible in your pull-down bar.
+
+### 7. ModuleNotFoundError: No module named 'omniclaw_advanced_features'
+If you are trying to use High-Power features and they aren't loading.
+**The Fix:** Ensure you have the `core/advanced_features/` folder present. If missing, run `git pull origin main`.
+
+### 8. Mission Control WebSocket Error
+If the visual dashboard won't show live logs.
+**The Fix:** Ensure OmniClaw is started with the `gui` or `daemon` mode. WebSocket logic is disabled in simple `chat` mode to save resources.
+
+### 9. How to Read Logs (The Secret Weapon)
+If your robot crashes and you don't know why, the answer is always in the logs.
+**The Fix:** Type `tail -f logs/omniclaw.log` in your terminal. This will show you exactly what the robot is "thinking" and where it is getting stuck in real-time. Look for lines that say **"ERROR"** or **"CRITICAL"**.
+
+
 ---
 
 ### 🛑 Strict Legal Warning

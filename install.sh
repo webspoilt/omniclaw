@@ -20,8 +20,8 @@ NC='\033[0m' # No Color
 INSTALL_DIR="${OMNICLAW_DIR:-$HOME/.omniclaw}"
 CONFIG_DIR="$HOME/.config/omniclaw"
 LOG_FILE="/tmp/omniclaw_install.log"
-REPO_URL="https://github.com/omniclaw/omniclaw"
-VERSION="1.0.0"
+REPO_URL="https://github.com/webspoilt/omniclaw"
+VERSION="3.2.0"
 
 # Logging
 log() {

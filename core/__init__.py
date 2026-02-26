@@ -3,7 +3,7 @@ OmniClaw: The Hybrid Hive AI Agent System
 Core Module - Multi-API Orchestrator with Manager-Worker Architecture
 """
 
-__version__ = "2.0.0"
+__version__ = "3.2.0"
 __author__ = "Me"
 __license__ = "MIT"
 
