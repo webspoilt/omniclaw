@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-4.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-3.2.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
@@ -113,7 +113,21 @@
 - **👻 The Immortal Kernel (Experimental)**: eBPF Segfault tracers that dump failed memory segments to the LLM, prompting it to auto-generate a C++ hot-patch. 
 - **🧬 Biometric Vibe Lock**: Only unlocks "Ghost Mode" tools if the user's keystroke dynamics or voiceprint match the baseline trust score. 
 
-### 11. Mission Control & Strategic Architecture (v4.0.0)
+- **🧬 Biometric Vibe Lock**: Only unlocks "Ghost Mode" tools if the user's keystroke dynamics or voiceprint match the baseline trust score. 
+
+### 11. Sovereign Sentinel (v3.2.0) - Security & Stability Update 🛡️
+
+#### Security Reinforcement
+- **⚖️ Contract Enforcer (Fixed)**: Architectural rules are now strictly enforced with zero syntax overhead. Blocks illegal DB calls and hardcoded secrets before they hit your git history.
+- **🛡️ Secure Token Scrubbing**: Automatically detects and replaces leaked API keys in log outputs using the AST-aware sentinel logic.
+- **🔒 Kernel Perimeter**: Hardened eBPF syscall monitoring with real-time anomaly detection for unauthorized `execve` calls.
+
+#### Performance & Sync
+- **⚡ Git-Aware Sync (Optimized)**: Intelligence integration in `.gitignore` — no more tracking 10,000+ `node_modules`. Blazing fast `git status` even in huge monorepos.
+- **💾 Compressed Temporal FAISS**: FAISS indices are now serialized with Brotli compression, saving 60% disk space while retaining 99% recall.
+- **🔄 Atomic Multi-State Push**: Seamless one-click push for all agent states (code, docs, and memory) to GitHub simultaneously.
+
+### 12. Mission Control & Strategic Architecture (v4.0.0)
 - **OpenRouter/LiteLLM Agnosticism**: Seamlessly switch between Claude, GPT, and custom models with automated sub-cent cost tracking.
 - **Financial Observability**: FastAPI + React dashboard that tracks token usage and task success rates, ensuring the agent doesn't overspend API credits.
 - **Peer-Reviewed Multi-Agent Workflows**: LangGraph-inspired pipelines where Architect, Coder, and Reviewer agents debate code changes autonomously.
