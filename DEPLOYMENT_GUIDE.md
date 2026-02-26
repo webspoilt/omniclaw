@@ -190,5 +190,33 @@ Want a beautiful cyberpunk command center to watch your AI Agents work in real-t
 *(Note: If OmniClaw is running headlessly on a VPS or Termux phone, you primarily use the Telegram "Walkie Talkie". The Mission Control GUI is designed for local desktop monitoring).*
 
 ---
+
+## ⚡ Performance Tips (V3.2 Sovereign Sentinel)
+
+If you are running on Termux or a low-end VPS, use these tips to keep OmniClaw fast:
+- **Git Bloat**: Ensure you are on V3.2+. Previous versions tracked `node_modules`, which slowed down the agent dramatically. Run `git pull origin main` to get the latest optimized `.gitignore`.
+- **Memory Decay**: If the agent starts hallucinating after days of 24/7 run, say `/task clear temporal memory` to reset the FAISS index buffers.
+
+---
+
+## 🛠️ Troubleshooting & Common Fixes
+
+### 1. `SyntaxError: unmatched ')'` or `create_git_hook` Errors
+If you see a crash on startup mentioning `contract_enforcer.py`, you are on a buggy older version. 
+**The Fix:** 
+```bash
+git pull origin main
+```
+This was fixed in the **Sovereign Sentinel (V3.2)** update.
+
+### 2. "Too many active changes" in VS Code
+If your Git icon shows 10k+ changes, your `.gitignore` is missing the `node_modules` exclusion.
+**The Fix:** Update to V3.2 or manually add `node_modules/` to your `.gitignore` file.
+
+### 3. "Port 8022" Connection Refused (Termux)
+Ensure you ran `sshd` inside the Termux app on the phone first. If you reboot the phone, you must open Termux and type `sshd` again.
+
+---
+
 ### 🛑 Strict Legal Warning
 **Using OmniClaw for automated hacking, network penetration, or malicious activity is strictly illegal and punishable by law. We do not encourage or endorse such actions. You use this AI tool entirely at your own risk and liability.**
