@@ -27,18 +27,43 @@ from core.memory import VectorMemory
 from core.api_pool import APIPool
 from core.messaging_gateway import MessagingGateway
 
-# Advanced Features
-from core.reasoning_config import ReasoningLock, ReasoningConfig
-from core.context_mapper import ContextMapper
-from core.autonomous_fix import AutonomousFix
-from core.audit_diff import AuditDiff
-from core.temporal_memory import TemporalContext
-from core.decision_archaeology import DecisionArchaeologist
-from core.pattern_sentinel import PatternSentinel
-from core.echo_chambers import EchoChamber
-from core.living_docs import LivingDocumentation
-from core.semantic_diff import SemanticDiff
-from core.companion import CompanionLoop
+# System Pre-flight Checks
+def preflight_checks():
+    """Verify system requirements before loading heavy modules"""
+    if sys.version_info < (3, 9):
+        print("❌ CRITICAL ERROR: OmniClaw requires Python 3.9 or higher.")
+        print(f"Current version: {sys.version.split(' ')[0]}")
+        sys.exit(1)
+        
+    try:
+        import requests
+        import aiohttp
+        import numpy
+        import pydantic
+    except ImportError as e:
+        print(f"❌ CRITICAL ERROR: Missing core dependency: {e}")
+        print("Please run: pip install -r requirements.txt")
+        sys.exit(1)
+
+# Run preflight BEFORE loading advanced features
+preflight_checks()
+
+# Advanced Features (Loaded safely)
+try:
+    from core.reasoning_config import ReasoningLock, ReasoningConfig
+    from core.context_mapper import ContextMapper
+    from core.autonomous_fix import AutonomousFix
+    from core.audit_diff import AuditDiff
+    from core.temporal_memory import TemporalContext
+    from core.decision_archaeology import DecisionArchaeologist
+    from core.pattern_sentinel import PatternSentinel
+    from core.echo_chambers import EchoChamber
+    from core.living_docs import LivingDocumentation
+    from core.semantic_diff import SemanticDiff
+    from core.companion import CompanionLoop
+except ImportError as e:
+    print(f"⚠️ WARNING: Failed to load some advanced features: {e}")
+    print("Some modules (like GUI or Local LLMs) may be disabled.")
 
 # Setup logging
 logging.basicConfig(
@@ -63,18 +88,23 @@ class OmniClaw:
         self.original_stdout = sys.stdout
         self.original_stderr = sys.stderr
         
-        # Advanced Features
-        self.reasoning_lock: ReasoningLock = None
-        self.context_mapper: ContextMapper = None
-        self.autonomous_fix: AutonomousFix = None
-        self.audit_diff: AuditDiff = None
-        self.temporal_context: TemporalContext = None
-        self.decision_archaeologist: DecisionArchaeologist = None
-        self.pattern_sentinel: PatternSentinel = None
-        self.echo_chamber: EchoChamber = None
-        self.living_docs: LivingDocumentation = None
-        self.semantic_diff: SemanticDiff = None
-        self.companion_loop: CompanionLoop = None
+        # Advanced Features Init (Wrapped in try/catch for stability)
+        try:
+            # We check if classes exist because their imports might have failed
+            if 'ReasoningLock' in globals(): self.reasoning_lock = ReasoningLock()
+            if 'ContextMapper' in globals(): self.context_mapper = ContextMapper(Path.cwd())
+            if 'AutonomousFix' in globals(): self.autonomous_fix = AutonomousFix(Path.cwd())
+            if 'AuditDiff' in globals(): self.audit_diff = AuditDiff()
+            if 'TemporalContext' in globals(): self.temporal_context = TemporalContext()
+            if 'DecisionArchaeologist' in globals(): self.decision_archaeologist = DecisionArchaeologist()
+            if 'PatternSentinel' in globals(): self.pattern_sentinel = PatternSentinel()
+            if 'EchoChamber' in globals(): self.echo_chamber = EchoChamber()
+            if 'LivingDocumentation' in globals(): self.living_docs = LivingDocumentation(str(Path.cwd()))
+            if 'SemanticDiff' in globals(): self.semantic_diff = SemanticDiff()
+            if 'CompanionLoop' in globals(): self.companion_loop = CompanionLoop()
+        except Exception as e:
+            logger.error(f"Failed to initialize one or more advanced features: {e}")
+            logger.warning("Proceeding with core features only.")
     
     def _load_config(self, config_path: str = None) -> Dict[str, Any]:
         """Load configuration from file or use defaults"""
