@@ -1106,4 +1106,6 @@ if __name__ == "__main__":
     
     # 8. PARALLEL TASKS
     results = await seic.execute_parallel_tasks([
-        {"type": "research",
+        {"type": "research", "topic": "AGI"}
+    ])
+    """)

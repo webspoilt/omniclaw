@@ -21,7 +21,7 @@ INSTALL_DIR="${OMNICLAW_DIR:-$HOME/.omniclaw}"
 CONFIG_DIR="$HOME/.config/omniclaw"
 LOG_FILE="/tmp/omniclaw_install.log"
 REPO_URL="https://github.com/webspoilt/omniclaw"
-VERSION="3.2.0"
+VERSION="4.0.0"
 
 # Logging
 log() {
@@ -238,6 +238,7 @@ install_python_deps() {
         requests httpx \
         python-telegram-bot \
         psutil nicegui \
+        litellm sentence-transformers GitPython watchdog \
         2>&1 | tee -a "$LOG_FILE"
     
     # AI/ML libraries based on device class

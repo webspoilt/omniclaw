@@ -359,17 +359,17 @@ class {spec.name}Response(BaseModel):
     description: str
     created_at: str
 
-@{router.get("/", response_model=List[{spec.name}Response])
+@router.get("/", response_model=List[{spec.name}Response])
 async def list_{feature_name}():
     """List all {spec.name} items"""
     return []
 
-@{router.post("/", response_model={spec.name}Response)
+@router.post("/", response_model={spec.name}Response)
 async def create_{feature_name}(item: {spec.name}Create):
     """Create a new {spec.name} item"""
     return {{"id": "123", **item.dict(), "created_at": "now"}}
 
-@{router.get("/{{item_id}}", response_model={spec.name}Response)
+@router.get("/{{item_id}}", response_model={spec.name}Response)
 async def get_{feature_name}(item_id: str):
     """Get {spec.name} by ID"""
     raise HTTPException(status_code=404, detail="{spec.name} not found")

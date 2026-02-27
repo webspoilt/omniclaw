@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-3.2.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-4.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
@@ -127,7 +127,13 @@
 - **💾 Compressed Temporal FAISS**: FAISS indices are now serialized with Brotli compression, saving 60% disk space while retaining 99% recall.
 - **🔄 Atomic Multi-State Push**: Seamless one-click push for all agent states (code, docs, and memory) to GitHub simultaneously.
 
-### 12. Mission Control & Strategic Architecture (v4.0.0)
+### 12. Red Team Automation & Exploitation (v3.3.0) 🛑
+- **Automated Adversarial Logic Engine**: Context-Aware fuzzing, IDOR detection, and Prompt Injection using recursive model payloads via `PromptInjectorMutator`.
+- **TorHive Stealth Orchestrator**: Direct routing of all worker HTTP traffic through dynamically rotated Tor circuits for ultimate anonymity.
+- **Responsible Disclosure Pipeline**: Encrypted evidence capture (Fernet), automated Markdown/PDF report generation with CVSS severity scoring.
+- **Auto-Disclosure Agent**: SMTP dispatch system for securely emailing vulnerability reports to vendors.
+
+### 13. Mission Control & Strategic Architecture (v4.0.0)
 - **OpenRouter/LiteLLM Agnosticism**: Seamlessly switch between Claude, GPT, and custom models with automated sub-cent cost tracking.
 - **Financial Observability**: FastAPI + React dashboard that tracks token usage and task success rates, ensuring the agent doesn't overspend API credits.
 - **Peer-Reviewed Multi-Agent Workflows**: LangGraph-inspired pipelines where Architect, Coder, and Reviewer agents debate code changes autonomously.

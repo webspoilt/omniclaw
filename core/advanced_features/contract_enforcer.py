@@ -11,7 +11,7 @@ import ast
 import re
 import json
 from dataclasses import dataclass, field
-from typing import Optional, Callable, list
+from typing import Optional, Callable, List
 from enum import Enum
 from pathlib import Path
 

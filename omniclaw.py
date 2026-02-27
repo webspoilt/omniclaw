@@ -710,7 +710,12 @@ def main():
             # Hook shutting down OmniClaw into NiceGUI's shutdown event
             nicegui_app.on_shutdown(app.stop)
             
-            ui.run(title="OmniClaw Mission Control", port=8080, dark=True, reload=False)
+            show_gui = True
+            if os.name == 'posix' and not os.environ.get('DISPLAY') and not os.environ.get('WAYLAND_DISPLAY'):
+                print("⚠️ Headless environment detected. Running NiceGUI in headless mode (no auto-open).")
+                show_gui = False
+            
+            ui.run(title="OmniClaw Mission Control", port=8080, dark=True, reload=False, show=show_gui)
         except ImportError:
             print("❌ NiceGUI is not installed. Please run: pip install nicegui")
             sys.exit(1)

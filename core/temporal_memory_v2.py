@@ -63,7 +63,11 @@ class TemporalMemoryV2:
     def save_to_disk(self):
         """Saves FAISS index and metadata to disk."""
         try:
-            faiss.write_index(self.index, self.index_path)
+            if hasattr(self, 'index') and getattr(self.index, 'ntotal', 0) > 0:
+                faiss.write_index(self.index, self.index_path)
+            else:
+                if os.path.exists(self.index_path):
+                    os.remove(self.index_path)
             meta = []
             for text, ts, emb in self.memories:
                 meta.append((text, ts, emb.tolist()))

@@ -1,6 +1,6 @@
 #!/bin/bash
-# OmniClaw One-Click Installer 🚀
-echo "Starting OmniClaw Environment Setup..."
+# OmniClaw One-Click Installer 🚀 (v4.0.0)
+echo "Starting OmniClaw Environment Setup for version 4.0.0..."
 
 # 1. Detect Hardware & OS
 RAM_GB=$(free -g | awk '/^Mem:/{print $2}')
