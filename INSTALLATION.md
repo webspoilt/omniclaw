@@ -1,4 +1,4 @@
-# OmniClaw System Installation Guide (v4.0.0+)
+# OmniClaw System Installation Guide (v3.3.0+)
 
 This guide contains the OS-specific system prerequisites required to run OmniClaw's advanced features (eBPF, audio capabilities, and binary requirements) natively before pip installing the Python requirements.
 

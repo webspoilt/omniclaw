@@ -19,7 +19,7 @@ if requirements_path.exists():
 
 setup(
     name="omniclaw",
-    version="4.0.0",
+    version="3.3.0",
     author="Me",
     author_email="support@omniclaw.ai",
     description="The Hybrid Hive AI Agent System",

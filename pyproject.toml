@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "omniclaw"
-version = "4.0.0"
+version = "3.3.0"
 authors = [ { name="OmniClaw Team", email="support@omniclaw.ai" } ]
 description = "The Hybrid Hive AI Agent System"
 readme = "README.md"

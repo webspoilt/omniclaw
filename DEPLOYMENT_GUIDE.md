@@ -1,4 +1,4 @@
-# 🍼 The "Very Simple" OmniClaw Guide (v4.0.0)
+# 🍼 The "Very Simple" OmniClaw Guide (v3.3.0)
 
 Welcome! If you want to build a super-smart robot assistant that you can text from your phone, and you want it to run **24 hours a day, 7 days a week** for your personal life or business—this guide is for you! 
 

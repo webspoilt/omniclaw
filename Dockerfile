@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------
-# OmniClaw Base Image (v4.0.0+)
+# OmniClaw Base Image (v3.3.0+)
 # --------------------------------------------------------------------------
 FROM python:3.10-slim-bullseye
 
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     curl \
     git \
- && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # 2. Copy dependency files first (for Docker caching)
 COPY requirements.txt .

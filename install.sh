@@ -21,7 +21,7 @@ INSTALL_DIR="${OMNICLAW_DIR:-$HOME/.omniclaw}"
 CONFIG_DIR="$HOME/.config/omniclaw"
 LOG_FILE="/tmp/omniclaw_install.log"
 REPO_URL="https://github.com/webspoilt/omniclaw"
-VERSION="4.0.0"
+VERSION="3.3.0"
 
 # Logging
 log() {
