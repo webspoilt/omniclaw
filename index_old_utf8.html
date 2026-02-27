@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -29,7 +29,6 @@
             --text-tertiary: #60646C;
 
             --accent-glow: rgba(94, 106, 210, 0.15);
-            --accent-brand: #5E6AD2;
 
             /* Typography */
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -169,8 +168,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 80vh;
-            justify-content: center;
         }
 
         .badge {
@@ -197,57 +194,21 @@
         .badge-dot {
             width: 6px;
             height: 6px;
-            background-color: var(--accent-brand);
+            background-color: #5E6AD2;
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-brand);
+            box-shadow: 0 0 10px #5E6AD2;
         }
 
-        /* Typewriter Effect Styles */
-        .typewriter-container {
+        .hero h1 {
             font-size: clamp(40px, 6vw, 72px);
             font-weight: 700;
             letter-spacing: -0.04em;
             line-height: 1.05;
             margin-bottom: 24px;
             max-width: 900px;
-            display: inline-flex;
-            align-items: flex-end;
-            /* Align cursor with baseline */
-        }
-
-        .typewriter-text {
             background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            /* standard property for compatibility */
-            white-space: pre-wrap;
-            /* Preserve spaces and allow wrapping if needed */
-        }
-
-        .typewriter-cursor {
-            display: inline-block;
-            width: clamp(3px, 0.5vw, 5px);
-            height: clamp(40px, 6vw, 72px);
-            /* Match text height */
-            background-color: #FFFFFF;
-            margin-left: 4px;
-            animation: blink 1s step-end infinite;
-            position: relative;
-            top: 2px;
-            /* Fine-tune baseline alignment */
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
         }
 
         .hero p {
@@ -257,20 +218,6 @@
             margin-bottom: 48px;
             line-height: 1.5;
             letter-spacing: -0.01em;
-            animation: fadeIn 1s ease-out 1.5s both;
-            /* Delay appearance until typing is mostly done */
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         /* Code Block (Stripe-esque) */
@@ -288,8 +235,6 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
             transition: var(--transition-smooth);
             position: relative;
-            animation: fadeIn 1s ease-out 2s both;
-            /* Further delay */
         }
 
         .terminal-block:hover {
@@ -372,10 +317,6 @@
             display: block;
             position: relative;
             overflow: hidden;
-            height: 100%;
-            /* Make cards even height */
-            display: flex;
-            flex-direction: column;
         }
 
         .card::before {
@@ -427,22 +368,6 @@
             color: var(--text-secondary);
             line-height: 1.6;
             margin-bottom: 20px;
-            flex-grow: 1;
-            /* Pushes link to bottom */
-        }
-
-        .card ul {
-            margin-top: 12px;
-            margin-bottom: 20px;
-            margin-left: 20px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-            flex-grow: 1;
-        }
-
-        .card li {
-            margin-bottom: 8px;
         }
 
         .card-link {
@@ -453,93 +378,10 @@
             align-items: center;
             gap: 6px;
             transition: var(--transition-smooth);
-            margin-top: auto;
-            /* Always at bottom */
         }
 
         .card:hover .card-link {
             color: var(--text-primary);
-        }
-
-        /* Versions Section Specifics */
-        .version-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-family: var(--font-mono);
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .card-detailed {
-            grid-column: 1 / -1;
-            /* Special cards spanning full width if needed */
-        }
-
-        /* 
-         * Feature Lists layout for Docs
-         */
-        .doc-section {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 40px;
-            margin-bottom: 24px;
-        }
-
-        .doc-section h3 {
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .doc-section p {
-            color: var(--text-secondary);
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 24px;
-        }
-
-        .doc-section h4 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 32px;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .doc-section ul {
-            margin-left: 20px;
-            color: #A0A0A0;
-            font-size: 15px;
-            line-height: 1.8;
-        }
-
-        .doc-section code {
-            font-family: var(--font-mono);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 6px;
-            border-radius: 4px;
-            font-size: 13px;
-            border: 1px solid var(--border-subtle);
-            color: #E2E8F0;
-        }
-
-        .doc-section .code-block {
-            display: block;
-            background: #000;
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 12px;
-            overflow-x: auto;
-            border: 1px solid var(--border-subtle);
         }
 
         /* 
@@ -605,7 +447,6 @@
         @media (max-width: 768px) {
             .hero {
                 padding: 120px 0 60px;
-                min-height: 60vh;
             }
 
             .nav-link {
@@ -631,10 +472,6 @@
                 width: 100%;
                 justify-content: center;
             }
-
-            .doc-section {
-                padding: 24px;
-            }
         }
     </style>
 </head>
@@ -644,13 +481,12 @@
     <header>
         <div class="nav-content">
             <a href="#" class="brand">
-                <img src="./logo.svg" alt="OmniClaw Logo" onerror="this.style.display='none'">
+                <img src="./logo.svg" alt="OmniClaw Logo">
                 OmniClaw
             </a>
             <div class="nav-links">
                 <a href="#architecture" class="nav-link">Architecture</a>
-                <a href="#versions" class="nav-link">Version History</a>
-                <a href="#knowledge-base" class="nav-link">Documentation</a>
+                <a href="#security" class="nav-link">Security Base</a>
                 <a href="https://github.com/webspoilt/omniclaw" target="_blank" class="github-btn">
                     <svg viewBox="0 0 24 24">
                         <path
@@ -667,13 +503,9 @@
         <section class="hero">
             <div class="badge">
                 <div class="badge-dot"></div>
-                v3.3.0 — Mission Control & Red Team Update
+                v3.3.0 ΓÇö Mission Control & Red Team Update
             </div>
-
-            <div class="typewriter-container">
-                <span class="typewriter-text" id="typewriter"></span><span class="typewriter-cursor"></span>
-            </div>
-
+            <h1>The Hybrid Hive AI Agent System.</h1>
             <p>Deploy a decentralized, peer-reviewed swarm of autonomous agents directly to a Linux kernel wrapper.
                 Monitor your system, execute tasks, and natively connect via Omni-Channel gateways.</p>
 
@@ -699,241 +531,67 @@
 
             <div class="bento-grid">
                 <a href="#doc-gui" class="card">
-                    <div class="icon-container">🖥️</div>
+                    <div class="icon-container">≡ƒûÑ∩╕Å</div>
                     <h3>Native Mission Control</h3>
                     <p>Launch the ultra-fast Tauri Native React GUI to monitor swarm metrics, live execution terminals,
                         and trigger toolcards directly from a highly tactical command center.</p>
-                    <div class="card-link">Learn more →</div>
+                    <div class="card-link">Learn more ΓåÆ</div>
                 </a>
 
                 <a href="#doc-companion" class="card">
-                    <div class="icon-container">🧠</div>
+                    <div class="icon-container">≡ƒºá</div>
                     <h3>Peer-Reviewed Swarm</h3>
                     <p>Tasks are delegated by a Manager model to Worker models who execute and vote on accuracy. True
                         multi-agent cognitive loops prevent hallucinated execution.</p>
-                    <div class="card-link">Explore the hierarchy →</div>
+                    <div class="card-link">Explore the hierarchy ΓåÆ</div>
                 </a>
 
                 <a href="#doc-ebpf" class="card">
-                    <div class="icon-container">⚡</div>
+                    <div class="icon-container">ΓÜí</div>
                     <h3>eBPF Kernel Bridge</h3>
                     <p>OmniClaw operates with deep C/Rust-level Linux kernel access. It monitors network packets, system
                         calls, and file descriptors natively for true system awareness.</p>
-                    <div class="card-link">View kernel specs →</div>
+                    <div class="card-link">View kernel specs ΓåÆ</div>
                 </a>
 
                 <a href="#doc-gateway" class="card">
-                    <div class="icon-container">📱</div>
+                    <div class="icon-container">≡ƒô▒</div>
                     <h3>Multi-Channel Gateway</h3>
                     <p>Command your PC natively via Telegram, WhatsApp, Discord, Slack, and Matrix without complex
                         network routing or exposed web hooks.</p>
-                    <div class="card-link">Setup routing →</div>
+                    <div class="card-link">Setup routing ΓåÆ</div>
                 </a>
             </div>
         </section>
 
-        <!-- Red Team Extension & Version History -->
-        <section id="versions" class="section">
-            <div class="section-header">
-                <h2>Platform Evolution & Modules</h2>
-                <p>Tracking the expansion from an AI companion into a fully decoupled sovereign swarm.</p>
-            </div>
-
-            <div class="bento-grid">
-                <!-- Restored Version Details -->
-                <div class="card">
-                    <div class="version-badge">v2.0</div>
-                    <h3>Advanced AI Features</h3>
-                    <ul>
-                        <li><b>LLM Context Awareness:</b> Advanced LangChain RAG pipeline dynamically fetches recent
-                            Discord/Telegram context.</li>
-                        <li><b>Audio Processing:</b> Native `SpeechRecognition` module with offline Whisper hooks.</li>
-                        <li><b>File Generation:</b> Complete read/write capability.</li>
-                        <li><b>Memory Embeddings:</b> FAISS vector database instance storing thousands of past
-                            interactions.</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="version-badge">v3.0</div>
-                    <h3>God-Tier Expansion</h3>
-                    <ul>
-                        <li><b>Autonomous Terminal Loop:</b> Let the AI run Bash/Python commands recursively to solve
-                            complex logical problems.</li>
-                        <li><b>Peer-Reviewed Swarm:</b> A Manager AI delegates tools to Sub-Agent AIs and reviews their
-                            logs before replying to the user.</li>
-                        <li><b>Self-Healing Code:</b> If a Python script fails, the AI reads the `stderr` traceback and
-                            patches the file autonomously.</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="version-badge">v3.2.0</div>
-                    <h3>Sovereign Sentinel</h3>
-                    <ul>
-                        <li><b>The Immortal Kernel:</b> eBPF Segfault tracers auto-generating C++ hot-patches and
-                            monitoring network traffic at socket level.</li>
-                        <li><b>Biometric Vibe Lock:</b> Voice/Keystroke trust scoring to unlock "Ghost Mode" tools.</li>
-                        <li><b>Crypto Panic Switch:</b> Encrypts context memories onto blockchain networks.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Red Team Tools -->
+        <!-- Red Team Extension -->
         <section id="security" class="section">
             <div class="section-header">
-                <h2>Red Team Automation (v3.3.0)</h2>
-                <p>An entire suite of automated exploitation, fuzzing, Tor routing, and responsible disclosure
-                    generation.</p>
+                <h2>Red Team Automation</h2>
+                <p>An entire suite of automated exploitation and responsible disclosure generation.</p>
             </div>
 
             <div class="bento-grid">
                 <div class="card">
-                    <div class="icon-container">🕷️</div>
+                    <div class="icon-container">≡ƒò╖∩╕Å</div>
                     <h3>Context-Aware Fuzzer</h3>
                     <p>Advanced IDOR and BOLA detection algorithms that compare authenticated sessions to find broken
                         object-level access controls autonomously.</p>
                 </div>
 
                 <div class="card">
-                    <div class="icon-container">🧅</div>
+                    <div class="icon-container">≡ƒºà</div>
                     <h3>TorHive Stealth Engine</h3>
                     <p>Routes all worker traffic through dynamically rotating Tor circuits. Evades rate limits,
                         randomizes headers, and provides sovereign anonymity.</p>
                 </div>
 
                 <div class="card">
-                    <div class="icon-container">🎯</div>
+                    <div class="icon-container">≡ƒÄ»</div>
                     <h3>Prompt Injector Mutator</h3>
                     <p>Recursive adversarial payload generator for LLMs. Uses a local model to probe and discover system
                         prompt leaks in external AI APIs.</p>
                 </div>
-
-                <div class="card">
-                    <div class="icon-container">📜</div>
-                    <h3>Responsible Disclosure</h3>
-                    <p>Generates professional Markdown/PDF vulnerability reports with Fernet-encrypted evidence, mapped
-                        to OWASP remediation fixes via SMTP dispatch.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Restored Comprehensive Documentation -->
-        <section id="knowledge-base" class="section">
-            <div class="section-header" style="text-align: center;">
-                <h2>Comprehensive Knowledge Base</h2>
-                <p>In-depth technical setups and deployment blueprints.</p>
-            </div>
-
-            <div class="doc-section" id="doc-termux">
-                <h3>📱 Ultimate Android / Termux WiFi Host Guide</h3>
-                <p>Why leave a PC running when an old Android phone uses 2 Watts of power? You can turn any Android
-                    device into a 24/7 AI Node.</p>
-
-                <h4>1. Install the Proper Termux</h4>
-                <p>Do <b>NOT</b> download Termux from the Google Play Store (it is outdated and broken). You must
-                    download F-Droid, and install "Termux" from there.</p>
-
-                <h4>2. Initial Setup & File Permissions</h4>
-                <p>Open Termux and type:</p>
-                <code class="code-block">termux-setup-storage</code>
-                <p>Accept the popup. Then update everything:</p>
-                <code class="code-block">pkg update && pkg upgrade -y</code>
-
-                <h4>3. Enable Remote Access (SSH)</h4>
-                <p>Typing on a phone screen is hard. Let's connect it to your PC's keyboard via WiFi.</p>
-                <ul>
-                    <li>Install SSH server: <code>pkg install openssh -y</code></li>
-                    <li>Set a password: <code>passwd</code> (type a password, you won't see the letters)</li>
-                    <li>Start the server: <code>sshd</code></li>
-                    <li>Find your phone's IP address: <code>ifconfig</code> (Look for the `wlan0` section)</li>
-                    <li>Find your username: <code>whoami</code> (usually looks like u0_a123)</li>
-                    <li><b>On your Windows/Mac PC</b> open a terminal and type:
-                        <code>ssh -p 8022 your_username@192.168.x.x</code></li>
-                </ul>
-
-                <h4>4. Install Dependencies & Ollama</h4>
-                <p>Inside Termux install tools:</p>
-                <code
-                    class="code-block">pkg install git python rust binutils nodejs-lts ollama -y<br>ollama serve &</code>
-
-                <h4>5. Install OmniClaw</h4>
-                <p>Run the installer script:</p>
-                <code class="code-block">curl -fsSL https://omniclaw.ai/setup.sh | bash</code>
-            </div>
-
-            <div class="doc-section" id="doc-gateway">
-                <h3>💬 Multi-Channel Gateway (Telegram, Discord, Slack)</h3>
-                <p>OmniClaw uses a centralized `messaging_gateway.py` class that connects to your social accounts. This
-                    lets you DM the robot from anywhere.</p>
-
-                <h4>Telegram Setup (The Easiest)</h4>
-                <ul>
-                    <li>Message <b>@BotFather</b> on Telegram. Send <code>/newbot</code>. Name it. Copy the HTTP API
-                        Token.</li>
-                    <li>Message <b>@userinfobot</b> on Telegram to get your personal ID.</li>
-                    <li>Open <code>config.yaml</code> and paste the Token and your personal ID under the
-                        <code>messaging.telegram</code> block.</li>
-                </ul>
-
-                <h4>Discord Setup</h4>
-                <p>Go to the Discord Developer Portal. Create an Application -> Add a Bot. Check all "Privileged Gateway
-                    Intents". Copy the Token and paste it into <code>config.yaml</code> under <code>discord</code>. Use
-                    the OAuth2 URL generator to invite it to your server.</p>
-            </div>
-
-            <div class="doc-section" id="doc-linux">
-                <h3>🛠️ How the Linux Native Tools Work</h3>
-                <p>OmniClaw is not a restricted web chatbot. It drops an autonomous Python `Worker` process directly
-                    into a terminal shell.</p>
-                <ul>
-                    <li><b>Tool Calling:</b> The LLM outputs structured JSON asking to run commands like
-                        <code>nmap -sV target.com</code> or <code>curl</code>.</li>
-                    <li><b>Execution:</b> The OmniClaw orchestrator runs this in a sandboxed subprocess and feeds the
-                        stdout/stderr back into the LLM context limits.</li>
-                    <li><b>Scripting:</b> If a generic tool doesn't exist, OmniClaw is instructed to write a Python or
-                        Bash script to <code>/tmp/</code>, execute it, read the result, and delete it.</li>
-                </ul>
-            </div>
-
-            <div class="doc-section" id="doc-swarm">
-                <h3>🧠 The Peer-Reviewed Swarm Architecture</h3>
-                <p>A single AI hallucinated often. OmniClaw chains APIs together to fix this.</p>
-                <ul>
-                    <li><b>The Manager (High IQ):</b> You configure a powerful, expensive model (like GPT-4 or
-                        Claude-3.5) as the Manager. It reads your Telegram prompt and breaks it into 5 technical steps.
-                    </li>
-                    <li><b>The Workers (Fast/Cheap/Local):</b> The Manager assigns step 1 to a local free model (like
-                        Ollama Llama3 8B). The worker executes terminal commands to complete step 1.</li>
-                    <li><b>The Reviewer:</b> Before the final answer is sent to you, another model looks at the output
-                        and the terminal logs, and rates it. If it fails, the loop restarts.</li>
-                </ul>
-            </div>
-
-            <div class="doc-section" id="doc-voice">
-                <h3>🎙️ Desktop Voice Wake</h3>
-                <p>Activating OmniClaw hands-free from across the room.</p>
-                <p>The <code>core/voice_wake.py</code> file uses Python's SpeechRecognition library. It runs
-                    continuously in the background using minimal CPU. When it hears the exact acoustic model for "Hey
-                    Omni", it triggers a generic software interrupt waking the main LLM loop. For Mac users, it hooks
-                    into the native macOS Accessibility dictation APIs.</p>
-                <p><b>Setup:</b> Ensure your PC microphone is unmuted. In Linux/Raspberry Pi, ensure
-                    <code>pyaudio</code> and ALSA drivers are configured.</p>
-            </div>
-
-            <div class="doc-section" id="doc-ebpf">
-                <h3>🦠 eBPF Kernel Bridge (Advanced Linux Only)</h3>
-                <p>Standard agents run in "user space" and are blind to the operating system. OmniClaw compiles a Rust/C
-                    eBPF binary that attaches directly to the Linux Kernel.</p>
-                <ul>
-                    <li><b>Network Visibility:</b> The agent can intercept incoming DDoS packets or malicious SSH
-                        attempts at the socket layer before they even hit an application.</li>
-                    <li><b>Process Tracing:</b> It knows exactly when a file is opened or executed by any other program
-                        on the server.</li>
-                    <li><b>Requirement:</b> You MUST run OmniClaw as <code>root</code> on a Linux machine with kernel
-                        5.8+ to use this module. It will not work on Windows without true WSL2 compilation.</li>
-                </ul>
             </div>
         </section>
 
@@ -962,32 +620,9 @@
                 href="https://github.com/webspoilt/omniclaw">View Source</a></p>
     </footer>
 
-    <!-- Scripts including Typewriter -->
     <script>
-        // Typewriter Effect Logic
+        // Use exact domain name if visited on Vercel/Netlify
         document.addEventListener("DOMContentLoaded", () => {
-            const textToType = "The Hybrid Hive AI Agent System.";
-            const typewriterElement = document.getElementById("typewriter");
-            const typingSpeed = 80; // ms per character
-            const initialDelay = 500; // start delay
-
-            let i = 0;
-
-            function typeWriter() {
-                if (i < textToType.length) {
-                    typewriterElement.textContent += textToType.charAt(i);
-                    i++;
-
-                    // Add a slight randomization to typing speed to seem more "human"
-                    const speedVariation = typingSpeed + (Math.random() * 50 - 25);
-                    setTimeout(typeWriter, speedVariation);
-                }
-            }
-
-            // Start typing after initial delay
-            setTimeout(typeWriter, initialDelay);
-
-            // Install Command Copy Logic (Vercel/Netlify auto-host)
             const host = window.location.hostname;
             if (host && host !== "" && host !== "localhost") {
                 document.getElementById('installCommand').innerText = `curl -fsSL https://${host}/setup.sh | bash`;
