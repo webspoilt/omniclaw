@@ -1153,6 +1153,64 @@
                 }, 2000);
             });
         }
+
+        // ==========================================
+        // UI Physics & Math Engine
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", () => {
+            const cards = document.querySelectorAll('.card, .terminal-block');
+
+            // Mathematic bounds for 3D rotation
+            const MAX_ROT_DEG = 8;
+            const PERSPECTIVE_PX = 1000;
+
+            cards.forEach(card => {
+                // Initialize physics state
+                card.style.transformStyle = 'preserve-3d';
+                let bounds, centerX, centerY;
+
+                card.addEventListener('mouseenter', () => {
+                    bounds = card.getBoundingClientRect();
+                    centerX = bounds.left + bounds.width / 2;
+                    centerY = bounds.top + bounds.height / 2;
+                    // Snappy spring-in
+                    card.style.transition = 'transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease';
+                });
+
+                card.addEventListener('mousemove', (e) => {
+                    if (!bounds) return;
+
+                    // 1. Calculate Cartesian Vector (distance from center)
+                    const dx = e.clientX - centerX;
+                    const dy = e.clientY - centerY;
+
+                    // 2. Normalize and compute Euler Angles
+                    const normalizeX = dx / (bounds.width / 2);
+                    const normalizeY = dy / (bounds.height / 2);
+
+                    const rotateX = normalizeY * -MAX_ROT_DEG; // Invert Y
+                    const rotateY = normalizeX * MAX_ROT_DEG;
+
+                    // 3. Dynamic directional lighting via shadow casting math
+                    const shadowDepthX = rotateY * -1.5;
+                    const shadowDepthY = rotateX * 1.5;
+
+                    // 4. Transform Matrix
+                    card.style.transform = `perspective(${PERSPECTIVE_PX}px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+
+                    // Overwrite default border hover with dynamic glowing math
+                    card.style.boxShadow = `${shadowDepthX}px ${Math.max(10, shadowDepthY + 20)}px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(94, 106, 210, 0.3)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    bounds = null;
+                    // Spring-back physics math curve (overshoot slightly and settle)
+                    card.style.transition = 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.6s ease';
+                    card.style.transform = `perspective(${PERSPECTIVE_PX}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                    card.style.boxShadow = ''; // Revert to CSS default hovering state
+                });
+            });
+        });
     </script>
 </body>
 
