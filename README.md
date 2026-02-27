@@ -133,7 +133,7 @@
 - **Responsible Disclosure Pipeline**: Encrypted evidence capture (Fernet), automated Markdown/PDF report generation with CVSS severity scoring.
 - **Auto-Disclosure Agent**: SMTP dispatch system for securely emailing vulnerability reports to vendors.
 
-### 13. Mission Control & Strategic Architecture (v4.0.0)
+### 13. Mission Control & Strategic Architecture (v3.3.0)
 - **OpenRouter/LiteLLM Agnosticism**: Seamlessly switch between Claude, GPT, and custom models with automated sub-cent cost tracking.
 - **Financial Observability**: FastAPI + React dashboard that tracks token usage and task success rates, ensuring the agent doesn't overspend API credits.
 - **Peer-Reviewed Multi-Agent Workflows**: LangGraph-inspired pipelines where Architect, Coder, and Reviewer agents debate code changes autonomously.

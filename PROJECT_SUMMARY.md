@@ -158,7 +158,7 @@ Total Lines of Code: ~15,000+
 - **👻 The Immortal Kernel (Experimental)**: eBPF Segfault tracers auto-generating C++ hot-patches
 - **🧬 Biometric Vibe Lock**: Only unlocks "Ghost Mode" tools based on keystroke/voice trust scores
 
-### 11. Mission Control & Strategic Architecture (v4.0.0) ✅
+### 11. Mission Control & Strategic Architecture (v3.3.0) ✅
 - **💸 Financial Observability**: FastAPI + React dashboard tracking token usage and cost burn
 - **⚖️ LLM Council**: LangGraph-style workflow where Architect, Coder, and Reviewer agents debate
 - **🔌 MCP Tool Integration**: Standardized servers exposing kernel monitors to external models
