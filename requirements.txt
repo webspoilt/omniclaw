@@ -1,4 +1,4 @@
-# OmniClaw Core Dependencies
+# OmniClaw Core Dependencies (v4.0.0)
 # Install with: pip install -r requirements.txt
 
 # Async & Networking
@@ -44,6 +44,10 @@ colorama>=0.4.6
 
 # Security
 cryptography>=41.0.0
+pydantic>=2.0.0
+
+# Scheduler
+croniter>=1.3.0            # Cron expression parsing for scheduler
 
 # Optional: For local LLMs
 # llama-cpp-python>=0.2.0

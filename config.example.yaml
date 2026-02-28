@@ -1,7 +1,7 @@
 # OmniClaw Configuration Example
 # Copy this file to config.yaml and customize for your setup
 
-version: "3.2.0"
+version: "4.0.0"
 
 # Device settings - auto-detected if not specified
 device:
@@ -170,9 +170,20 @@ logging:
 
 # Security Settings
 security:
+  # API key encryption
   encrypt_api_keys: true
   key_file: "./.omniclaw_key"
-  sandbox_shell: true
+
+  # Workspace sandbox — all file/shell operations restricted here
+  workspace_dir: "./workspace"
+  sandbox_enabled: true
+
+  # Session budgets (prevents runaway loops and cost overruns)
+  max_iterations: 15              # Max LLM iterations per message
+  max_tokens_per_session: 50000   # Token budget per session
+  session_timeout: 300            # Session timeout in seconds
+
+  # Shell sandbox tiers
   allowed_shell_commands:
     - ls
     - cat
@@ -186,6 +197,17 @@ security:
     - rm -rf /
     - mkfs
     - dd
+
+# Custom Skills System (v4.0)
+skills:
+  directory: "~/.omniclaw/skills"  # Drop .py files here for auto-discovery
+  auto_load: true                  # Auto-load skills at startup
+
+# Scheduler & Heartbeat (v4.0)
+scheduler:
+  cron_enabled: true               # Enable persistent cron job scheduler
+  heartbeat_enabled: true          # Enable HEARTBEAT.md-driven agent wake-up
+  heartbeat_interval: 1800         # Heartbeat interval in seconds (default: 30 min)
 
 # UI Settings (for mobile app)
 ui:
