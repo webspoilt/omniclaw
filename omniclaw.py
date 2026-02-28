@@ -27,6 +27,17 @@ from core.memory import VectorMemory
 from core.api_pool import APIPool
 from core.messaging_gateway import MessagingGateway
 
+# New modules (ported from reference bots)
+try:
+    from core.security import SecurityLayer
+    from core.skills.registry import ToolRegistry, get_tool_registry
+    from core.skills.loader import SkillLoader
+    from core.scheduler.cron import CronScheduler
+    from core.scheduler.heartbeat import HeartbeatService
+    from core.security.doctor import SecurityDoctor
+except ImportError as e:
+    print(f"⚠️ WARNING: Failed to load enhancement modules: {e}")
+
 # System Pre-flight Checks
 def preflight_checks():
     """Verify system requirements before loading heavy modules"""
@@ -88,6 +99,13 @@ class OmniClaw:
         self.original_stdout = sys.stdout
         self.original_stderr = sys.stderr
         
+        # New subsystems (from reference bots)
+        self.security: SecurityLayer = None
+        self.tool_registry: ToolRegistry = None
+        self.skill_loader: SkillLoader = None
+        self.cron_scheduler: CronScheduler = None
+        self.heartbeat: HeartbeatService = None
+        
         # Advanced Features Init (Wrapped in try/catch for stability)
         try:
             # We check if classes exist because their imports might have failed
@@ -123,6 +141,22 @@ class OmniClaw:
                 "monitor_syscalls": True,
                 "monitor_files": False,
                 "monitor_network": False
+            },
+            "security": {
+                "workspace_dir": "./workspace",
+                "sandbox_enabled": True,
+                "max_iterations": 15,
+                "max_tokens_per_session": 50000,
+                "session_timeout": 300
+            },
+            "skills": {
+                "directory": "~/.omniclaw/skills",
+                "auto_load": True
+            },
+            "scheduler": {
+                "cron_enabled": True,
+                "heartbeat_enabled": True,
+                "heartbeat_interval": 1800
             }
         }
         
@@ -389,10 +423,57 @@ class OmniClaw:
         
         logger.info("Advanced features initialized")
         
+        # --- New Subsystems (ported from reference bots) ---
+        try:
+            # Security Layer
+            sec_config = self.config.get("security", {})
+            if 'SecurityLayer' in globals():
+                self.security = SecurityLayer(
+                    workspace_dir=sec_config.get("workspace_dir", "./workspace")
+                )
+                self.security.session_budget.max_iterations = sec_config.get("max_iterations", 15)
+                self.security.session_budget.max_tokens_per_session = sec_config.get("max_tokens_per_session", 50000)
+                self.security.session_budget.session_timeout = sec_config.get("session_timeout", 300)
+                logger.info("🛡️  Security Layer initialized (5 layers active)")
+            
+            # Tool Registry
+            if 'ToolRegistry' in globals():
+                self.tool_registry = get_tool_registry()
+                logger.info(f"🔧 Tool Registry initialized ({len(self.tool_registry.tools)} tools)")
+            
+            # Skill Loader
+            skills_config = self.config.get("skills", {})
+            if 'SkillLoader' in globals() and skills_config.get("auto_load", True):
+                self.skill_loader = SkillLoader(skills_config.get("directory", "~/.omniclaw/skills"))
+                loaded = self.skill_loader.load_all(self.tool_registry)
+                if loaded > 0:
+                    logger.info(f"📦 Loaded {loaded} custom skill(s)")
+            
+            # Cron Scheduler
+            sched_config = self.config.get("scheduler", {})
+            if 'CronScheduler' in globals() and sched_config.get("cron_enabled", True):
+                self.cron_scheduler = CronScheduler(
+                    db_path=os.path.join(memory_config.get("db_path", "./memory_db"), "omniclaw.db"),
+                    on_execute=lambda msg: self.orchestrator.execute_goal(msg) if self.orchestrator else None,
+                )
+                logger.info("⏰ Cron Scheduler initialized")
+            
+            # Heartbeat Service
+            if 'HeartbeatService' in globals() and sched_config.get("heartbeat_enabled", True):
+                self.heartbeat = HeartbeatService(
+                    workspace=sec_config.get("workspace_dir", "./workspace"),
+                    on_execute=lambda msg: self.orchestrator.execute_goal(msg) if self.orchestrator else None,
+                    interval_s=sched_config.get("heartbeat_interval", 1800),
+                )
+                logger.info(f"🫀 Heartbeat Service initialized (every {sched_config.get('heartbeat_interval', 1800)}s)")
+        except Exception as e:
+            logger.error(f"Failed to initialize new subsystems: {e}")
+            logger.warning("Proceeding with core + advanced features only.")
+        
         # Register default commands
         self._register_commands()
         
-        logger.info("OmniClaw v3.2.0 initialization complete")
+        logger.info("OmniClaw v4.0.0 initialization complete")
     
     def _register_commands(self):
         """Register default messaging commands"""
@@ -521,6 +602,90 @@ FAISS Enabled: {stats['faiss_enabled']}
             return (f"🔬 Semantic Diff\n\n"
                     f"Analyses performed: {stats['total_analyses']}\n"
                     f"LLM available: {stats['has_llm']}")
+        
+        # --- New Subsystem Commands ---
+        
+        @self.messaging.register_command("security")
+        async def cmd_security(command):
+            if not self.security:
+                return "❌ Security layer not initialized"
+            if command.args and command.args[0] == "audit":
+                doctor = SecurityDoctor(
+                    workspace_dir=self.config.get("security", {}).get("workspace_dir", "./workspace")
+                )
+                report = doctor.run_audit()
+                return f"🛡️ Security Audit\n\n{report['summary']}"
+            status = self.security.get_status()
+            return (f"🛡️ Security Status\n\n"
+                    f"Layers active: {status['layers_active']}\n"
+                    f"Workspace: {status['workspace']}\n"
+                    f"Active sessions: {status['active_sessions']}\n"
+                    f"Blocked patterns: {status['blocked_patterns']}\n"
+                    f"Injection patterns: {status['injection_patterns']}")
+        
+        @self.messaging.register_command("cron")
+        async def cmd_cron(command):
+            if not self.cron_scheduler:
+                return "❌ Cron scheduler not initialized"
+            if not command.args:
+                jobs = await self.cron_scheduler.list_jobs()
+                if not jobs:
+                    return "⏰ No cron jobs. Use: /cron add <name> <message> [interval_seconds]"
+                result = "⏰ Cron Jobs\n\n"
+                for j in jobs:
+                    enabled = "✅" if j['enabled'] else "❌"
+                    result += f"{enabled} #{j['id']} {j['name']}\n"
+                    result += f"   {j['message'][:80]}\n"
+                    if j.get('cron_expr'):
+                        result += f"   Cron: {j['cron_expr']}\n"
+                    elif j.get('interval_seconds'):
+                        result += f"   Every: {j['interval_seconds']}s\n"
+                    result += "\n"
+                return result
+            action = command.args[0]
+            if action == "add" and len(command.args) >= 3:
+                name = command.args[1]
+                message = " ".join(command.args[2:])
+                interval = int(command.kwargs.get("interval", 3600))
+                job_id = await self.cron_scheduler.add_job(name, message, interval_seconds=interval)
+                return f"⏰ Added cron job #{job_id}: {name}"
+            elif action == "remove" and len(command.args) >= 2:
+                job_id = int(command.args[1])
+                await self.cron_scheduler.remove_job(job_id)
+                return f"⏰ Removed cron job #{job_id}"
+            return "⏰ Usage: /cron [add <name> <message>|remove <id>]"
+        
+        @self.messaging.register_command("skills")
+        async def cmd_skills(command):
+            if not self.tool_registry:
+                return "❌ Tool registry not initialized"
+            status = self.tool_registry.get_status()
+            result = f"📦 Skills & Tools ({status['total_tools']} registered)\n\n"
+            for name in status['tool_names']:
+                confirm = " [⚠️ needs confirm]" if name in status['confirmation_required'] else ""
+                result += f"  • {name}{confirm}\n"
+            if self.skill_loader:
+                loader_status = self.skill_loader.get_status()
+                result += f"\nSkills dir: {loader_status['skills_dir']}\n"
+                result += f"Loaded: {len(loader_status['loaded'])} | Failed: {len(loader_status['failed'])}"
+            return result
+        
+        @self.messaging.register_command("heartbeat")
+        async def cmd_heartbeat(command):
+            if not self.heartbeat:
+                return "❌ Heartbeat service not initialized"
+            if command.args and command.args[0] == "trigger":
+                result = await self.heartbeat.trigger_now()
+                return f"🫀 Heartbeat triggered\n\n{result or 'No tasks found.'}" 
+            status = self.heartbeat.get_status()
+            return (f"🫀 Heartbeat Service\n\n"
+                    f"Enabled: {status['enabled']}\n"
+                    f"Running: {status['running']}\n"
+                    f"Interval: {status['interval_s']}s\n"
+                    f"Ticks: {status['tick_count']}\n"
+                    f"Last action: {status['last_action']}\n"
+                    f"File: {status['heartbeat_file']}\n"
+                    f"File exists: {status['heartbeat_file_exists']}")
     
     async def start(self):
         """Start all services"""
@@ -550,6 +715,14 @@ FAISS Enabled: {stats['faiss_enabled']}
         if self.companion_loop:
             asyncio.create_task(self.companion_loop.start())
         
+        # Start Cron Scheduler
+        if self.cron_scheduler:
+            await self.cron_scheduler.start()
+        
+        # Start Heartbeat
+        if self.heartbeat:
+            await self.heartbeat.start()
+        
         logger.info("OmniClaw services started")
     
     async def stop(self):
@@ -573,6 +746,13 @@ FAISS Enabled: {stats['faiss_enabled']}
             
         if self.companion_loop:
             self.companion_loop.stop()
+        
+        # Stop new subsystems
+        if self.cron_scheduler:
+            await self.cron_scheduler.stop()
+        
+        if self.heartbeat:
+            self.heartbeat.stop()
         
         logger.info("OmniClaw services stopped")
     

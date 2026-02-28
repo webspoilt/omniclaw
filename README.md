@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-3.3.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-4.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
@@ -139,6 +139,28 @@
 - **Peer-Reviewed Multi-Agent Workflows**: LangGraph-inspired pipelines where Architect, Coder, and Reviewer agents debate code changes autonomously.
 - **MCP (Model Context Protocol) Tools**: Agents access system functions through standardized MCP endpoints (e.g., the root eBPF monitor).
 - **Persistent Trigger Memory**: Agents save and recall important states via specific "trigger phrases".
+
+### 14. Security Sandbox & Defense Layer (v4.0.0) 🛡️
+
+#### Multi-Layer Security Architecture
+- **🔒 FileGuard**: Workspace-scoped file access control — blocks path traversal attacks, symlink escapes, and access to sensitive files (`.env`, `.ssh`, private keys, credentials).
+- **🛡️ ShellSandbox**: Three-tier shell command filtering pipeline:
+  - **Tier 1 (BLOCKED):** Instant reject — `rm -rf /`, `mkfs`, `dd if=`, `curl|sh`, process tracing, env dumps (~40 patterns)
+  - **Tier 2 (CONFIRM):** User approval required — `rm`, `pip install`, `sudo`, `docker`, `git push` (~17 patterns)
+  - **Tier 3 (ALLOW):** Safe commands in sandboxed workspace with stripped environment
+- **🧬 PromptGuard**: Prompt injection defense with 27 detection patterns, Unicode NFKC normalization against homoglyph attacks, and tool output trust-boundary wrapping.
+- **💰 SessionBudget**: Prevents runaway loops and API cost overruns — max iterations, token budgets, tool call rate limits, shell command limits, and session timeouts.
+- **🩺 SecurityDoctor**: Installation diagnostics — audits workspace permissions, config file safety, exposed API keys, and skill directory security.
+
+### 15. Custom Skill System (v4.0.0) 📦
+- **🔧 Tool Registry**: Decorator-based `@tool` registration with OpenAI-compatible function-calling schema generation. Register custom tools with a single decorator.
+- **📂 Skill Auto-Loader**: Drop `.py` files into `~/.omniclaw/skills/` and they're automatically discovered and loaded at startup with file ownership validation.
+- **✅ Confirmation Support**: Mark destructive tools as `needs_confirmation=True` for user approval before execution.
+
+### 16. Scheduled Tasks & Heartbeat (v4.0.0) ⏰
+- **⏰ Cron Scheduler**: Persistent SQLite-backed job scheduling that survives restarts. Supports cron expressions and interval-based scheduling with prompt injection screening.
+- **🫀 Heartbeat Service**: Periodic agent wake-up driven by `HEARTBEAT.md`. Uses LLM tool-calls for intelligent decision-making (skip vs. run) — only executes tasks when needed.
+- **🔄 Background Automation**: Schedule recurring prompts like daily reports, health checks, or automated research tasks.
 
 ## 🌐 Real-World Use Cases
 Wondering what you can actually build with an autonomous agent swarm? 
@@ -299,6 +321,26 @@ voice:
   elevenlabs_api_key: "sk-..."
 ```
 
+### Security & Sandbox (v4.0)
+
+```yaml
+security:
+  workspace_dir: "./workspace"     # All file/shell ops sandboxed here
+  sandbox_enabled: true
+  max_iterations: 15               # Max LLM loops per message
+  max_tokens_per_session: 50000    # Token budget per session
+  session_timeout: 300             # Session timeout in seconds
+
+skills:
+  directory: "~/.omniclaw/skills"  # Drop .py files here
+  auto_load: true                  # Auto-discover at startup
+
+scheduler:
+  cron_enabled: true
+  heartbeat_enabled: true
+  heartbeat_interval: 1800         # 30 minutes
+```
+
 ## 💬 Usage
 
 ### Interactive Chat
@@ -333,6 +375,13 @@ You can run OmniClaw as your own personal **Moltbot / OpenClaw Assistant** direc
 /task Research quantum computing advances
 /status Check agent status
 /memory Show memory statistics
+/security View security layer status
+/security audit Run full security diagnostic
+/cron List scheduled jobs
+/cron add daily-report "Create a daily summary" --interval=86400
+/skills List all registered tools
+/heartbeat View heartbeat status
+/heartbeat trigger Manually trigger heartbeat check
 ```
 
 ## 🛠️ Development
@@ -341,24 +390,39 @@ You can run OmniClaw as your own personal **Moltbot / OpenClaw Assistant** direc
 
 ```
 omniclaw/
-├── core/                         # Core Python modules
-│   ├── orchestrator.py           # Hybrid Hive orchestrator
-│   ├── manager.py                # Manager agent
-│   ├── worker.py                 # Worker agents
-│   ├── memory.py                 # Vector memory system
-│   ├── api_pool.py               # API management
-│   ├── messaging_gateway.py      # Telegram/WhatsApp integration
-│   ├── reasoning_config.py       # 🧠 Reasoning Lock
-│   ├── context_mapper.py         # 📋 Context Mapper
-│   ├── autonomous_fix.py         # 🔧 Autonomous Fix
-│   ├── audit_diff.py             # 📝 Audit Diff
-│   ├── temporal_memory.py        # 📸 Temporal Context
-│   ├── decision_archaeology.py   # 🏛️ Decision Archaeology
-│   ├── pattern_sentinel.py       # 🛡️ Pattern Sentinel
-│   ├── echo_chambers.py          # 🔮 Echo Chambers
-│   ├── living_docs.py            # 📐 Living Documentation
-│   ├── semantic_diff.py          # 🔬 Semantic Diff
-│   └── advanced_features/        # 🚀 Advanced Features Package
+├── core/                           # Core Python modules
+│   ├── orchestrator.py             # Hybrid Hive orchestrator
+│   ├── manager.py                  # Manager agent
+│   ├── worker.py                   # Worker agents
+│   ├── memory.py                   # Vector memory system
+│   ├── api_pool.py                 # API management
+│   ├── messaging_gateway.py        # Telegram/WhatsApp integration
+│   ├── reasoning_config.py         # 🧠 Reasoning Lock
+│   ├── context_mapper.py           # 📋 Context Mapper
+│   ├── autonomous_fix.py           # 🔧 Autonomous Fix
+│   ├── audit_diff.py               # 📝 Audit Diff
+│   ├── temporal_memory.py          # 📸 Temporal Context
+│   ├── decision_archaeology.py     # 🏛️ Decision Archaeology
+│   ├── pattern_sentinel.py         # 🛡️ Pattern Sentinel
+│   ├── echo_chambers.py            # 🔮 Echo Chambers
+│   ├── living_docs.py              # 📐 Living Documentation
+│   ├── semantic_diff.py            # 🔬 Semantic Diff
+│   ├── security/                   # 🔒 Security Sandbox (v4.0)
+│   │   ├── __init__.py             #   Unified SecurityLayer class
+│   │   ├── file_guard.py           #   Workspace file access control
+│   │   ├── shell_sandbox.py        #   3-tier command filtering
+│   │   ├── prompt_guard.py         #   Prompt injection defense
+│   │   ├── session_budget.py       #   Rate limiting & cost tracking
+│   │   └── doctor.py               #   Security audit diagnostic
+│   ├── skills/                     # 📦 Custom Skill System (v4.0)
+│   │   ├── __init__.py
+│   │   ├── registry.py             #   @tool decorator & ToolRegistry
+│   │   └── loader.py               #   Auto-discover skill .py files
+│   ├── scheduler/                  # ⏰ Task Scheduler (v4.0)
+│   │   ├── __init__.py
+│   │   ├── cron.py                 #   Persistent SQLite cron jobs
+│   │   └── heartbeat.py            #   HEARTBEAT.md-driven agent wake-up
+│   └── advanced_features/          # 🚀 Advanced Features Package
 │       ├── consciousness_collision.py
 │       ├── code_dna.py
 │       ├── time_machine.py
@@ -372,6 +436,8 @@ omniclaw/
 │       ├── self_evolving_core.py
 │       ├── security_research.py
 │       └── launcher.py
+├── skills/                       # 📦 Sample skills
+│   └── sample_weather.py         #   Example @tool skill
 ├── kernel_bridge/                # C++/eBPF kernel monitor
 ├── mobile_app/                   # React Native super-app
 ├── omniclaw.py                   # Main entry point
@@ -397,10 +463,26 @@ npx react-native run-android  # or run-ios
 
 ## 🔒 Security
 
+- **Multi-Layer Defense**: 5-layer security architecture — FileGuard, ShellSandbox, PromptGuard, SessionBudget, SecurityDoctor
+- **Workspace Sandboxing**: All file/shell operations restricted to the workspace directory
+- **Command Filtering**: 40+ blocked dangerous patterns, 17 confirmation-required patterns
+- **Prompt Injection Defense**: 27 injection detection patterns with Unicode normalization
+- **Cost Control**: Automatic rate limiting and token budget enforcement
 - **API Key Encryption**: All API keys are encrypted at rest
-- **Sandboxed Execution**: Shell commands run in restricted environment
 - **User Authorization**: Messaging gateway requires explicit user allowlisting
 - **Audit Logging**: All actions logged for review
+
+Run a security audit:
+```bash
+# Via messaging
+/security audit
+
+# Programmatically
+from core.security.doctor import SecurityDoctor
+doctor = SecurityDoctor(workspace_dir="./workspace")
+report = doctor.run_audit()
+print(report["summary"])
+```
 
 ## 🌐 Hardware Detection
 

@@ -33,3 +33,12 @@ public/node_modules/
 .next/
 out/
 dist/
+
+# Reference bots (not part of project)
+new/
+
+# Runtime directories
+workspace/
+test_workspace/
+data/
+*.db
