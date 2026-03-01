@@ -16,3 +16,6 @@
 ## Roadmap & Pending Issues (V4.1+)
 1. **Experimental eBPF Modules**: `ebpf_monitor` and `segfault_tracer` currently default to simulation mode on Windows/macOS. Actual kernel hooking requires Linux (Kernel 5.8+) and root permissions.
 2. **Biometric Vibe Limitations**: Keystroke dynamics baseline needs a proper ML backend for robust authentication.
+3. **IPS Live Blocking**: The `ips_agent.py` autonomous IP blocking requires root privileges to execute `iptables`/`nftables` rules. On non-root or Termux, the agent falls back to dry-run logging only.
+4. **IPS LLM Classification**: Threat classification accuracy depends on LLM quality. Without API access or local Ollama, the agent uses a heuristic fallback that may produce occasional false positives on borderline cases.
+5. **IPS IPv6 Support**: The current `monitor.bpf.c` only traces `tcp_v4_connect` (IPv4). IPv6 support via `tcp_v6_connect` is planned for v4.2.

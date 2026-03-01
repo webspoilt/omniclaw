@@ -165,3 +165,24 @@ OmniClaw uses a centralized FastAPI and React Application named `Mission Control
 2. **Provider Agnosticism:** The backend utilizes OpenRouter and LiteLLM to dynamically switch between low-cost Ollama models for reading and Claude 3.5 Sonnet for writing, automatically tracking cost-per-token within a local SQLite database. 
 3. **The Council:** Instead of immediately trusting output, the `ArchitectAgent` creates a plan and passes it to the `CoderAgent`. A final `ReviewerAgent` automatically enforces compliance, preventing the AI from breaking the project logic. 
 4. **Visual Tracking:** You open the React frontend (`localhost:3000`) and visually monitor the Cumulative Cost Charts and Agent Statuses natively.
+
+---
+
+## 🛡️ Use Case 11: Autonomous SSH Brute-Force Defense (IPS Agent)
+
+**The Problem:** Servers exposed to the internet are constantly bombarded with SSH brute-force attacks. Traditional tools like `fail2ban` are static, rule-based, and lack intelligence — they can't distinguish between a real attacker and a legitimate user who forgot their password.
+
+**The OmniClaw Solution:**
+OmniClaw's v4.1 IPS Agent combines kernel-level eBPF tracing with LLM-powered threat classification to autonomously defend your server.
+
+**How it works:**
+1. **Kernel-Level Detection:** The `monitor.bpf.c` eBPF program hooks into `tcp_v4_connect` and `inet_csk_accept` — every SSH connection is tracked at the kernel level with near-zero overhead.
+2. **Per-IP Failure Counting:** An LRU hash map in kernel space counts failed login attempts per source IP within a configurable sliding window (default: 5 failures in 5 minutes).
+3. **Intelligent Classification:** When the threshold is exceeded, the alert goes to the Python `ips_agent.py` which uses an LLM Worker to classify the threat:
+   - **Brute force:** 12 failures in 30 seconds from the same IP → `block`
+   - **Forgotten password:** 2 failures over 10 minutes → `monitor` (no block)
+   - **Credential stuffing:** Multiple usernames from one IP → `block`
+4. **Autonomous Blocking:** The agent executes `iptables -A INPUT -s <ATTACKER_IP> -j DROP` — no human intervention required.
+5. **Safety First:** Dry-run mode is enabled by default, and your admin IP is whitelisted so you can never lock yourself out. Every action is logged to `ips_actions.jsonl` for the Manager agent to audit.
+
+> *You wake up to a Telegram message: "🛡️ IPS blocked 3 IPs overnight (brute_force). 47 login attempts neutralized. Your SSH is secure."*

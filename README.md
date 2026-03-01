@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-4.0.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-4.1.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
@@ -164,6 +164,14 @@
 - **⏰ Cron Scheduler**: Persistent SQLite-backed job scheduling that survives restarts. Supports cron expressions and interval-based scheduling with prompt injection screening.
 - **🫀 Heartbeat Service**: Periodic agent wake-up driven by `HEARTBEAT.md`. Uses LLM tool-calls for intelligent decision-making (skip vs. run) — only executes tasks when needed.
 - **🔄 Background Automation**: Schedule recurring prompts like daily reports, health checks, or automated research tasks.
+
+### 17. Autonomous IPS — Intrusion Prevention System (v4.1.0) 🛡️🔥
+- **🔍 eBPF Network Monitor**: Kernel-level `tcp_v4_connect` and `inet_csk_accept` tracing via a dedicated `monitor.bpf.c` CO-RE program — detects SSH brute-force attacks in real-time.
+- **🧠 LLM Threat Classifier**: Worker-agent AI analyzes alerts and classifies threats as `brute_force`, `credential_stuffing`, `forgotten_password`, or `benign` — preventing false positives.
+- **🚫 Autonomous IP Blocking**: Executes `iptables` or `nftables` rules to block malicious IPs without human intervention.
+- **🔒 Dry-Run Safety**: Enabled by default — logs block commands without executing them. Admin IP whitelist prevents self-lockout.
+- **📋 JSON Action Log**: Every IPS action is logged to `ips_actions.jsonl` for the Manager agent to review and audit.
+- **📱 Termux/Mobile Fallback**: Gracefully degrades to `/var/log/auth.log` parsing or mock simulation when eBPF is unavailable.
 
 ## 🌐 Real-World Use Cases
 Wondering what you can actually build with an autonomous agent swarm? 
@@ -334,6 +342,17 @@ security:
   max_tokens_per_session: 50000    # Token budget per session
   session_timeout: 300             # Session timeout in seconds
 
+  # IPS — Autonomous Intrusion Prevention (v4.1)
+  ips:
+    enabled: true
+    dry_run: true                  # SAFETY: always start with true
+    admin_whitelist:
+      - "127.0.0.1"
+      - "YOUR_ADMIN_IP"
+    fail_threshold: 5
+    block_tool: "iptables"         # or "nftables"
+    llm_analysis: true
+
 skills:
   directory: "~/.omniclaw/skills"  # Drop .py files here
   auto_load: true                  # Auto-discover at startup
@@ -410,13 +429,14 @@ omniclaw/
 │   ├── echo_chambers.py            # 🔮 Echo Chambers
 │   ├── living_docs.py              # 📐 Living Documentation
 │   ├── semantic_diff.py            # 🔬 Semantic Diff
-│   ├── security/                   # 🔒 Security Sandbox (v4.0)
-│   │   ├── __init__.py             #   Unified SecurityLayer class
+│   ├── security/                   # 🔒 Security Sandbox (v4.0+)
+│   │   ├── __init__.py             #   Unified SecurityLayer class (6 layers)
 │   │   ├── file_guard.py           #   Workspace file access control
 │   │   ├── shell_sandbox.py        #   3-tier command filtering
 │   │   ├── prompt_guard.py         #   Prompt injection defense
 │   │   ├── session_budget.py       #   Rate limiting & cost tracking
-│   │   └── doctor.py               #   Security audit diagnostic
+│   │   ├── doctor.py               #   Security audit diagnostic
+│   │   └── ips_agent.py            #   🛡️ Autonomous IPS (v4.1)
 │   ├── skills/                     # 📦 Custom Skill System (v4.0)
 │   │   ├── __init__.py
 │   │   ├── registry.py             #   @tool decorator & ToolRegistry
@@ -441,7 +461,7 @@ omniclaw/
 │       └── launcher.py
 ├── skills/                       # 📦 Sample skills
 │   └── sample_weather.py         #   Example @tool skill
-├── kernel_bridge/                # C++/eBPF kernel monitor
+├── kernel_bridge/                # C++/eBPF kernel monitor + IPS
 ├── mobile_app/                   # React Native super-app
 ├── omniclaw.py                   # Main entry point
 ├── setup.sh                      # One-click installer
@@ -452,8 +472,11 @@ omniclaw/
 
 ```bash
 cd kernel_bridge
-make
+make          # Build everything (syscall monitor + IPS + bridge)
 sudo make install
+
+# Or build just the IPS eBPF monitor:
+make ips      # Output: build/monitor.bpf.o
 ```
 
 ### Building Mobile App
@@ -466,14 +489,15 @@ npx react-native run-android  # or run-ios
 
 ## 🔒 Security
 
-- **Multi-Layer Defense**: 5-layer security architecture — FileGuard, ShellSandbox, PromptGuard, SessionBudget, SecurityDoctor
+- **Multi-Layer Defense**: 6-layer security architecture — FileGuard, ShellSandbox, PromptGuard, SessionBudget, SecurityDoctor, **IPSAgent**
+- **Autonomous IPS**: eBPF-backed intrusion prevention with LLM threat classification, autonomous IP blocking, dry-run safety, and admin whitelist
 - **Workspace Sandboxing**: All file/shell operations restricted to the workspace directory
 - **Command Filtering**: 40+ blocked dangerous patterns, 17 confirmation-required patterns
 - **Prompt Injection Defense**: 27 injection detection patterns with Unicode normalization
 - **Cost Control**: Automatic rate limiting and token budget enforcement
 - **API Key Encryption**: All API keys are encrypted at rest
 - **User Authorization**: Messaging gateway requires explicit user allowlisting
-- **Audit Logging**: All actions logged for review
+- **Audit Logging**: All actions logged for review (IPS actions → `ips_actions.jsonl`)
 
 Run a security audit:
 ```bash

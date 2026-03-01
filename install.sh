@@ -21,7 +21,7 @@ INSTALL_DIR="${OMNICLAW_DIR:-$HOME/.omniclaw}"
 CONFIG_DIR="$HOME/.config/omniclaw"
 LOG_FILE="/tmp/omniclaw_install.log"
 REPO_URL="https://github.com/webspoilt/omniclaw"
-VERSION="3.3.0"
+VERSION="4.1.0"
 
 # Logging
 log() {
@@ -313,6 +313,9 @@ setup_kernel_bridge() {
     make clean 2>/dev/null || true
     make 2>&1 | tee -a "$LOG_FILE" || log_warning "Kernel bridge build failed (optional)"
     
+    # Also build the IPS eBPF monitor
+    make ips 2>&1 | tee -a "$LOG_FILE" || log_warning "IPS monitor build failed (optional, requires libbpf)"
+    
     log_success "Kernel bridge setup complete"
 }
 
@@ -395,6 +398,18 @@ logging:
   file: "$CONFIG_DIR/omniclaw.log"
   max_size: "100MB"
   backup_count: 5
+
+# Security — IPS Agent (v4.1)
+security:
+  ips:
+    enabled: true
+    dry_run: true
+    admin_whitelist:
+      - "127.0.0.1"
+    fail_threshold: 5
+    time_window_sec: 300
+    block_tool: "iptables"
+    llm_analysis: true
 EOF
     
     log_success "Configuration created at $CONFIG_DIR/config.yaml"

@@ -15,21 +15,24 @@ INSTALL_DIR = /usr/local/omniclaw/kernel_bridge
 
 # Source files
 BPF_SRCS = $(wildcard $(SRC_DIR)/bpf/*.c)
-BPF_OBJS = $(patsubst $(SRC_DIR)/bpf/%.c,$(BUILD_DIR)/%.o,$(BPF_SRCS))
+BPF_OBJS = $(patsubst $(SRC_DIR)/bpf/%.c,$(BUILD_DIR)/%.bpf.o,$(BPF_SRCS))
 
 CPP_SRCS = $(wildcard $(SRC_DIR)/cpp/*.cpp)
 CPP_OBJS = $(patsubst $(SRC_DIR)/cpp/%.cpp,$(BUILD_DIR)/%.o,$(CPP_SRCS))
 
 # Targets
-.PHONY: all clean install uninstall
+.PHONY: all clean install uninstall ips
 
 all: $(BUILD_DIR) $(BPF_OBJS) $(BUILD_DIR)/omniclaw_bridge
+
+# Build only the IPS eBPF monitor
+ips: $(BUILD_DIR) $(BUILD_DIR)/monitor.bpf.o
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-# Compile eBPF programs
-$(BUILD_DIR)/%.o: $(SRC_DIR)/bpf/%.c
+# Compile eBPF programs (CO-RE object files)
+$(BUILD_DIR)/%.bpf.o: $(SRC_DIR)/bpf/%.c
 	$(CC) $(CFLAGS) $(BPF_CFLAGS) -c $< -o $@
 
 # Compile C++ userspace components

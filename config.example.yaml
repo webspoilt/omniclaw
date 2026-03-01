@@ -198,6 +198,21 @@ security:
     - mkfs
     - dd
 
+  # IPS — Autonomous Intrusion Prevention System (v4.1)
+  ips:
+    enabled: true
+    dry_run: true                  # SAFETY: log block commands without executing
+    admin_whitelist:               # IPs that are NEVER blocked
+      - "127.0.0.1"
+      - "YOUR_ADMIN_IP_HERE"
+    fail_threshold: 5              # Failed SSH logins before brute-force alert
+    time_window_sec: 300           # Sliding window in seconds (5 min)
+    block_tool: "iptables"         # "iptables" or "nftables"
+    log_file: "./logs/ips_actions.jsonl"
+    llm_analysis: true             # Use LLM to classify threat type
+    auth_log_path: "/var/log/auth.log"  # Fallback log source
+    poll_interval: 1.0             # Ring-buffer poll interval (seconds)
+
 # Custom Skills System (v4.0)
 skills:
   directory: "~/.omniclaw/skills"  # Drop .py files here for auto-discovery

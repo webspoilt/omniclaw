@@ -769,7 +769,7 @@
         <section class="hero">
             <div class="badge">
                 <div class="badge-dot"></div>
-                v4.0.0 — Security Sandbox, Skills & Scheduler
+                v4.1.0 — IPS Agent, Security Sandbox, Skills & Scheduler
             </div>
 
             <div class="typewriter-container">
@@ -831,6 +831,14 @@
                         network routing or exposed web hooks.</p>
                     <div class="card-link">Setup routing →</div>
                 </a>
+
+                <a href="#doc-ips" class="card">
+                    <div class="icon-container">🛡️</div>
+                    <h3>Autonomous IPS Agent</h3>
+                    <p>eBPF-backed intrusion prevention that traces TCP connections and SSH logins at kernel level.
+                        LLM classifies threats and autonomously blocks malicious IPs via iptables/nftables.</p>
+                    <div class="card-link">View IPS docs →</div>
+                </a>
             </div>
         </section>
 
@@ -877,6 +885,22 @@
                             monitoring network traffic at socket level.</li>
                         <li><b>Biometric Vibe Lock:</b> Voice/Keystroke trust scoring to unlock "Ghost Mode" tools.</li>
                         <li><b>Crypto Panic Switch:</b> Encrypts context memories onto blockchain networks.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="version-badge">v4.1.0</div>
+                    <h3>Autonomous IPS Agent</h3>
+                    <ul>
+                        <li><b>eBPF IPS Monitor:</b> Dedicated <code>monitor.bpf.c</code> program tracing
+                            <code>tcp_v4_connect</code> and <code>inet_csk_accept</code> with per-IP failure counting.
+                        </li>
+                        <li><b>LLM Threat Classifier:</b> AI-powered classification of brute-force, credential stuffing,
+                            and forgotten passwords — reducing false positives.</li>
+                        <li><b>Autonomous IP Blocking:</b> Executes iptables/nftables rules with dry-run safety and
+                            admin IP whitelist.</li>
+                        <li><b>6-Layer Security:</b> IPS integrated as Layer 6 in the unified SecurityLayer
+                            architecture.</li>
                     </ul>
                 </div>
             </div>
