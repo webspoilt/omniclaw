@@ -19,3 +19,6 @@
 3. **IPS Live Blocking**: The `ips_agent.py` autonomous IP blocking requires root privileges to execute `iptables`/`nftables` rules. On non-root or Termux, the agent falls back to dry-run logging only.
 4. **IPS LLM Classification**: Threat classification accuracy depends on LLM quality. Without API access or local Ollama, the agent uses a heuristic fallback that may produce occasional false positives on borderline cases.
 5. **IPS IPv6 Support**: The current `monitor.bpf.c` only traces `tcp_v4_connect` (IPv4). IPv6 support via `tcp_v6_connect` is planned for v4.2.
+6. **Evolution Agent Safety**: The `evolution_agent.py` auto-fix pipeline should be extended with a configurable confidence threshold — below which fixes are always sent for manual approval regardless of `manual_approval` setting.
+7. **Hive Sync Key Exchange**: The `hive_sync.py` P2P module currently uses a static pre-shared AES-256 key. A proper Diffie-Hellman key exchange or Vault-based key management is planned.
+8. **Scout Agent Tool Coverage**: Only subfinder, nmap, and nuclei are integrated. Additional tools (ffuf, whatweb, feroxbuster) are planned for v4.2.

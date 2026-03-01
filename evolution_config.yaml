@@ -1,0 +1,20 @@
+# evolution_config.yaml — Self-Evolving Code Janitor
+# Place in project root or set EVOLUTION_CONFIG env var
+
+log_dir: "./logs"
+source_dirs:
+  - "./core"
+  - "./kernel_bridge"
+
+llm_provider: "ollama"             # or "openai"
+llm_model: "codellama:latest"      # model name for ollama / openai
+ollama_url: "http://localhost:11434"
+openai_api_key: "sk-..."           # only needed for openai
+
+manual_approval: true              # review diffs before committing
+git_repo_path: "."                 # path to your git repository
+test_command: "pytest tests/"      # full test suite (optional)
+
+notification:
+  # telegram: "https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHAT_ID>"
+  # discord: "https://discord.com/api/webhooks/..."

@@ -1,0 +1,24 @@
+# hive_config.yaml — P2P Hive Sync Configuration
+# Place in project root or set HIVE_CONFIG env var
+
+# Node identity (must be unique in the hive)
+node_id: "mobile"            # or "desktop"
+
+# Listening port for this node
+listen_port: 5555
+
+# List of known peers (address:port)
+peers:
+  - "100.64.1.2:5555"         # Tailscale IP of the other node
+  # - "100.64.1.3:5555"       # additional nodes
+
+# Pre-shared AES-256 key (32 bytes, base64-encoded)
+aes_key: "dGhpc2lzMzJieXRla2V5Zm9yYWVzMjU2Z2NtISE="
+
+# Thresholds for load-based offloading
+cpu_threshold: 80.0            # offload LLM tasks if CPU > 80%
+memory_threshold: 90.0
+
+# Heartbeat settings
+heartbeat_interval: 5          # seconds between heartbeats
+peer_timeout: 15               # consider peer offline after this many seconds

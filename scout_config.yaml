@@ -1,0 +1,38 @@
+# scout_config.yaml — Automated Security Reconnaissance
+# Place in project root or set SCOUT_CONFIG env var
+
+blocklist:
+  - "127.0.0.1"
+  - "192.168.0.0/16"
+  - "10.0.0.0/8"
+  - "internal.company.com"
+  - "localhost"
+
+tools:
+  subfinder:
+    enabled: true
+    cmd: "subfinder"
+    timeout: 60
+  nmap:
+    enabled: true
+    cmd: "nmap"
+    timeout: 300
+    args: ["-sV", "-T4"]
+  nuclei:
+    enabled: true
+    cmd: "nuclei"
+    timeout: 600
+    args: ["-severity", "low,medium,high,critical", "-silent"]
+
+llm:
+  provider: "ollama"                # or "openai"
+  model: "llama2:latest"
+  ollama_url: "http://localhost:11434"
+  openai_api_key: ""                # set if using openai
+
+notification:
+  # telegram: "https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHAT_ID>"
+  # discord: "https://discord.com/api/webhooks/..."
+
+report:
+  output_dir: "./reports"

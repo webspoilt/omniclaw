@@ -173,6 +173,32 @@
 - **📋 JSON Action Log**: Every IPS action is logged to `ips_actions.jsonl` for the Manager agent to review and audit.
 - **📱 Termux/Mobile Fallback**: Gracefully degrades to `/var/log/auth.log` parsing or mock simulation when eBPF is unavailable.
 
+### 18. Self-Evolving Code Janitor (v4.1.0) 🧬
+- **📡 Log Monitoring**: Watchdog-based real-time monitoring of `./logs/` for `ERROR` and `CRITICAL` tracebacks.
+- **🔍 Traceback Parsing**: Extracts the faulty source file and line number from Python tracebacks.
+- **🧠 LLM Fix Proposal**: Sends error context + source code to an LLM (Ollama or OpenAI) and retrieves a corrected code block.
+- **🧪 Isolated Testing**: Creates a temporary copy, applies the fix, and runs an LLM-generated test to verify correctness.
+- **🌿 Git Integration**: Creates a `fix/<error-type>` branch and commits the change if tests pass.
+- **🔔 Notifications**: JSON payloads sent to Telegram/Discord webhooks.
+- **✋ Manual Approval**: Optional diff review before committing.
+- **💾 Safe I/O**: Atomic writes (`.tmp` → rename) with `.bak` backups. Duplicate prevention via hash store.
+
+### 19. P2P Hive Sync (v4.1.0) 🕸️
+- **🔗 ZeroMQ Mesh**: DEALER/ROUTER sockets for asynchronous peer-to-peer messaging between Mobile (Termux) and Desktop nodes.
+- **🔐 AES-256-GCM**: All payloads encrypted with a pre-shared key before transmission. Authenticated encryption prevents tampering.
+- **💗 Heartbeat**: Each node broadcasts CPU/memory load periodically. Peers detected as online/offline via configurable timeout.
+- **📦 Query Forwarding**: Forward FAISS vector DB searches to peers when local results are insufficient.
+- **⚡ LLM Offloading**: Automatically offload heavy LLM tasks to desktop when mobile CPU exceeds threshold.
+- **🔌 Integration Hooks**: Register callbacks for `on_query` and `on_offload` to plug in your own FAISS and LLM functions.
+
+### 20. Scout Agent — Security Recon (v4.1.0) 🕵️
+- **🎯 Target Validation**: Hard-coded blocklist (IPs, domains, CIDRs) prevents scanning unauthorized targets.
+- **🔧 Modular Tools**: Subfinder, Nmap, Nuclei integrated with a standard `SecurityTool` base class — easily extensible (e.g., ffuf, whatweb).
+- **🧠 LLM Analysis**: Tool outputs sent to LLM to identify "low-hanging fruit" vulnerabilities with severity classification.
+- **📄 Markdown Reports**: Timestamped `vulnerability_report_*.md` with summary, findings, and raw tool outputs.
+- **🚨 Instant Alerts**: Telegram/Discord notifications for any HIGH or CRITICAL findings.
+- **🛡️ Safety First**: Exits immediately if target matches blocklist. No automatic exploitation — advisory only.
+
 ## 🌐 Real-World Use Cases
 Wondering what you can actually build with an autonomous agent swarm? 
 Check out our **[Real-World Use Cases](USE_CASES.md)** document to see how engineers are using OmniClaw for:
@@ -445,6 +471,9 @@ omniclaw/
 │   │   ├── __init__.py
 │   │   ├── cron.py                 #   Persistent SQLite cron jobs
 │   │   └── heartbeat.py            #   HEARTBEAT.md-driven agent wake-up
+│   ├── evolution_agent.py          # 🧬 Self-Evolving Code Janitor (v4.1)
+│   ├── hive_sync.py                # 🕸️ P2P Hive Sync (v4.1)
+│   ├── scout_agent.py              # 🕵️ Security Recon Agent (v4.1)
 │   └── advanced_features/          # 🚀 Advanced Features Package
 │       ├── consciousness_collision.py
 │       ├── code_dna.py

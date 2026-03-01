@@ -839,6 +839,30 @@
                         LLM classifies threats and autonomously blocks malicious IPs via iptables/nftables.</p>
                     <div class="card-link">View IPS docs →</div>
                 </a>
+
+                <a href="#doc-evolution" class="card">
+                    <div class="icon-container">🧬</div>
+                    <h3>Self-Evolving Code Janitor</h3>
+                    <p>Monitors logs for tracebacks, asks an LLM for fixes, tests them in isolation, and
+                        commits to a fix/ branch. Atomic writes with .bak backups and duplicate prevention.</p>
+                    <div class="card-link">See how it heals →</div>
+                </a>
+
+                <a href="#doc-hive" class="card">
+                    <div class="icon-container">🕸️</div>
+                    <h3>P2P Hive Sync</h3>
+                    <p>ZeroMQ DEALER/ROUTER mesh with AES-256-GCM encryption. Heartbeat, FAISS query forwarding,
+                        and CPU-based LLM task offloading between Mobile and Desktop nodes.</p>
+                    <div class="card-link">Explore the mesh →</div>
+                </a>
+
+                <a href="#doc-scout" class="card">
+                    <div class="icon-container">🕵️</div>
+                    <h3>Scout Agent</h3>
+                    <p>Automated security recon with subfinder, nmap, and nuclei. LLM analyzes outputs for
+                        low-hanging fruit, generates markdown reports, and alerts on critical findings.</p>
+                    <div class="card-link">Read the recon docs →</div>
+                </a>
             </div>
         </section>
 
@@ -901,6 +925,45 @@
                             admin IP whitelist.</li>
                         <li><b>6-Layer Security:</b> IPS integrated as Layer 6 in the unified SecurityLayer
                             architecture.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="version-badge">v4.1.0</div>
+                    <h3>Self-Evolving Code Janitor</h3>
+                    <ul>
+                        <li><b>Watchdog Monitoring:</b> Detects ERROR/CRITICAL tracebacks in <code>./logs/</code> in
+                            real time.</li>
+                        <li><b>LLM Fix Proposal:</b> Sends error context + source to Ollama/OpenAI, extracts corrected
+                            code.</li>
+                        <li><b>Isolated Testing:</b> Temp directory + LLM-generated test verifies fix before commit.
+                        </li>
+                        <li><b>Git Auto-Commit:</b> Creates <code>fix/&lt;error-type&gt;</code> branches with atomic
+                            writes and .bak backups.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="version-badge">v4.1.0</div>
+                    <h3>P2P Hive Sync</h3>
+                    <ul>
+                        <li><b>ZeroMQ Mesh:</b> DEALER/ROUTER sockets for async peer-to-peer messaging.</li>
+                        <li><b>AES-256-GCM:</b> Pre-shared key encryption with authentication tags.</li>
+                        <li><b>LLM Offloading:</b> Automatically offload tasks when mobile CPU exceeds threshold.</li>
+                        <li><b>Heartbeat:</b> CPU/memory broadcast with online/offline peer detection.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="version-badge">v4.1.0</div>
+                    <h3>Scout Agent</h3>
+                    <ul>
+                        <li><b>Modular Tools:</b> subfinder, nmap, nuclei with standard <code>SecurityTool</code> base
+                            class.</li>
+                        <li><b>LLM Analysis:</b> Identifies low-hanging-fruit vulnerabilities with severity
+                            classification.</li>
+                        <li><b>Markdown Reports:</b> Timestamped reports with summary, findings, and raw output.</li>
+                        <li><b>Instant Alerts:</b> Telegram/Discord notifications for HIGH/CRITICAL findings.</li>
                     </ul>
                 </div>
             </div>
