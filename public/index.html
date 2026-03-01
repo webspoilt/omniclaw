@@ -769,7 +769,7 @@
         <section class="hero">
             <div class="badge">
                 <div class="badge-dot"></div>
-                v4.1.0 — IPS Agent, Security Sandbox, Skills & Scheduler
+                v4.2.0 — IPS Agent, Security Sandbox, Skills & Scheduler
             </div>
 
             <div class="typewriter-container">
@@ -863,6 +863,30 @@
                         low-hanging fruit, generates markdown reports, and alerts on critical findings.</p>
                     <div class="card-link">Read the recon docs →</div>
                 </a>
+
+                <a href="#doc-mesh" class="card">
+                    <div class="icon-container">🧠</div>
+                    <h3>Neural Mesh Protocol</h3>
+                    <p>Capability-based P2P mesh with typed protocol, task offloading,
+                        and cross-node knowledge queries over AES-256-GCM.</p>
+                    <div class="card-link">Explore neural mesh →</div>
+                </a>
+
+                <a href="#doc-vision" class="card">
+                    <div class="icon-container">👁️</div>
+                    <h3>Vision Module</h3>
+                    <p>Cross-platform screen capture, Termux camera, and plant health
+                        analysis powered by multimodal LLMs.</p>
+                    <div class="card-link">See the vision →</div>
+                </a>
+
+                <a href="#doc-memory" class="card">
+                    <div class="icon-container">💾</div>
+                    <h3>Memory Module</h3>
+                    <p>LanceDB vector store + NetworkX knowledge graph for semantic
+                        search and structured reasoning across the hive.</p>
+                    <div class="card-link">Browse memory docs →</div>
+                </a>
             </div>
         </section>
 
@@ -913,7 +937,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="version-badge">v4.1.0</div>
+                    <div class="version-badge">v4.2.0</div>
                     <h3>Autonomous IPS Agent</h3>
                     <ul>
                         <li><b>eBPF IPS Monitor:</b> Dedicated <code>monitor.bpf.c</code> program tracing
@@ -929,7 +953,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="version-badge">v4.1.0</div>
+                    <div class="version-badge">v4.2.0</div>
                     <h3>Self-Evolving Code Janitor</h3>
                     <ul>
                         <li><b>Watchdog Monitoring:</b> Detects ERROR/CRITICAL tracebacks in <code>./logs/</code> in
@@ -944,7 +968,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="version-badge">v4.1.0</div>
+                    <div class="version-badge">v4.2.0</div>
                     <h3>P2P Hive Sync</h3>
                     <ul>
                         <li><b>ZeroMQ Mesh:</b> DEALER/ROUTER sockets for async peer-to-peer messaging.</li>
@@ -955,7 +979,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="version-badge">v4.1.0</div>
+                    <div class="version-badge">v4.2.0</div>
                     <h3>Scout Agent</h3>
                     <ul>
                         <li><b>Modular Tools:</b> subfinder, nmap, nuclei with standard <code>SecurityTool</code> base
@@ -964,6 +988,22 @@
                             classification.</li>
                         <li><b>Markdown Reports:</b> Timestamped reports with summary, findings, and raw output.</li>
                         <li><b>Instant Alerts:</b> Telegram/Discord notifications for HIGH/CRITICAL findings.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="version-badge">v4.2.0</div>
+                    <h3>Neural Mesh & Orchestrator</h3>
+                    <ul>
+                        <li><b>P2P Neural Mesh:</b> Typed protocol with capability heartbeat, task offloading, and
+                            knowledge queries.</li>
+                        <li><b>Vision Module:</b> Screen capture (X11/Wayland/Android), Termux camera, plant health
+                            analysis.</li>
+                        <li><b>Memory Module:</b> LanceDB vectors + NetworkX graph for unified knowledge layer.</li>
+                        <li><b>Orchestrator Daemon:</b> <code>core/main.py</code> boots all workers with kill switch and
+                            resource gating.</li>
+                        <li><b>Genesis Evolution:</b> Telemetry collection, LLM-suggested refactoring with safety
+                            backups.</li>
                     </ul>
                 </div>
             </div>

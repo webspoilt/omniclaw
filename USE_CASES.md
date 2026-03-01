@@ -186,3 +186,76 @@ OmniClaw's v4.1 IPS Agent combines kernel-level eBPF tracing with LLM-powered th
 5. **Safety First:** Dry-run mode is enabled by default, and your admin IP is whitelisted so you can never lock yourself out. Every action is logged to `ips_actions.jsonl` for the Manager agent to audit.
 
 > *You wake up to a Telegram message: "🛡️ IPS blocked 3 IPs overnight (brute_force). 47 login attempts neutralized. Your SSH is secure."*
+
+---
+
+## 🕳️ Use Case 12: Shadow Shell Honeypot (Proactive Defense)
+
+**The Problem:** Traditional firewalls block attackers, but you learn nothing about their intent. Were they after credentials? Crypto-mining? Data exfiltration? Without intelligence, you can't adapt.
+
+**The OmniClaw Solution:**
+OmniClaw's Shadow Shell honeypot redirects repeat SSH offenders to a fake terminal that logs every command and uses an LLM to classify attacker intent.
+
+**How it works:**
+1. **eBPF Detection:** The `honeypot.cpp` XDP program counts per-IP SSH attempts in kernel space. When the threshold (5) is exceeded, the IP is flagged.
+2. **TPROXY Redirect:** `iptables_helper.py` reads the eBPF attack map via `bpftool` and inserts TPROXY rules — silently redirecting the attacker to port 2222.
+3. **Fake Shell:** `shadow_shell.py` presents a convincing Linux terminal (fake `whoami`, `ls`, `cat /etc/passwd`) while logging every keystroke.
+4. **LLM Intent Analysis:** After the session ends, the command log is sent to an LLM which classifies intent (recon, privilege escalation, data exfil, crypto-mining) and threat level (LOW/MEDIUM/HIGH).
+5. **Intelligence:** Session logs are saved as JSON in `logs/honeypot/` — building an attacker behavior database for future defense tuning.
+
+> *The attacker thinks they're root on your server. Meanwhile, OmniClaw is taking notes.*
+
+---
+
+## 🕸️ Use Case 13: Cross-Node Knowledge Sync (P2P Neural Mesh)
+
+**The Problem:** Your mobile Termux agent discovers useful context (a FAISS embedding, a code fix, a scraped notification) — but your desktop agent doesn't know about it. Each node is an island.
+
+**The OmniClaw Solution:**
+The P2P Neural Mesh connects all your nodes into a unified knowledge hive with encrypted communication.
+
+**How it works:**
+1. **Mesh Protocol:** Each node runs a `NeuralMeshNode` with ZeroMQ ROUTER/DEALER sockets. Messages follow a typed schema (HEARTBEAT, TASK_REQUEST, KNOWLEDGE_QUERY, SYNC_DATA).
+2. **Capability Heartbeat:** Every 5 seconds, nodes broadcast CPU/memory load and available LLM models. The mesh knows which node can handle what.
+3. **Knowledge Queries:** When you search your vector store for "how did we fix the auth bug?", the query fans out to all online peers — combining results from LanceDB and NetworkX across the hive.
+4. **Task Offloading:** Your phone's CPU is at 90%? The mesh automatically routes the LLM inference to your idle desktop node. Zero manual intervention.
+5. **AES-256-GCM:** Every byte is authenticated and encrypted with a pre-shared key. Even on public networks (Tailscale), content is safe.
+
+> *Your phone captures a photo at the coffee shop. Seconds later, your desktop's GPU is analyzing it with llava — results appear on both devices.*
+
+---
+
+## 🧬 Use Case 14: Self-Evolving Codebase (Genesis + Evolution Agent)
+
+**The Problem:** Your agent crashes at 3 AM because of a `KeyError` in a rarely-tested edge case. You don't notice until morning. Meanwhile, the same error floods the logs 47 times.
+
+**The OmniClaw Solution:**
+The Evolution Agent monitors logs in real-time and fixes crashes autonomously, while Genesis collects performance telemetry and suggests strategic refactoring.
+
+**How it works:**
+1. **Watchdog:** `evolution_agent.py` watches `./logs/` for any `.log` file changes. When a traceback containing `ERROR` or `CRITICAL` appears, it extracts the faulty file and line number.
+2. **LLM Fix:** The error context + source code is sent to CodeLlama. The LLM returns a corrected version of the entire file.
+3. **Sandbox Test:** The fix is written to a temp directory alongside an LLM-generated test script. If the test prints `TEST PASSED` and exits cleanly, we proceed.
+4. **Git Commit:** A `fix/<error-type>-<timestamp>` branch is created, the fix is committed with a descriptive message, and a Telegram notification is sent.
+5. **Deduplication:** A SHA-256 hash store prevents the same traceback from being processed twice.
+6. **Genesis Layer:** Hourly, `genesis.py` analyzes accumulated telemetry (latency, error rates, memory usage) and suggests broader refactoring — with kill switch safety and `.genesis.bak` backups.
+
+> *You wake up to find a clean `fix/KeyError-1709312400` branch with a passing test. The agent fixed itself while you slept.*
+
+---
+
+## 🌱 Use Case 15: Multimodal Plant Guardian (Vision + Sensors)
+
+**The Problem:** Your money plant is slowly dying and you can't figure out why. By the time you notice the yellowing, it's too late.
+
+**The OmniClaw Solution:**
+The Plant Monitor uses your phone's camera and a multimodal LLM to diagnose leaf health daily and send care recommendations.
+
+**How it works:**
+1. **Termux Camera:** `termux_camera.py` captures a photo of your plant using the back camera via `termux-camera-photo`.
+2. **Base64 Encoding:** The image is encoded and sent to a multimodal LLM (llava via Ollama).
+3. **Health Analysis:** `plant_health.py` asks the LLM to rate health (Good/Fair/Poor), identify diseases, pests, or discoloration, and provide specific care recommendations.
+4. **Resource-Aware:** On mobile, the monitor only runs when battery > 20%, CPU < 70%, and memory < 80%. If resources are tight, it skips and retries later.
+5. **Knowledge Graph:** Results are stored in the unified knowledge graph — so you can query "how has my plant been doing this month?" across sessions.
+
+> *Telegram at 8 AM: "🌱 Money Plant: Fair — slight nitrogen deficiency showing as yellowing on lower leaves. Recommendation: dilute liquid fertilizer (10-10-10) once this week."*

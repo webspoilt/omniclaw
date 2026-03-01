@@ -1,0 +1,14 @@
+{
+    "peers": [
+        {
+            "node_id": "desktop",
+            "address": "100.64.1.2:5555",
+            "note": "Asus TUF via Tailscale"
+        },
+        {
+            "node_id": "mobile",
+            "address": "100.64.1.3:5555",
+            "note": "Poco X3 via Tailscale"
+        }
+    ]
+}

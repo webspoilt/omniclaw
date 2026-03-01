@@ -7,13 +7,14 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-4.1.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-v4.2.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
+  <img src="https://img.shields.io/badge/status-active-brightgreen.svg?style=for-the-badge" alt="Status">
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&logo=open-source-initiative" alt="License">
   </a>
   <a href="https://python.org">
-    <img src="https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+    <img src="https://img.shields.io/badge/python-3.9%2B-yellow.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python">
   </a>
   <a href="https://buymeacoffee.com/webspoilt">
     <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee">
@@ -198,6 +199,29 @@
 - **📄 Markdown Reports**: Timestamped `vulnerability_report_*.md` with summary, findings, and raw tool outputs.
 - **🚨 Instant Alerts**: Telegram/Discord notifications for any HIGH or CRITICAL findings.
 - **🛡️ Safety First**: Exits immediately if target matches blocklist. No automatic exploitation — advisory only.
+
+### 21. Neural Mesh Protocol (v4.2.0) 🧠
+- **🕸️ ZeroMQ Mesh**: ROUTER/DEALER P2P with capability-based heartbeat (CPU, memory, available models).
+- **📡 Task Offloading**: Route LLM inference or heavy compute to the least-loaded peer.
+- **📚 Knowledge Queries**: Cross-node vector/graph search via unified protocol.
+- **🔐 AES-256-GCM**: All messages encrypted with pre-shared key.
+- **📄 Typed Protocol**: `protocol.py` with dataclass messages and enum types (HEARTBEAT, TASK_REQUEST, KNOWLEDGE_QUERY, SYNC).
+
+### 22. Vision Module (v4.2.0) 👁️
+- **📱 Computer Use**: Cross-platform screen capture (X11/Wayland/macOS/Windows/Termux) with multimodal LLM analysis.
+- **📷 Termux Camera**: Capture via `termux-camera-photo` with base64 encoding and LLM analysis.
+- **🌱 Plant Health**: Leaf disease detection, pest identification, and care recommendations from plant images.
+
+### 23. Memory Module (v4.2.0) 🧠
+- **💾 Vector Store**: LanceDB wrapper for embedding storage and similarity search with in-memory fallback.
+- **📊 Graph Store**: NetworkX directed graph with JSON persistence for entity relationships.
+- **🔗 Knowledge Graph**: Unified layer combining vector similarity + relationship traversal.
+
+### 24. Orchestrator Daemon (v4.2.0) 🏛️
+- **🚀 Unified Startup**: `core/main.py` daemon that boots all workers based on node type (desktop vs mobile).
+- **🛡️ Kill Switch**: Global halt for all autonomous shell execution — toggleable via MCP.
+- **📈 Resource Gating**: Battery/CPU/memory checks before every heavy operation on mobile.
+- **🧬 Genesis**: Self-evolution agent that collects telemetry and suggests refactoring.
 
 ## 🌐 Real-World Use Cases
 Wondering what you can actually build with an autonomous agent swarm? 
@@ -491,6 +515,27 @@ omniclaw/
 ├── skills/                       # 📦 Sample skills
 │   └── sample_weather.py         #   Example @tool skill
 ├── kernel_bridge/                # C++/eBPF kernel monitor + IPS
+├── modules/                      # 🧩 Feature Modules (v4.1)
+│   ├── evolution/                #   Self-healing code janitor
+│   │   ├── evolution_agent.py
+│   │   ├── sandbox.py
+│   │   └── config.yaml
+│   ├── security/                 #   Shadow shell honeypot
+│   │   ├── honeypot.cpp
+│   │   ├── shadow_shell.py
+│   │   └── iptables_helper.py
+│   ├── scholar/                  #   Exam war-room scholar
+│   │   ├── exam_intelligence.py
+│   │   └── scholar_config.json
+│   ├── startup/                  #   DevOps autopilot
+│   │   └── saas_manager.py
+│   └── sensors/                  #   Bio-guardian
+│       └── plant_monitor.py
+├── connectors/                   # 🔌 MCP + integrations
+│   └── mcp_host.py               #   MCP server (fastmcp)
+├── p2p/                          # 🕸️ P2P hive network
+│   ├── crypto.py                 #   AES-256-GCM helpers
+│   └── peers.json                #   Known peer list
 ├── mobile_app/                   # React Native super-app
 ├── omniclaw.py                   # Main entry point
 ├── setup.sh                      # One-click installer

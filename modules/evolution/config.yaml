@@ -1,0 +1,10 @@
+# modules/evolution/config.yaml — Self-Healing Code Janitor
+log_dir: "logs"
+source_dirs:
+  - "core"
+  - "kernel_bridge"
+sandbox_dir: "/tmp/omniclaw_sandbox"
+git_repo: "."
+llm_model: "codellama:latest"
+ollama_url: "http://localhost:11434"
+manual_approval: true
