@@ -37,6 +37,21 @@ Native Windows is NOT supported for the kernel bridge. You must use WSL2 (Ubuntu
 
 ---
 
+## Optional Feature Dependencies
+
+Some OmniClaw features require additional packages not listed in the core `requirements.txt`:
+
+| Package | Feature | Install |
+|---|---|---|
+| `croniter>=1.4.0` | Cron expression scheduling (CronScheduler) | `pip install croniter` |
+| `mss>=9.0.0` | Cross-platform screen capture (Vision module) | `pip install mss` |
+| `lancedb>=0.6.0` | Vector store memory backend | `pip install lancedb` |
+| `networkx>=3.0` | Knowledge graph memory backend | `pip install networkx` |
+
+> **Note (Issue #16):** `croniter` is optional. Without it, the CronScheduler will skip cron-expression jobs and only run interval-based jobs. A warning will be logged.
+
+---
+
 ## Next Steps
 Once these system dependencies are installed, you can proceed with the standard Python environment setup:
 ```bash
@@ -46,4 +61,7 @@ source .venv/bin/activate
 
 # 2. Install Python requirements
 pip install -r requirements.txt
+
+# 3. (Optional) Install extra feature deps
+pip install croniter mss lancedb networkx
 ```

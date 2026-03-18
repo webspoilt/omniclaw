@@ -63,8 +63,45 @@ class NeuralMeshNode:
 
     def __init__(self, node_id: str, listen_port: int,
                  peers: List[str], aes_key: bytes):
+        """
+        Initialize NeuralMeshNode.
+
+        Args:
+            node_id: Unique identifier for this node
+            listen_port: TCP port to bind the ROUTER socket
+            peers: List of "host:port" peer addresses to connect as DEALERs
+            aes_key: 32-byte AES-256-GCM key for wire encryption
+
+        .. warning:: **Issue #20 — Static AES key limitation.**
+            The current implementation uses a single pre-shared AES-256-GCM
+            key for all peer connections.  This means key compromise affects
+            the entire mesh.  A proper Diffie-Hellman ECDH key exchange is
+            planned for v4.3.  In the meantime, rotate the key via the
+            ``AES_KEY`` environment variable and never commit it to source
+            control.
+        """
         if not HAS_ZMQ:
             raise ImportError("pyzmq required: pip install pyzmq")
+
+        # Warn if using the hardcoded demo key from __main__
+        _DEMO_KEY_B64 = "dGhpc2lzMzJieXRla2V5Zm9yYWVzMjU2Z2NtISE="
+        try:
+            import base64
+            if aes_key == base64.b64decode(_DEMO_KEY_B64):
+                import warnings
+                warnings.warn(
+                    "NeuralMeshNode: using the default demo AES key — "
+                    "set AES_KEY env var to a real 32-byte key before "
+                    "deploying! (Issue #20)",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                logger.warning(
+                    "SECURITY: NeuralMesh is using the default demo AES key. "
+                    "Set AES_KEY to a real 32-byte base64-encoded secret."
+                )
+        except Exception:
+            pass
 
         self.node_id = node_id
         self.listen_port = listen_port

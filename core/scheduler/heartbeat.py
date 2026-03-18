@@ -64,7 +64,18 @@ class HeartbeatService:
 
         Args:
             workspace: Path to workspace directory
-            llm_callback: Async function to call LLM with messages and tools
+            llm_callback: Async callable used in Phase 1 (decision) to query the
+                LLM with messages + tool schema.  Signature::
+
+                    async def cb(messages: list[dict], tools: list[dict]) -> Any
+
+                **Fallback behaviour (Issue #17):** If ``llm_callback`` is ``None``
+                (e.g., no API key configured), heartbeat switches to *keyword
+                detection* mode.  It scans HEARTBEAT.md for any of the words
+                ``TODO``, ``TASK``, ``ACTIVE``, ``PENDING``, or ``IN PROGRESS``
+                (case-insensitive) and returns ``'run'`` if found.  This ensures
+                the heartbeat still functions without an LLM, at the cost of
+                reduced decision quality.
             on_execute: Async callback to execute tasks through agent loop
             on_notify: Async callback to deliver results to user
             interval_s: Heartbeat interval in seconds (default 30 min)
@@ -80,6 +91,8 @@ class HeartbeatService:
         self._task: Optional[asyncio.Task] = None
         self._tick_count = 0
         self._last_action = "none"
+        _mode = "LLM" if llm_callback else "keyword-detection (no LLM callback)"
+        logger.info(f"HeartbeatService initialized in {_mode} mode")
 
     @property
     def heartbeat_file(self) -> Path:

@@ -5,6 +5,28 @@ All notable changes to the OmniClaw project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.0] - "Sovereign Mesh" - 2026-03-18
+
+### Fixed
+- **#14 ShellSandbox Windows Paths**: `_safe_env()` now returns Windows-appropriate `System32` PATH and `COMSPEC` instead of Unix-only `/usr/local/bin` and `/bin/sh`. Cross-platform safe.
+- **#15 SkillLoader os.getuid()**: Added explicit clarifying comment confirming the `os.name != 'nt'` guard prevents any `os.getuid()` call on Windows.
+
+### Added
+- **#19 Health Check Server** (`core/health_server.py`): Lightweight async HTTP server exposing `GET /health` with uptime, system metrics, and module status. Uses `aiohttp` if available, pure asyncio socket fallback.
+- **#21 Screen Capture** (`modules/vision/screen_capture.py`): Cross-platform screen capture with `mss` (fastest), `PIL.ImageGrab`, and CLI tool fallbacks. API mirrors `TermuxCamera`. Headless detection prevents hang in CI.
+- **#24 Shadow Shell Honeypot** (`modules/security/honeypot.py`): Asyncio TCP decoy shell on port 2222. Logs all attacker activity to `logs/honeypot.log`. Realistic canned responses for `ls`, `whoami`, `cat /etc/passwd`, etc.
+- **#18 MCP Server Expansion**: Added `get_scheduler_status`, `get_evolution_status`, and `get_mesh_peers` MCP tools. Fixed `plant://latest_health` to read from disk. Fixed `pm2 not found` error handling.
+- **#26 PM2Monitor + LeadStore**: Structured `PM2Monitor` class with `get_status()`, `get_process()`, `restart()`. `LeadStore` for JSON-persisted lead tracking.
+- **#25 Exam Scheduler Integration**: `ExamScholar.schedule_reminders(cron_scheduler)` registers daily 07:00 briefings and Monday countdown notifications with `CronScheduler`. Added `generate_practice_question(topic)` and `get_next_deadline()` for MCP integration.
+- **#27 Orchestrator Daemon Wiring**: `core/main.py` now accepts `--no-mcp`, `--no-health`, `--no-mesh` CLI flags. Health server and honeypot started automatically. Kill switch logs timestamp on trigger.
+
+### Changed
+- **#16 CronScheduler Docs**: `INSTALLATION.md` now has Optional Feature Dependencies table; `croniter`, `mss`, `lancedb`, `networkx` documented with install commands.
+- **#17 Heartbeat LLM Fallback**: `HeartbeatService.__init__` docstring now fully documents keyword-detection fallback mode. Startup log indicates whether LLM or keyword mode is active.
+- **#20 Neural Mesh AES Key Warning**: `NeuralMeshNode` now emits `DeprecationWarning` and a log warning if the default demo AES key is detected. DH key exchange roadmap added to docstring.
+- **#22 Memory Module Docs**: `vector_store.py` and `graph_store.py` already had proper `try/except` fallbacks — confirmed and noted in INSTALLATION.md.
+- **#23 Evolution Confidence Threshold**: `evolution_agent.py` now has `confidence_threshold: 0.7` config key. `_estimate_confidence()` scores fixes by line similarity; low-confidence fixes force manual approval with score display.
+
 ## [3.2.0] - "Sovereign Sentinel" - 2026-02-26
 
 ### Added

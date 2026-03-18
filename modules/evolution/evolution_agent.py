@@ -55,6 +55,11 @@ _DEFAULTS = {
     "llm_model": "codellama:latest",
     "ollama_url": "http://localhost:11434",
     "manual_approval": True,
+    # Issue #23: auto-fix confidence threshold.
+    # Fixes below this score ALWAYS require manual approval regardless of
+    # the `manual_approval` config setting, preventing risky low-confidence
+    # patches from being applied automatically.
+    "confidence_threshold": 0.7,
 }
 
 
@@ -73,6 +78,38 @@ GIT_REPO    = Path(config["git_repo"])
 LLM_MODEL   = config["llm_model"]
 OLLAMA_URL  = config.get("ollama_url", "http://localhost:11434")
 MANUAL_APPROVAL = config.get("manual_approval", True)
+CONFIDENCE_THRESHOLD = float(config.get("confidence_threshold", 0.7))
+
+
+def _estimate_confidence(original_code: str, fixed_code: str) -> float:
+    """Estimate fix confidence as ratio of meaningful changed lines.
+
+    Heuristic: if too many lines changed (>50%) or the fix is very short,
+    the LLM may be hallucinating. Returns a score in [0, 1].
+    High score = small, targeted change = higher confidence.
+
+    Args:
+        original_code: The original source code.
+        fixed_code: The LLM-proposed fixed code.
+
+    Returns:
+        float in [0.0, 1.0]
+    """
+    orig_lines = [l.strip() for l in original_code.splitlines() if l.strip()]
+    fixed_lines = [l.strip() for l in fixed_code.splitlines() if l.strip()]
+    if not orig_lines or not fixed_lines:
+        return 0.1  # empty = very low confidence
+    # How similar in length are they?
+    len_ratio = min(len(fixed_lines), len(orig_lines)) / max(len(orig_lines), len(fixed_lines))
+    # How many lines are identical?
+    orig_set = set(orig_lines)
+    fixed_set = set(fixed_lines)
+    shared = len(orig_set & fixed_set)
+    total = max(len(orig_set | fixed_set), 1)
+    similarity = shared / total
+    # Confidence: weighted average
+    score = 0.4 * len_ratio + 0.6 * similarity
+    return round(max(0.0, min(1.0, score)), 3)
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -226,9 +263,21 @@ if HAS_WATCHDOG:
                 return
             fixed = _extract_code(resp)
 
+            # Confidence gate (Issue #23)
+            code = read_safe(src)
+            confidence = _estimate_confidence(code, fixed)
+            require_approval = MANUAL_APPROVAL
+            if confidence < CONFIDENCE_THRESHOLD:
+                require_approval = True
+                logger.warning(
+                    f"Confidence {confidence:.2f} < threshold {CONFIDENCE_THRESHOLD:.2f} "
+                    f"— forcing manual approval for fix on {src.name}"
+                )
+
             # Manual approval
-            if MANUAL_APPROVAL:
+            if require_approval:
                 print("\n--- Proposed Fix ---\n", fixed)
+                print(f"[Confidence estimate: {confidence:.2f} / threshold: {CONFIDENCE_THRESHOLD:.2f}]")
                 if input("Apply? (y/n): ").strip().lower() != "y":
                     return
 

@@ -46,7 +46,9 @@ class SkillLoader:
             logger.debug(f"Skills directory not found: {self.skills_dir}")
             return 0
 
-        # Validate directory safety on Unix
+        # Validate directory safety on Unix only.
+        # os.getuid() / stat.st_uid are not available on Windows (os.name == 'nt').
+        # Fixes GitHub issue #15: SkillLoader os.getuid() not available on Windows.
         if os.name != "nt":
             try:
                 import stat
@@ -65,7 +67,7 @@ class SkillLoader:
             if py_file.name.startswith("_"):
                 continue
 
-            # Validate file safety on Unix
+            # Validate file safety on Unix only (same reasoning as above).
             if os.name != "nt":
                 try:
                     import stat

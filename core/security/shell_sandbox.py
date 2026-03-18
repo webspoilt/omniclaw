@@ -228,16 +228,46 @@ class ShellSandbox:
 
         return ShellResult(output=output, exit_code=process.returncode or 0)
 
-    _SAFE_PATH = "/usr/local/bin:/usr/bin:/bin"
-
     def _safe_env(self) -> dict[str, str]:
-        """Create stripped environment without sensitive variables."""
-        ALLOWED_VARS = ["USER", "LANG", "LC_ALL", "TERM"]
-        safe = {}
-        for var in ALLOWED_VARS:
-            if var in os.environ:
-                safe[var] = os.environ[var]
-        safe["PATH"] = self._SAFE_PATH
-        safe["HOME"] = str(self.workspace)
-        safe["SHELL"] = "/bin/sh"
+        """Create stripped environment without sensitive variables.
+
+        Returns a minimal, sanitized environment for subprocess execution.
+        On Unix: restricts PATH to system dirs and sets SHELL=/bin/sh.
+        On Windows: uses System32 PATH and sets COMSPEC to cmd.exe.
+        NOTE: This method is only called on Unix systems (inside the
+        ``else`` branch of the execute() method), but is kept
+        cross-platform-safe so class introspection and future refactors
+        do not accidentally surface Unix-only constants on Windows.
+        """
+        if os.name == "nt":
+            # Windows-safe minimal environment
+            sys_root = os.environ.get("SystemRoot", r"C:\Windows")
+            safe: dict[str, str] = {
+                "PATH": (
+                    f"{sys_root}\\System32;"
+                    f"{sys_root};"
+                    f"{sys_root}\\System32\\Wbem"
+                ),
+                "SYSTEMROOT": sys_root,
+                "TEMP": str(self.workspace),
+                "TMP": str(self.workspace),
+                "USERPROFILE": str(self.workspace),
+                "COMSPEC": os.environ.get(
+                    "COMSPEC", f"{sys_root}\\System32\\cmd.exe"
+                ),
+            }
+            # Pass through non-sensitive vars if present
+            for var in ("LANG", "LC_ALL"):
+                if var in os.environ:
+                    safe[var] = os.environ[var]
+        else:
+            # Unix: restrict to minimal safe PATH
+            ALLOWED_VARS = ["USER", "LANG", "LC_ALL", "TERM"]
+            safe = {}
+            for var in ALLOWED_VARS:
+                if var in os.environ:
+                    safe[var] = os.environ[var]
+            safe["PATH"] = "/usr/local/bin:/usr/bin:/bin"
+            safe["HOME"] = str(self.workspace)
+            safe["SHELL"] = "/bin/sh"
         return safe

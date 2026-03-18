@@ -4,20 +4,28 @@ main.py — OmniClaw v4.2 Orchestrator Daemon
 
 Unified event loop that starts all workers:
   - P2P neural mesh
-  - Shadow shell honeypot
+  - Shadow shell honeypot (Issue #24 / #27)
   - Computer vision / Termux camera
-  - MCP server
+  - MCP server (Issue #18 / #27)
+  - Health check HTTP server (Issue #19 / #27)
   - Genesis self-evolution
   - Knowledge graph
+
+CLI flags:
+  --health    Start the health server on port 8080 (configurable)
+  --mcp       Start the MCP server on port 8000 (configurable)
+  --no-mesh   Skip P2P neural mesh startup
 
 Conditional startup based on node type (desktop vs mobile).
 """
 
+import asyncio
 import os
 import sys
 import time
 import threading
 import logging
+from datetime import datetime
 from pathlib import Path
 
 try:
@@ -121,15 +129,20 @@ class OmniClawDaemon:
         except Exception as e:
             logger.warning(f"Mesh init failed: {e}")
 
-    def _start_desktop_modules(self):
-        # Shadow shell honeypot
-        try:
-            from modules.security.shadow_shell import ShadowShell
-            t = threading.Thread(target=ShadowShell().start, daemon=True)
-            t.start()
-            logger.info("Shadow shell started")
-        except Exception as e:
-            logger.warning(f"Shadow shell: {e}")
+    def _start_desktop_modules(self, enable_honeypot: bool = True):
+        # Shadow shell honeypot (Issue #24 — uses proper ShadowShellHoneypot)
+        if enable_honeypot:
+            try:
+                from modules.security.honeypot import ShadowShellHoneypot
+
+                def _run_honeypot():
+                    asyncio.run(ShadowShellHoneypot(port=2222).start())
+
+                t = threading.Thread(target=_run_honeypot, daemon=True)
+                t.start()
+                logger.info("Shadow shell honeypot started on :2222")
+            except Exception as e:
+                logger.warning(f"Honeypot: {e}")
 
         # Computer vision
         try:
@@ -160,19 +173,36 @@ class OmniClawDaemon:
         except Exception as e:
             logger.warning(f"TermuxCamera: {e}")
 
-    def _start_mcp(self):
+    def _start_mcp(self, port: int = 8000):
+        """Start MCP server in a background thread (Issue #18 / #27)."""
         try:
             from connectors.mcp_host import app
             t = threading.Thread(
-                target=lambda: app.run(host="0.0.0.0", port=8000),
+                target=lambda: app.run(host="0.0.0.0", port=port),
                 daemon=True,
             )
             t.start()
-            logger.info("MCP server on :8000")
+            logger.info(f"MCP server on :{port}")
         except Exception as e:
             logger.warning(f"MCP: {e}")
 
-    def start(self):
+    def _start_health_server(self, port: int = 8080):
+        """Start the health check HTTP server in a background thread (Issue #19 / #27)."""
+        try:
+            from core.health_server import HealthServer
+
+            def _run_health():
+                hs = HealthServer(host="0.0.0.0", port=port)
+                asyncio.run(hs.start())
+
+            t = threading.Thread(target=_run_health, daemon=True)
+            t.start()
+            logger.info(f"Health server on http://0.0.0.0:{port}/health")
+        except Exception as e:
+            logger.warning(f"HealthServer: {e}")
+
+    def start(self, enable_mcp: bool = True, enable_health: bool = True,
+              enable_mesh: bool = True):
         self.running = True
         logger.info(f"OmniClaw v4.2.0 starting (node={self.node_id})")
 
@@ -189,14 +219,19 @@ class OmniClawDaemon:
             except Exception as e:
                 logger.warning(f"Secure Enclave bypassed (Hardware missing/unconfigured): {e}")
 
-        self._start_mesh()
+        if enable_mesh:
+            self._start_mesh()
 
         if self.is_mobile:
             self._start_mobile_modules()
         else:
             self._start_desktop_modules()
 
-        self._start_mcp()
+        if enable_mcp:
+            self._start_mcp(port=self.config.get("mcp_port", 8000))
+
+        if enable_health:
+            self._start_health_server(port=self.config.get("health_port", 8080))
 
         # Main loop
         try:
@@ -207,7 +242,8 @@ class OmniClawDaemon:
         except KeyboardInterrupt:
             self.stop()
         except RuntimeError as e:
-            logger.error(f"Kill switch: {e}")
+            ts = datetime.utcnow().isoformat(timespec='seconds')
+            logger.error(f"Kill switch triggered at {ts}: {e}")
             self.stop()
 
     def stop(self):
@@ -221,4 +257,15 @@ class OmniClawDaemon:
 
 
 if __name__ == "__main__":
-    OmniClawDaemon().start()
+    import argparse
+    parser = argparse.ArgumentParser(description="OmniClaw v4.2 Orchestrator Daemon")
+    parser.add_argument("--no-mcp", action="store_true", help="Disable MCP server")
+    parser.add_argument("--no-health", action="store_true", help="Disable health server")
+    parser.add_argument("--no-mesh", action="store_true", help="Disable P2P mesh")
+    args = parser.parse_args()
+
+    OmniClawDaemon().start(
+        enable_mcp=not args.no_mcp,
+        enable_health=not args.no_health,
+        enable_mesh=not args.no_mesh,
+    )
