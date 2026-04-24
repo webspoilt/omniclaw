@@ -20,6 +20,12 @@ Your autonomous AI agent swarm for Linux. Deploy multiple AI models that collabo
   </a>
 </p>
 
+### ⚡ One-Click Install
+Deploy the autonomous swarm instantly on Linux or Termux:
+```bash
+curl -fsSL https://omniclaw.vercel.app/setup.sh | bash
+```
+
 ---
 
 ## 🚀 Quick Start

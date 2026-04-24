@@ -425,14 +425,12 @@
                 <a href="https://github.com/webspoilt/omniclaw">GitHub</a>
             </div>
             <div style="display: flex; gap: 12px; align-items: center;">
-                <a href="https://github.com/webspoilt/omniclaw" class="btn-github">
-                    <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
-                    Star
-                </a>
+                <a class="github-button" href="https://github.com/webspoilt/omniclaw" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star webspoilt/omniclaw on GitHub">Star</a>
                 <button class="nav-cta" onclick="document.getElementById('install').scrollIntoView({behavior: 'smooth'})">Get Started</button>
             </div>
         </div>
     </nav>
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -496,8 +494,12 @@
             
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; text-align: left;">
                 <div style="padding: 24px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-subtle);">
-                    <h4 style="color: var(--accent-green); margin-bottom: 8px;">Recon Engine</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Autonomous nuclei scanning, subdomain discovery, and OSINT gathering on any target.</p>
+                    <h4 style="color: var(--accent-green); margin-bottom: 8px;">One-Click Install</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Deploy the swarm to your Linux or Termux environment instantly.</p>
+                    <code style="display: block; background: #000; padding: 12px; border-radius: 8px; font-size: 0.8rem; border: 1px solid var(--border-subtle); color: var(--accent-blue); margin-bottom: 12px;">
+                        curl -fsSL https://omniclaw.vercel.app/setup.sh | bash
+                    </code>
+                    <a href="https://github.com/webspoilt/omniclaw/blob/main/setup.sh" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">View Source</a>
                 </div>
                 <div style="padding: 24px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-subtle);">
                     <h4 style="color: var(--accent-blue); margin-bottom: 8px;">Durable Workers</h4>
