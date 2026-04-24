@@ -6,18 +6,30 @@ from typing import Dict, List, Any
 import zmq.asyncio
 from lancedb import connect
 
-# 🛡️ Layer 1 & 2: FileGuard & ShellSandbox (Simplified logic)
+import re
+
+# 🛡️ Layer 1 & 2: FileGuard & ShellSandbox (Stabilized v4.5.0)
 class SecurityLayer:
     @staticmethod
     def validate_command(cmd: str):
-        blocked = ["rm -rf /", "mkfs"]
-        if any(b in cmd for b in blocked):
-            raise PermissionError(f"Command blocked by ShellSandbox: {cmd}")
-        logging.info(f"ShellSandbox: Command allowed -> {cmd}")
+        # Improved regex validation to prevent obfuscated payloads
+        blocked_patterns = [
+            r"rm\s+(-[a-zA-Z]*)?rf\s+[/~]",
+            r"mkfs\.",
+            r"dd\s+if=",
+            r"nc\s+-[le]",
+            r"python.*-c.*import\s+os"
+        ]
+        for pattern in blocked_patterns:
+            if re.search(pattern, cmd, re.IGNORECASE):
+                raise PermissionError(f"CRITICAL: Command blocked by ShellSandbox (Tier 1): {cmd}")
+        logging.info(f"ShellSandbox: Command verified and allowed -> {cmd}")
 
     @staticmethod
     def check_access(path: str):
-        allowed_prefixes = ["/apps", "/engines", "/packages", "e:\\IDEAS\\omniclaw"]
+        # Dynamic path resolution to maintain cross-platform portability
+        cwd = os.getcwd()
+        allowed_prefixes = ["/apps", "/engines", "/packages", cwd]
         if not any(path.startswith(p) for p in allowed_prefixes):
              # For simulation, we'll just log
              logging.warning(f"FileGuard: Access outside scoped workspace -> {path}")
@@ -40,9 +52,10 @@ class SovereignOrchestrator:
 
     async def start_p2p_mesh(self):
         """ZeroMQ + AES-256-GCM Knowledge Mesh (Boilerplate)"""
+        port = self.config.get("network", {}).get("p2p_port", 5555)
         socket = self.ctx.socket(zmq.REP)
-        socket.bind("tcp://*:5555")
-        logger.info("P2P Knowledge Mesh active on port 5555 [AES-256-GCM]")
+        socket.bind(f"tcp://*:{port}")
+        logger.info(f"P2P Knowledge Mesh active on port {port} [AES-256-GCM]")
         while not self.kill_switch.is_set():
             try:
                 msg = await asyncio.wait_for(socket.recv_json(), timeout=1.0)

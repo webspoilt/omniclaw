@@ -58,8 +58,11 @@ class EBPFMonitor:
         event = self.bpf["events"].event(data)
         cmd = event.comm.decode('utf-8', 'replace')
         
-        # Simple alert logic - e.g. flagging suspicious commands
-        if cmd in ["nc", "nmap", "curl", "wget", "bash"]:
+        # 🛡️ Whitelist common trusted processes to prevent alert fatigue
+        # Fixes GitHub issue #28: Alert Fatigue
+        TRUSTED_PROCESSES = ["ssh", "sh", "bash", "systemd", "dockerd"]
+        
+        if cmd in ["nc", "nmap", "curl", "wget"] and cmd not in TRUSTED_PROCESSES:
             alert = f"[Shadow Kernel Alert] Suspicious process started: PID {event.pid}, Command: {cmd}"
             self.alerts.append(alert)
             logger.warning(alert)
@@ -83,8 +86,10 @@ class EBPFMonitor:
                     time.sleep(1)
             else:
                 # Simulation mode: inject mock alerts periodically
-                time.sleep(random.uniform(30.0, 120.0))
-                mock_cmds = ["curl", "wget", "nmap", "nc", "bash", "ssh"]
+                # Fixes GitHub issue #28: Simulation Delay
+                # Faster delay for development/debugging (5-15s)
+                time.sleep(random.uniform(5.0, 15.0))
+                mock_cmds = ["curl", "wget", "nmap", "nc"]
                 cmd = random.choice(mock_cmds)
                 pid = random.randint(1000, 9999)
                 alert = f"[Shadow Kernel Simulation] Suspicious process started: PID {pid}, Command: {cmd}"

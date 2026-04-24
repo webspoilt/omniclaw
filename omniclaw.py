@@ -13,8 +13,9 @@ import os
 import websockets
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional, Callable
 from dotenv import load_dotenv
+import litellm
 
 # Load environment variables
 load_dotenv()
@@ -207,6 +208,15 @@ class OmniClaw:
                 payload = data.get("payload", {})
                 msg_id = data.get("id")
 
+                if msg_type == "health_check":
+                    await websocket.send(json.dumps({
+                        "type": "health_status",
+                        "status": "healthy",
+                        "timestamp": datetime.now().isoformat(),
+                        "version": "4.5.0"
+                    }))
+                    continue
+
                 if msg_type == "chat_message":
                     user_msg = payload.get("message", "")
                     tool_id = payload.get("toolId", "general")
@@ -327,7 +337,7 @@ class OmniClaw:
             api_configs = [{
                 "provider": "ollama",
                 "key": "ollama",
-                "model": "llama2",
+                "model": "llama3.2:latest",
                 "base_url": "http://localhost:11434"
             }]
         
@@ -462,7 +472,9 @@ class OmniClaw:
             if 'HeartbeatService' in globals() and sched_config.get("heartbeat_enabled", True):
                 self.heartbeat = HeartbeatService(
                     workspace=sec_config.get("workspace_dir", "./workspace"),
+                    llm_callback=self.heartbeat_llm_callback,
                     on_execute=lambda msg: self.orchestrator.execute_goal(msg) if self.orchestrator else None,
+                    on_notify=lambda msg: self.messaging.send_broadcast(msg) if self.messaging else None,
                     interval_s=sched_config.get("heartbeat_interval", 1800),
                 )
                 logger.info(f"🫀 Heartbeat Service initialized (every {sched_config.get('heartbeat_interval', 1800)}s)")
@@ -692,10 +704,12 @@ FAISS Enabled: {stats['faiss_enabled']}
         logger.info("Starting OmniClaw services...")
         self.running = True
 
-        # Start WebSocket server for Tauri GUI on port 8765
+        # Start WebSocket server for Tauri GUI
         try:
-            self.ws_server = await websockets.serve(self.websocket_handler, "localhost", 8765)
-            logger.info("WebSocket Server listening on ws://localhost:8765 for Tauri GUI.")
+            ws_port = self.config.get("network", {}).get("ws_port", 8765)
+            host = self.config.get("network", {}).get("host", "localhost")
+            self.ws_server = await websockets.serve(self.websocket_handler, host, ws_port)
+            logger.info(f"WebSocket Server listening on ws://{host}:{ws_port} for Tauri GUI.")
             
             # Intercept stdout/stderr for GUI telemetry
             sys.stdout = self.OutputStreamAdapter(self.original_stdout, self.broadcast_terminal, "stdout")
@@ -756,6 +770,27 @@ FAISS Enabled: {stats['faiss_enabled']}
         
         logger.info("OmniClaw services stopped")
     
+    async def heartbeat_llm_callback(self, messages: List[Dict], tools: List[Dict]) -> Any:
+        """Unified LLM callback for heartbeat decisions."""
+        if not self.orchestrator or not self.orchestrator.arbitrator:
+            logger.warning("Heartbeat callback: No orchestrator/arbitrator available")
+            return None
+        
+        try:
+            model = self.orchestrator.arbitrator.default_cloud_model
+            logger.debug(f"Heartbeat query using {model}")
+            
+            response = await litellm.acompletion(
+                model=model,
+                messages=messages,
+                tools=tools,
+                tool_choice={"type": "function", "function": {"name": "heartbeat"}}
+            )
+            return response.choices[0].message
+        except Exception as e:
+            logger.error(f"Heartbeat LLM callback failed: {e}")
+            return None
+
     async def execute_task(self, goal: str, context: Dict = None) -> Any:
         """Execute a task through the orchestrator"""
         if not self.orchestrator:

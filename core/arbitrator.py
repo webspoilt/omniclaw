@@ -10,7 +10,7 @@ class Arbitrator:
     Model-Agnostic Arbitrator
     Routes tasks to the most appropriate LLM based on task complexity.
     """
-    def __init__(self, local_model="ollama/llama2", default_cloud_model="gpt-4o"):
+    def __init__(self, local_model="ollama/llama3.2", default_cloud_model="gpt-4o"):
         self.local_model = local_model
         self.default_cloud_model = default_cloud_model
 

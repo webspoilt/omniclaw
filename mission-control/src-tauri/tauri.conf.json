@@ -25,7 +25,7 @@
             }
         ],
         "security": {
-            "csp": null
+            "csp": "default-src 'self'; img-src 'self' https://*; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws://localhost:* http://localhost:*;"
         }
     },
     "bundle": {
@@ -60,7 +60,7 @@
     },
     "plugins": {
         "shell": {
-            "open": true
+            "open": ["https://omniclaw.ai/*", "https://github.com/webspoilt/omniclaw/*", "https://buycopy.coffee/*"]
         }
     }
 }

@@ -12,8 +12,11 @@ Linux is the native home of OmniClaw, offering the best performance for the eBPF
 git clone https://github.com/webspoilt/omniclaw.git
 cd omniclaw
 
-# Install dependencies
+# Install core dependencies
 pip install -r requirements.txt
+
+# Optional: For scheduled cron tasks
+pip install croniter
 
 # Run the verify script to check for kernel headers
 python scripts/verify_install.py

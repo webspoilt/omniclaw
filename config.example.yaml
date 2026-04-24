@@ -75,11 +75,18 @@ apis:
   # Ollama (Local LLM) Configuration
   - provider: ollama
     key: "ollama"
-    model: llama2:13b
+    model: llama3.2:latest
     base_url: http://localhost:11434
     priority: 7
     capabilities: ["text", "chat", "code"]
     enabled: true
+
+# Network Configuration
+# Centralizing ports to prevent collisions as per Issue #28
+network:
+  p2p_port: 5555
+  ws_port: 8765
+  host: "0.0.0.0"
 
 # Memory Configuration
 memory:
