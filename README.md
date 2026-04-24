@@ -24,9 +24,9 @@
 - [Features](#features)
 - [Architecture](#architecture)
 - [Quick Start](#quick-start)
+- [Documentation](#documentation)
 - [AI Agent Supervision](#ai-agent-supervision)
 - [Kernel Bridge (eBPF)](#kernel-bridge-ebpf)
-- [Development](#development)
 - [Security](#security)
 - [Credits](#credits)
 - [License](#license)
@@ -34,6 +34,16 @@
 ## Overview
 
 Omniclaw is an innovative autonomous cybersecurity platform that leverages a "Hybrid Hive" of AI agents to perform real-time threat detection, automated forensics, and kernel-level neutralization. Unlike traditional IPS/IDS, Omniclaw doesn't just watch—it acts.
+
+## Documentation 📚
+
+Comprehensive documentation is available to help you deploy and master the Sovereign Sentinel platform:
+
+- 🍼 **[Deployment Guide](docs/setup.md)**: Step-by-step instructions for Linux, macOS, and Android (Termux).
+- 🚀 **[Use Cases](docs/use_cases.md)**: Real-world scenarios for security, sysadmin, and research.
+- 📖 **[GitHub Wiki](https://github.com/webspoilt/omniclaw/wiki)**: Deep-dives into Architecture, Security Layers, and P2P Networking.
+- 🛡️ **[Security Policy](SECURITY.md)**: Guidelines for reporting vulnerabilities.
+- 🤝 **[Contributing Guide](CONTRIBUTING.md)**: How to join the ZeroDay development team.
 
 ## Features
 
