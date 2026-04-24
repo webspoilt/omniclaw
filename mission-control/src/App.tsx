@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/Layout/Sidebar';
 import { ToolGrid } from '@/components/Grid/ToolGrid';
 import { SwarmPanel } from '@/components/Swarm/SwarmPanel';
 import { KernelTopology } from '@/components/Topology/KernelTopology';
+import SentimentOrb from '@/components/Intelligence/SentimentOrb';
 import { LiveTerminal } from '@/components/Terminal/LiveTerminal';
 import { ChatInterface } from '@/components/Chat/ChatInterface';
 import { useOmniClaw } from '@/hooks/useOmniClaw';
@@ -48,6 +49,7 @@ function App() {
                             <div className="h-1/2">
                                 <KernelTopology />
                             </div>
+                            <SentimentOrb sentiment="RESEARCH_HYPE" score={0.78} />
                             <div className="flex-1">
                                 <SwarmPanel />
                             </div>
