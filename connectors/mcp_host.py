@@ -13,6 +13,8 @@ v4.2 additions (Issue #18):
   - get_evolution_status: EvolutionAgent last run info
   - get_mesh_peers: NeuralMeshNode online peers list
   - plant://latest_health now reads from last_analysis.json if available
+  - Security Recon tools (nuclei, nmap, subfinder) via ScoutAgent
+  - Live Screen Analysis via ComputerUse
 """
 
 import json
@@ -193,5 +195,74 @@ async def get_mesh_peers(ctx: Context) -> dict:
     }
 
 
+@app.tool()
+async def run_security_scan(ctx: Context, target: str) -> dict:
+    """
+    Trigger an autonomous security reconnaissance scan via ScoutAgent.
+    Integrates subfinder, nmap, and nuclei with LLM analysis.
+    """
+    ctx.info(f"Initiating security scan for: {target}")
+    try:
+        from core.scout_agent import ScoutAgent, load_config
+        agent = ScoutAgent(load_config())
+        if not agent.validate_target(target):
+            return {"error": f"Target {target} is blocked or invalid."}
+        
+        # Run in separate thread to not block MCP
+        import threading
+        def _scan():
+            agent.run_scan(target)
+            analysis = agent.analyze()
+            agent.generate_report(analysis)
+            # Alerts are sent automatically if configured
+            
+        t = threading.Thread(target=_scan)
+        t.start()
+        return {"status": "started", "message": f"Security scan initiated for {target}. Check reports directory for results."}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.tool()
+async def analyze_live_screen(ctx: Context, prompt: str = "") -> str:
+    """
+    Capture the current screen and analyze it using the Multimodal Vision Module.
+    Useful for UI audits and security assessments of visual elements.
+    """
+    ctx.info("Capturing live screen for analysis…")
+    try:
+        from modules.vision.computer_use import ComputerUse
+        vision = ComputerUse()
+        img = vision.capture_screen()
+        if not img:
+            return "Failed to capture screen."
+        
+        analysis = vision.analyze_screen(img, prompt)
+        return analysis or "Vision analysis returned no results."
+    except Exception as e:
+        return f"Error in Vision Module: {e}"
+
+
+@app.tool()
+async def analyze_security_context(ctx: Context, context_description: str) -> str:
+    """
+    LLM-powered analysis of a technical context (e.g., architecture, code snippet, network diagram)
+    to identify potential vulnerabilities (Injection, IDOR, Auth bypass).
+    """
+    ctx.info("Analyzing security context…")
+    try:
+        from core.scout_agent import query_llm
+        prompt = (
+            f"You are a Tier 4 Cybersecurity Architect. Analyze the following context for security flaws:\n\n"
+            f"{context_description}\n\n"
+            "Identify potential attack vectors (OWASP Top 10) and suggest specific remediations."
+        )
+        resp = query_llm(prompt)
+        return resp or "Security analysis failed."
+    except Exception as e:
+        return f"Error in Security Analyzer: {e}"
+
+
 if __name__ == "__main__":
+
     app.run(host="0.0.0.0", port=8000)

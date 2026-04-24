@@ -4,1413 +4,566 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OmniClaw | Hybrid Hive AI System</title>
+    <title>OmniClaw | Autonomous Kernel Intelligence</title>
     <link rel="icon" href="./logo.svg" type="image/svg+xml">
 
-    <!-- Premium Fonts: Inter (Linear style) -->
+    <!-- Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Linear/Stripe Dark Theme Palette */
-            --bg-base: #000000;
-            --bg-surface: #0A0A0A;
-            --bg-elevated: #111111;
-
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 255, 255, 0.15);
-
-            --text-primary: #FFFFFF;
-            --text-secondary: #8A8F98;
-            --text-tertiary: #60646C;
-
-            --accent-glow: rgba(94, 106, 210, 0.15);
-            --accent-brand: #5E6AD2;
-
-            /* Typography */
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            /* 2026 Cyber-Elite Palette */
+            --bg-base: #030303;
+            --bg-gradient: radial-gradient(circle at 50% 0%, #111827 0%, #030303 70%);
+            --bg-surface: rgba(17, 24, 39, 0.4);
+            --bg-elevated: rgba(31, 41, 55, 0.6);
+            
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --border-hover: rgba(59, 130, 246, 0.3);
+            
+            --accent-blue: #3b82f6;
+            --accent-green: #00ff88;
+            --accent-glow: rgba(59, 130, 246, 0.4);
+            
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
-
-            /* Micro-animations */
-            --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: var(--font-sans);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            scroll-behavior: smooth;
         }
 
         body {
             background-color: var(--bg-base);
+            background-image: var(--bg-gradient);
             color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.5;
+            font-family: var(--font-sans);
             overflow-x: hidden;
-            background-image:
-                radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(94, 106, 210, 0.04) 0%, transparent 25%);
-            background-attachment: fixed;
+            line-height: 1.6;
         }
 
-        ::selection {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-
-        /* 
-         * Layout
-         */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 24px;
+        /* Ambient Glows */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            z-index: -1;
+            opacity: 0.3;
+            filter: blur(80px);
+            pointer-events: none;
         }
 
         /* 
-         * Header Navigation
+         * Navigation 
          */
-        header {
+        nav {
             position: fixed;
             top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            width: 100%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            background: rgba(3, 3, 3, 0.5);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-subtle);
         }
 
-        .nav-content {
+        .nav-inner {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 64px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
         }
 
         .brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
             text-decoration: none;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.02em;
         }
 
-        .brand img {
-            width: 24px;
-            height: 24px;
-            opacity: 0.9;
-        }
+        .brand img { width: 28px; height: 28px; }
 
         .nav-links {
             display: flex;
+            gap: 32px;
             align-items: center;
-            gap: 24px;
         }
 
-        .nav-link {
+        .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 0.9rem;
             font-weight: 500;
             transition: var(--transition-smooth);
         }
 
-        .nav-link:hover {
-            color: var(--text-primary);
-        }
+        .nav-links a:hover { color: var(--accent-blue); }
 
-        .github-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--text-primary);
-            color: var(--bg-base);
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
+        .nav-cta {
+            background: var(--accent-blue);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 8px;
             font-weight: 600;
-            text-decoration: none;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
             transition: var(--transition-smooth);
-            border: 1px solid transparent;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
-        .github-btn:hover {
-            background: #EBEBEB;
-            transform: translateY(-1px);
-        }
+        .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
 
-        .github-btn svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        /* Buy Me a Coffee Button */
-        .bmac-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #FF813F, #FFDD00);
-            color: #000;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition-smooth);
-            border: 1px solid transparent;
-        }
-
-        .bmac-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(255, 221, 0, 0.3);
-            filter: brightness(1.1);
-        }
-
-        .bmac-btn svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
+        /* Mobile Menu */
+        .mobile-toggle { display: none; }
 
         /* 
-         * Hero Section
+         * Hero Section 
          */
         .hero {
-            padding: 160px 0 100px;
+            padding-top: 180px;
+            padding-bottom: 120px;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 80vh;
-            justify-content: center;
+            position: relative;
         }
 
-        .badge {
+        .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
+            gap: 10px;
+            background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
-            padding: 6px 12px;
+            padding: 6px 16px;
             border-radius: 100px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-            transition: var(--transition-smooth);
-            animation: float 6s ease-in-out infinite;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            animation: fadeInDown 0.8s ease;
         }
 
-        .badge:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--border-hover);
-            color: var(--text-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(94, 106, 210, 0.2);
-        }
-
-        .badge-dot {
-            width: 6px;
-            height: 6px;
-            background-color: var(--accent-brand);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-brand);
-            animation: pulse-glow 2s infinite;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-5px);
-            }
-
-            100% {
-                transform: translateY(0px);
-            }
-        }
-
-        @keyframes pulse-glow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 5px var(--accent-brand);
-                transform: scale(1);
-            }
-
-            50% {
-                box-shadow: 0 0 15px var(--accent-brand), 0 0 5px #fff;
-                transform: scale(1.2);
-            }
-        }
-
-        /* Typewriter Effect Styles */
-        .typewriter-container {
-            font-size: clamp(40px, 6vw, 72px);
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            line-height: 1.05;
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 800;
+            line-height: 0.95;
+            letter-spacing: -0.05em;
             margin-bottom: 24px;
-            max-width: 900px;
-            display: inline-flex;
-            align-items: flex-end;
-            /* Align cursor with baseline */
-        }
-
-        .typewriter-text {
-            background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
+            background: linear-gradient(180deg, #fff 0%, #9ca3af 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            /* standard property for compatibility */
-            white-space: pre-wrap;
-            /* Preserve spaces and allow wrapping if needed */
+            animation: fadeInUp 1s ease 0.2s both;
         }
 
-        .typewriter-cursor {
-            display: inline-block;
-            width: clamp(3px, 0.5vw, 5px);
-            height: clamp(40px, 6vw, 72px);
-            /* Match text height */
-            background-color: #FFFFFF;
-            margin-left: 4px;
-            animation: blink 1s step-end infinite;
-            position: relative;
-            top: 2px;
-            /* Fine-tune baseline alignment */
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
+        .hero h1 span {
+            display: block;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            font-size: clamp(18px, 2vw, 21px);
+            font-size: 1.25rem;
             color: var(--text-secondary);
-            max-width: 640px;
-            margin-bottom: 48px;
-            line-height: 1.5;
-            letter-spacing: -0.01em;
-            animation: fadeIn 1s ease-out 1.5s both;
-            /* Delay appearance until typing is mostly done */
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Code Block (Stripe-esque) */
-        .terminal-block {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 12px 16px 12px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            width: 100%;
-            max-width: 560px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            transition: var(--transition-smooth);
-            position: relative;
-            animation: fadeIn 1s ease-out 2s both;
-            /* Further delay */
-        }
-
-        .terminal-block:hover {
-            border-color: var(--border-hover);
-        }
-
-        .terminal-block::before {
-            content: '$';
-            position: absolute;
-            left: 24px;
-            color: var(--text-tertiary);
-            font-family: var(--font-mono);
-            font-size: 14px;
-        }
-
-        .terminal-block code {
-            font-family: var(--font-mono);
-            font-size: 14px;
-            color: #E2E8F0;
-            padding-left: 20px;
-        }
-
-        .copy-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .copy-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: translateX(-100%);
-            transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: -1;
-        }
-
-        .copy-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        }
-
-        .copy-btn:hover::before {
-            transform: translateX(100%);
+            max-width: 600px;
+            margin: 0 auto 50px;
+            animation: fadeInUp 1s ease 0.4s both;
         }
 
         /* 
-         * Grid & Cards (Linear aesthetic)
+         * Feature Cards 
          */
-        .section {
-            padding: 80px 0;
-            border-top: 1px solid var(--border-subtle);
+        .section-label {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 16px;
+            display: block;
         }
 
-        .section-header {
-            margin-bottom: 48px;
-        }
-
-        .section-header h2 {
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .section-header p {
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
-
-        .bento-grid {
+        .features {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 32px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
         }
 
-        .card {
+        .feature-card {
             background: var(--bg-surface);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 32px;
+            border-radius: 20px;
+            padding: 40px;
             transition: var(--transition-smooth);
-            text-decoration: none;
-            display: block;
             position: relative;
             overflow: hidden;
-            height: 100%;
-            /* Make cards even height */
-            display: flex;
-            flex-direction: column;
         }
 
-        .card::before {
+        .feature-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 200%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-brand), #00f2fe, transparent);
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, var(--border-hover) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.3s;
-            z-index: 2;
         }
 
-        .card:hover {
-            transform: translateY(-4px);
+        .feature-card:hover {
+            transform: translateY(-8px);
             border-color: var(--border-hover);
-            background: var(--bg-elevated);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(94, 106, 210, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        .card:hover::before {
-            opacity: 1;
-            animation: border-flow 2s linear infinite;
-        }
+        .feature-card:hover::before { opacity: 1; }
 
-        @keyframes border-flow {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(50%);
-            }
-        }
-
-        .icon-container {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .feature-card i {
+            font-size: 2.5rem;
             margin-bottom: 24px;
-            color: var(--text-primary);
-            font-size: 18px;
-        }
-
-        .card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            letter-spacing: -0.01em;
-        }
-
-        .card p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 20px;
-            flex-grow: 1;
-            /* Pushes link to bottom */
-        }
-
-        .card ul {
-            margin-top: 12px;
-            margin-bottom: 20px;
-            margin-left: 20px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-            flex-grow: 1;
-        }
-
-        .card li {
-            margin-bottom: 8px;
-        }
-
-        .card-link {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-tertiary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition-smooth);
-            margin-top: auto;
-            /* Always at bottom */
-        }
-
-        .card:hover .card-link {
-            color: var(--text-primary);
-        }
-
-        /* Versions Section Specifics */
-        .version-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-family: var(--font-mono);
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .card-detailed {
-            grid-column: 1 / -1;
-            /* Special cards spanning full width if needed */
-        }
-
-        /* 
-         * Feature Lists layout for Docs
-         */
-        .doc-section {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 40px;
-            margin-bottom: 24px;
-        }
-
-        .doc-section h3 {
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .doc-section p {
-            color: var(--text-secondary);
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 24px;
-        }
-
-        .doc-section h4 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 32px;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .doc-section ul {
-            margin-left: 20px;
-            color: #A0A0A0;
-            font-size: 15px;
-            line-height: 1.8;
-        }
-
-        .doc-section code {
-            font-family: var(--font-mono);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 6px;
-            border-radius: 4px;
-            font-size: 13px;
-            border: 1px solid var(--border-subtle);
-            color: #E2E8F0;
-        }
-
-        .doc-section .code-block {
             display: block;
-            background: #000;
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 12px;
-            overflow-x: auto;
-            border: 1px solid var(--border-subtle);
+            color: var(--accent-blue);
         }
 
-        /* 
-         * Warning Banner
-         */
-        .warning-banner {
-            margin-top: 80px;
-            background: rgba(255, 75, 75, 0.05);
-            border: 1px solid rgba(255, 75, 75, 0.2);
-            border-radius: 12px;
-            padding: 32px;
-        }
-
-        .warning-banner h3 {
-            color: #FF4B4B;
-            font-size: 16px;
-            font-weight: 600;
+        .feature-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
             margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            letter-spacing: -0.02em;
         }
 
-        .warning-banner p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 16px;
-        }
-
-        .warning-banner p:last-child {
-            margin-bottom: 0;
-            color: #FF4B4B;
-            font-weight: 500;
         }
 
         /* 
-         * Footer
+         * Terminal Demo 
+         */
+        .terminal-container {
+            max-width: 800px;
+            margin: 80px auto;
+            background: #0d1117;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            overflow: hidden;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .terminal-header {
+            background: #161b22;
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+
+        .terminal-body {
+            padding: 24px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #d1d5db;
+            text-align: left;
+            min-height: 240px;
+        }
+
+        .t-line { margin-bottom: 8px; display: flex; gap: 12px; }
+        .t-prompt { color: var(--accent-green); }
+        .t-cmd { color: #fff; }
+
+        /* 
+         * Security Notice 
+         */
+        .security-banner {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 40px;
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 20px;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .security-icon {
+            font-size: 3rem;
+            color: #ef4444;
+            flex-shrink: 0;
+        }
+
+        .security-text h4 { color: #ef4444; font-weight: 700; margin-bottom: 8px; }
+        .security-text p { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* 
+         * Footer 
          */
         footer {
-            padding: 60px 0;
             border-top: 1px solid var(--border-subtle);
-            margin-top: 80px;
-            text-align: center;
+            padding: 100px 32px 50px;
+            background: #030303;
         }
 
-        footer p {
-            color: var(--text-tertiary);
-            font-size: 13px;
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
         }
 
-        footer a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: var(--transition-smooth);
+        .footer-brand p { color: var(--text-muted); margin-top: 16px; font-size: 0.9rem; }
+
+        .footer-links h5 { font-weight: 700; margin-bottom: 24px; font-size: 0.9rem; color: #fff; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-links a:hover { color: #fff; }
+
+        .bmc-footer {
+            margin-top: 60px;
+            display: flex;
+            justify-content: center;
         }
 
-        footer a:hover {
-            color: var(--text-primary);
+        /* 
+         * Keyframes 
+         */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 
+         * Mobile Responsiveness 
+         */
+        @media (max-width: 1024px) {
+            .features { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
         @media (max-width: 768px) {
-            .hero {
-                padding: 120px 0 60px;
-                min-height: 60vh;
-            }
-
-            .nav-link {
-                display: none;
-            }
-
-            .terminal-block {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 16px;
-                gap: 16px;
-            }
-
-            .terminal-block::before {
-                left: 16px;
-            }
-
-            .terminal-block code {
-                padding-left: 14px;
-            }
-
-            .copy-btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .doc-section {
-                padding: 24px;
-            }
+            .hero h1 { font-size: 3.5rem; }
+            .features { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .security-banner { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 
 <body>
+    <div class="ambient-glow" style="top: -100px; left: 10%;"></div>
+    <div class="ambient-glow" style="top: 200px; right: -50px; background: rgba(0, 255, 136, 0.1);"></div>
+
     <!-- Navigation -->
-    <header>
-        <div class="nav-content">
+    <nav>
+        <div class="nav-inner">
             <a href="#" class="brand">
-                <img src="./logo.svg" alt="OmniClaw Logo" onerror="this.style.display='none'">
+                <img src="./logo.svg" alt="OmniClaw">
                 OmniClaw
             </a>
             <div class="nav-links">
-                <a href="#architecture" class="nav-link">Architecture</a>
-                <a href="#versions" class="nav-link">Version History</a>
-                <a href="#doc-gateway" class="nav-link">Documentation</a>
-                <!-- Official Interactive GitHub Star Button -->
-                <iframe
-                    src="https://ghbtns.com/github-btn.html?user=webspoilt&repo=omniclaw&type=star&count=true&size=large"
-                    frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
+                <a href="#vision">Vision</a>
+                <a href="#security">Security</a>
+                <a href="#docs">Docs</a>
+                <a href="#github">GitHub</a>
+            </div>
+            <button class="nav-cta" onclick="window.location.href='#install'">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span style="display: flex; width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%;"></span>
+            v4.5.0 Deployment Stable
+        </div>
+        <h1>
+            <span>Kernel-Level</span>
+            Autonomous Swarm
+        </h1>
+        <p>The AI system that lives inside your Linux kernel. Real-time telemetry, autonomous exploitation, and eBPF-powered protection.</p>
+        
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <div class="t-dot red"></div>
+                <div class="t-dot yellow"></div>
+                <div class="t-dot green"></div>
+            </div>
+            <div class="terminal-body" id="terminal-content">
+                <div class="t-line"><span class="t-prompt">➜</span> <span class="t-cmd">omniclaw init --swarm-mode</span></div>
+                <div class="t-line" style="color: #6b7280;">[SYSTEM] Initializing eBPF Kernel Bridge...</div>
+                <div class="t-line" style="color: #6b7280;">[SUCCESS] Secure Enclave Authenticated via YubiKey</div>
+                <div class="t-line" style="color: var(--accent-blue);">[SWARM] 12 Node Cluster Synced [P2P MESH]</div>
+                <div class="t-line"><span class="t-prompt">➜</span> <span id="typing-text"></span></div>
             </div>
         </div>
-    </header>
+    </section>
 
-    <main class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <!-- Safety Warning (Moved up for visibility) -->
-            <section class="warning-banner" style="margin-bottom: 40px; text-align: left; max-width: 800px;">
-                <h3 style="color: #ff4d4d; display: flex; align-items: center; gap: 10px;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
-                        </path>
-                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                    </svg>
-                    CRITICAL SAFETY WARNING
-                </h3>
-                <p style="font-size: 14px; opacity: 0.9;">OmniClaw utilizes autonomous kernel-level execution loops. <b>It can modify or delete system components.</b> By proceeding, you acknowledge that data loss may occur. Use in a sandbox environment first.</p>
-            </section>
-
-            <div class="badge">
-                <div class="badge-dot"></div>
-                v4.4.0 — Sovereign Sentinel, eBPF Kernel Bridge, Durable Worker & CVE Factory
+    <!-- Core Engines -->
+    <section class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 32px;">
+        <span class="section-label">Core Infrastructure</span>
+        <div class="features">
+            <!-- 1. Kernel Bridge -->
+            <div class="feature-card">
+                <i>⚡</i>
+                <h3>eBPF Kernel Bridge</h3>
+                <p>Observe every system call at the kernel level without performance overhead. Real-time packet filtering and anomaly detection.</p>
             </div>
-
-            <div class="typewriter-container" style="min-height: 1.2em; width: 100%;">
-                <span class="typewriter-text" id="typewriter" style="white-space: normal; display: inline-block;"></span><span class="typewriter-cursor"></span>
+            <!-- 2. HPTSA -->
+            <div class="feature-card">
+                <i>🧠</i>
+                <h3>Hybrid Swarm Intelligence</h3>
+                <p>A hierarchical planning team of specialized agents working in parallel to solve complex security research tasks autonomously.</p>
             </div>
-
-            <p style="max-width: 800px;">Deploy a decentralized swarm of autonomous agents to a Linux kernel wrapper.
-                Monitor system calls, execute tasks, and connect via Omni-Channel gateways.</p>
-
-            <div class="terminal-block">
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <code id="installCommand">curl -fsSL https://omniclaw.ai/setup.sh | bash</code>
-                    <span style="font-size: 11px; color: var(--text-tertiary); text-align: left;">
-                        ⚠️ Security Tip: Always inspect third-party scripts before piping to bash. 
-                        <a href="https://github.com/webspoilt/omniclaw/blob/main/setup.sh" target="_blank" style="color: var(--accent-brand);">View Source</a>
-                    </span>
-                </div>
-                <button class="copy-btn" onclick="copyCode(this)">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                    Copy
-                </button>
+            <!-- 3. Vision Module -->
+            <div class="feature-card">
+                <i>👁️</i>
+                <h3>Multimodal Vision 4.5</h3>
+                <p>Advanced screen capture and UI analysis with 1024px optimized processing. Detects threats and leaks across any OS surface.</p>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Core Infrastructure -->
-        <section id="architecture" class="section">
-            <div class="section-header">
-                <h2>Core Architecture</h2>
-                <p>Built for resilience, persistence, and continuous autonomous operation.</p>
-            </div>
-
-            <div class="bento-grid">
-                <a href="#doc-gui" class="card">
-                    <div class="icon-container">🖥️</div>
-                    <h3>Native Mission Control</h3>
-                    <p>Launch the ultra-fast Tauri Native React GUI to monitor swarm metrics, live execution terminals,
-                        and trigger toolcards directly from a highly tactical command center.</p>
-                    <div class="card-link">Learn more →</div>
-                </a>
-
-                <a href="#doc-companion" class="card">
-                    <div class="icon-container">🧠</div>
-                    <h3>Peer-Reviewed Swarm</h3>
-                    <p>Tasks are delegated by a Manager model to Worker models who execute and vote on accuracy. True
-                        multi-agent cognitive loops prevent hallucinated execution.</p>
-                    <div class="card-link">Explore the hierarchy →</div>
-                </a>
-
-                <a href="#doc-ebpf" class="card">
-                    <div class="icon-container">⚡</div>
-                    <h3>eBPF Kernel Bridge</h3>
-                    <p>OmniClaw operates with deep C/Rust-level Linux kernel access. It monitors network packets, system
-                        calls, and file descriptors natively for true system awareness.</p>
-                    <div class="card-link">View kernel specs →</div>
-                </a>
-
-                <a href="#doc-gateway" class="card">
-                    <div class="icon-container">📱</div>
-                    <h3>Multi-Channel Gateway</h3>
-                    <p>Command your PC natively via Telegram, WhatsApp, Discord, Slack, and Matrix without complex
-                        network routing or exposed web hooks.</p>
-                    <div class="card-link">Setup routing →</div>
-                </a>
-
-                <a href="#doc-ips" class="card">
-                    <div class="icon-container">🛡️</div>
-                    <h3>Autonomous IPS Agent</h3>
-                    <p>eBPF-backed intrusion prevention that traces TCP connections and SSH logins at kernel level.
-                        LLM classifies threats and autonomously blocks malicious IPs via iptables/nftables.</p>
-                    <div class="card-link">View IPS docs →</div>
-                </a>
-
-                <a href="#doc-evolution" class="card">
-                    <div class="icon-container">🧬</div>
-                    <h3>Self-Evolving Code Janitor</h3>
-                    <p>Monitors logs for tracebacks, asks an LLM for fixes, tests them in isolation, and
-                        commits to a fix/ branch. Atomic writes with .bak backups and duplicate prevention.</p>
-                    <div class="card-link">See how it heals →</div>
-                </a>
-
-                <a href="#doc-hive" class="card">
-                    <div class="icon-container">🕸️</div>
-                    <h3>P2P Hive Sync</h3>
-                    <p>ZeroMQ DEALER/ROUTER mesh with AES-256-GCM encryption. Heartbeat, FAISS query forwarding,
-                        and CPU-based LLM task offloading between Mobile and Desktop nodes.</p>
-                    <div class="card-link">Explore the mesh →</div>
-                </a>
-
-                <a href="#doc-scout" class="card">
-                    <div class="icon-container">🕵️</div>
-                    <h3>Scout Agent</h3>
-                    <p>Automated security recon with subfinder, nmap, and nuclei. LLM analyzes outputs for
-                        low-hanging fruit, generates markdown reports, and alerts on critical findings.</p>
-                    <div class="card-link">Read the recon docs →</div>
-                </a>
-
-                <a href="#doc-mesh" class="card">
-                    <div class="icon-container">🧠</div>
-                    <h3>Neural Mesh Protocol</h3>
-                    <p>Capability-based P2P mesh with typed protocol, task offloading,
-                        and cross-node knowledge queries over AES-256-GCM.</p>
-                    <div class="card-link">Explore neural mesh →</div>
-                </a>
-
-                <a href="#doc-vision" class="card">
-                    <div class="icon-container">👁️</div>
-                    <h3>Vision Module</h3>
-                    <p>Cross-platform screen capture, Termux camera, and plant health
-                        analysis powered by multimodal LLMs.</p>
-                    <div class="card-link">See the vision →</div>
-                </a>
-
-                <a href="#doc-memory" class="card">
-                    <div class="icon-container">💾</div>
-                    <h3>Memory Module</h3>
-                    <p>LanceDB vector store + NetworkX knowledge graph for semantic
-                        search and structured reasoning across the hive.</p>
-                    <div class="card-link">Browse memory docs →</div>
-                </a>
-
-                <a href="#doc-swarm" class="card">
-                    <div class="icon-container">🐋</div>
-                    <h3>Swarm Oracle</h3>
-                    <p>50+ Multi-Agent persona swarm for market sentiment validation and security analysis powered by Ollama and ChromaDB memory graphs.</p>
-                    <div class="card-link">Enter the swarm →</div>
-                </a>
-            </div>
-        </section>
-
-        <!-- Red Team Extension & Version History -->
-        <section id="versions" class="section">
-            <div class="section-header">
-                <h2>Platform Evolution & Modules</h2>
-                <p>Tracking the expansion from an AI companion into a fully decoupled sovereign swarm.</p>
-            </div>
-
-            <div class="bento-grid">
-                <!-- Restored Version Details -->
-                <div class="card">
-                    <div class="version-badge">v2.0</div>
-                    <h3>Advanced AI Features</h3>
-                    <ul>
-                        <li><b>LLM Context Awareness:</b> Advanced LangChain RAG pipeline dynamically fetches recent
-                            Discord/Telegram context.</li>
-                        <li><b>Audio Processing:</b> Native `SpeechRecognition` module with offline Whisper hooks.</li>
-                        <li><b>File Generation:</b> Complete read/write capability.</li>
-                        <li><b>Memory Embeddings:</b> FAISS vector database instance storing thousands of past
-                            interactions.</li>
-                    </ul>
+    <!-- Detailed Security Section -->
+    <section class="container" style="max-width: 1200px; margin: 100px auto; padding: 0 32px;">
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 32px; padding: 80px; text-align: center;">
+            <span class="section-label">Offensive Excellence</span>
+            <h2 style="font-size: 3rem; font-weight: 800; margin-bottom: 24px; letter-spacing: -0.04em;">Zero-Day Factory</h2>
+            <p style="max-width: 600px; margin: 0 auto 48px; color: var(--text-secondary);">OmniClaw doesn't just find bugs. It uses reachability-aware static analysis to build exploits in real-time.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; text-align: left;">
+                <div style="padding: 24px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-subtle);">
+                    <h4 style="color: var(--accent-green); margin-bottom: 8px;">Recon Engine</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Autonomous nuclei scanning, subdomain discovery, and OSINT gathering on any target.</p>
                 </div>
-
-                <div class="card">
-                    <div class="version-badge">v3.0</div>
-                    <h3>God-Tier Expansion</h3>
-                    <ul>
-                        <li><b>Autonomous Terminal Loop:</b> Let the AI run Bash/Python commands recursively to solve
-                            complex logical problems.</li>
-                        <li><b>Peer-Reviewed Swarm:</b> A Manager AI delegates tools to Sub-Agent AIs and reviews their
-                            logs before replying to the user.</li>
-                        <li><b>Self-Healing Code:</b> If a Python script fails, the AI reads the `stderr` traceback and
-                            patches the file autonomously.</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="version-badge">v3.2.0</div>
-                    <h3>Sovereign Sentinel</h3>
-                    <ul>
-                        <li><b>The Immortal Kernel:</b> eBPF Segfault tracers auto-generating C++ hot-patches and
-                            monitoring network traffic at socket level.</li>
-                        <li><b>Biometric Vibe Lock:</b> Voice/Keystroke trust scoring to unlock "Ghost Mode" tools.</li>
-                        <li><b>Crypto Panic Switch:</b> Encrypts context memories onto blockchain networks.</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="version-badge">v4.2.0</div>
-                    <h3>Autonomous IPS Agent</h3>
-                    <ul>
-                        <li><b>eBPF IPS Monitor:</b> Dedicated <code>monitor.bpf.c</code> program tracing
-                            <code>tcp_v4_connect</code> and <code>inet_csk_accept</code> with per-IP failure counting.
-                        </li>
-                        <li><b>LLM Threat Classifier:</b> AI-powered classification of brute-force, credential stuffing,
-                            and forgotten passwords — reducing false positives.</li>
-                        <li><b>Autonomous IP Blocking:</b> Executes iptables/nftables rules with dry-run safety and
-                            admin IP whitelist.</li>
-                        <li><b>6-Layer Security:</b> IPS integrated as Layer 6 in the unified SecurityLayer
-                            architecture.</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="version-badge">v4.2.0</div>
-                    <h3>Self-Evolving Code Janitor</h3>
-                    <ul>
-                        <li><b>Watchdog Monitoring:</b> Detects ERROR/CRITICAL tracebacks in <code>./logs/</code> in
-                            real time.</li>
-                        <li><b>LLM Fix Proposal:</b> Sends error context + source to Ollama/OpenAI, extracts corrected
-                            code.</li>
-                        <li><b>Isolated Testing:</b> Temp directory + LLM-generated test verifies fix before commit.
-                        </li>
-                        <li><b>Git Auto-Commit:</b> Creates <code>fix/&lt;error-type&gt;</code> branches with atomic
-                            writes and .bak backups.</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="version-badge">v4.2.0</div>
-                    <h3>P2P Hive Sync</h3>
-                    <ul>
-                        <li><b>ZeroMQ Mesh:</b> DEALER/ROUTER sockets for async peer-to-peer messaging.</li>
-                        <li><b>AES-256-GCM:</b> Pre-shared key encryption with authentication tags.</li>
-                        <li><b>LLM Offloading:</b> Automatically offload tasks when mobile CPU exceeds threshold.</li>
-                        <li><b>Heartbeat:</b> CPU/memory broadcast with online/offline peer detection.</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="version-badge">v4.2.0</div>
-                    <h3>Scout Agent</h3>
-                    <ul>
-                        <li><b>Modular Tools:</b> subfinder, nmap, nuclei with standard <code>SecurityTool</code> base
-                            class.</li>
-                        <li><b>LLM Analysis:</b> Identifies low-hanging-fruit vulnerabilities with severity
-                            classification.</li>
-                        <li><b>Markdown Reports:</b> Timestamped reports with summary, findings, and raw output.</li>
-                        <li><b>Instant Alerts:</b> Telegram/Discord notifications for HIGH/CRITICAL findings.</li>
-                    </ul>
-                </div>
-
-                <!-- ADDED v4.3.0 CARD -->
-                <div class="card">
-                    <div class="version-badge">v4.3.0</div>
-                    <h3>Enterprise Expansion</h3>
-                    <ul>
-                        <li><b>PentAGI Automation:</b> Orchestrated Docker microservices mapped natively to Analyst roles.</li>
-                        <li><b>CashClaw Operator:</b> Fully-automated AI freelance skills with Stripe invoicing.</li>
-                        <li><b>LangWatch Tracing:</b> LLM telemetry wrapping all agent prompt loops.</li>
-                        <li><b>Stealth Scraper:</b> Advanced Scrapling module for bypassing Cloudflare & Kasada.</li>
-                        <li><b>Local Decensor:</b> Heretic-LLM integration for offline model directional ablation.</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="version-badge">v4.2.0</div>
-                    <h3>Neural Mesh & Orchestrator</h3>
-                    <ul>
-                        <li><b>P2P Neural Mesh:</b> Typed protocol with capability heartbeat, task offloading, and
-                            knowledge queries.</li>
-                        <li><b>Vision Module:</b> Screen capture (X11/Wayland/Android), Termux camera, plant health
-                            analysis.</li>
-                        <li><b>Memory Module:</b> LanceDB vectors + NetworkX graph for unified knowledge layer.</li>
-                        <li><b>Orchestrator Daemon:</b> <code>core/main.py</code> boots all workers with kill switch and
-                            resource gating.</li>
-                        <li><b>Genesis Evolution:</b> Telemetry collection, LLM-suggested refactoring with safety
-                            backups.</li>
-                    </ul>
-                </div>
-
-                <!-- v4.4.0 RELEASE CARD -->
-                <div class="card card-detailed">
-                    <div class="version-badge">v4.4.0</div>
-                    <h3>Sovereign Sentinel Fusion</h3>
-                    <ul>
-                        <li><b>pnpm Monorepo:</b> Unified architecture for apps (Worker/Control), engines (Recon/Static), and packages (Kernel).</li>
-                        <li><b>CVE-to-PoC Factory:</b> Autonomous NVD monitoring, reachability-aware analysis (CPG/Joern), and exploit synthesis.</li>
-                        <li><b>eBPF Sentinel (Rust):</b> `libbpf-rs` kernel bridge for Ring-0 stealth, EDR evasion, and system-wide monitoring.</li>
-                        <li><b>Durable Orchestrator:</b> TypeScript-based worker (Temporal-inspired) for persistent, crash-resilient mission states.</li>
-                        <li><b>Open-Source Integration:</b> Inspired by OmniParser, AutoGPT, and the global security community.</li>
-                    </ul>
+                <div style="padding: 24px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-subtle);">
+                    <h4 style="color: var(--accent-blue); margin-bottom: 8px;">Durable Workers</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Temporal.io inspired orchestrator ensuring mission state persists across system crashes.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Red Team Tools -->
-        <section id="security" class="section">
-            <div class="section-header">
-                <h2>Red Team Automation (v3.3.0)</h2>
-                <p>An entire suite of automated exploitation, fuzzing, Tor routing, and responsible disclosure
-                    generation.</p>
-            </div>
+    <!-- Security Banner -->
+    <div class="security-banner">
+        <div class="security-icon">⚠️</div>
+        <div class="security-text">
+            <h4>Live System Modification Warning</h4>
+            <p>OmniClaw utilizes autonomous kernel-level execution loops. It can modify or delete system components. This is not a toy. Run in a isolated sandbox environment only.</p>
+        </div>
+    </div>
 
-            <div class="bento-grid">
-                <div class="card">
-                    <div class="icon-container">🕷️</div>
-                    <h3>Context-Aware Fuzzer</h3>
-                    <p>Advanced IDOR and BOLA detection algorithms that compare authenticated sessions to find broken
-                        object-level access controls autonomously.</p>
-                </div>
-
-                <div class="card">
-                    <div class="icon-container">🧅</div>
-                    <h3>TorHive Stealth Engine</h3>
-                    <p>Routes all worker traffic through dynamically rotating Tor circuits. Evades rate limits,
-                        randomizes headers, and provides sovereign anonymity.</p>
-                </div>
-
-                <div class="card">
-                    <div class="icon-container">🎯</div>
-                    <h3>Prompt Injector Mutator</h3>
-                    <p>Recursive adversarial payload generator for LLMs. Uses a local model to probe and discover system
-                        prompt leaks in external AI APIs.</p>
-                </div>
-
-                <div class="card">
-                    <div class="icon-container">📜</div>
-                    <h3>Responsible Disclosure</h3>
-                    <p>Generates professional Markdown/PDF vulnerability reports with Fernet-encrypted evidence, mapped
-                        to OWASP remediation fixes via SMTP dispatch.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Restored Comprehensive Documentation & Hardware Specs -->
-        <section id="knowledge-base" class="section">
-            <div class="section-header" style="text-align: center;">
-                <h2>Comprehensive Knowledge Base & Setup</h2>
-                <p>In-depth technical setups, deployment blueprints, and hardware requirements.</p>
-            </div>
-
-            <!-- Hardware Requirements Section -->
-            <div class="doc-section" id="doc-hardware">
-                <h3>🖥️ Hardware Requirements</h3>
-                <p>OmniClaw scales dynamically based on available hardware, adjusting the size and quantization of its
-                    local Swarm models to match your rig.</p>
-
-                <h4>Minimum Specifications (Standard Operation)</h4>
-                <ul>
-                    <li><b>OS:</b> Linux (Ubuntu 22.04+ recommended), macOS 13+, or Windows 11 (via WSL2).</li>
-                    <li><b>CPU:</b> 4-core processor (Intel i5/Ryzen 5 gen 8+).</li>
-                    <li><b>RAM:</b> 16GB System RAM (crucial for local model context windows).</li>
-                    <li><b>GPU:</b> Optional, but highly recommended (8GB VRAM minimum for smooth local worker
-                        execution).</li>
-                    <li><b>Storage:</b> 20GB Free NVMe/SSD space for model weights and vector DB.</li>
-                </ul>
-
-                <h4>Recommended Specifications (High-End Red Team Node)</h4>
-                <ul>
-                    <li><b>OS:</b> Native Linux (Kernel 5.8+ required for eBPF modules).</li>
-                    <li><b>CPU:</b> 8-core/16-thread processor.</li>
-                    <li><b>RAM:</b> 32GB-64GB System RAM.</li>
-                    <li><b>GPU:</b> NVIDIA RTX 3090 / 4090 (24GB VRAM) or dual GPU setup for running Manager and Worker
-                        models concurrently without offloading.</li>
-                    <li><b>Network:</b> High bandwidth connection for TorHive routing.</li>
-                </ul>
-            </div>
-
-            <!-- PC/Laptop Setup Guide -->
-            <div class="doc-section" id="doc-pc-setup">
-                <h3>💻 Standard PC & Laptop Setup Guide</h3>
-                <p>Deploying OmniClaw on a standard Windows/Mac/Linux machine for daily AI assistance and development
-                    automation.</p>
-
-                <h4>1. Prerequisites</h4>
-                <ul>
-                    <li>Install <b>Node.js (v18+)</b> and <b>Python (3.10+)</b>.</li>
-                    <li>Install <b>Ollama</b> locally to run the free Worker models (e.g., `llama3.2`, `phi3`).</li>
-                    <li>(Windows only) Ensure you are running inside WSL2 (Windows Subsystem for Linux) for proper
-                        terminal bridging.</li>
-                </ul>
-
-                <h4>2. Installation</h4>
-                <p>Open your terminal (or WSL) and run the automated installer:</p>
-                <code class="code-block">curl -fsSL https://omniclaw.ai/setup.sh | bash</code>
-
-                <h4>3. Configuration</h4>
-                <p>Navigate to the installation directory and copy the example config:</p>
-                <code class="code-block">cd omniclaw && cp config.example.yaml config.yaml</code>
-                <p>Edit `config.yaml` to add your preferred API keys for the Manager model (OpenAI/Anthropic) and your
-                    Gateway tokens (Telegram/Discord).</p>
-
-                <h4>4. Launch Mission Control</h4>
-                <p>Start the core backend and the Tauri Native GUI:</p>
-                <code class="code-block">npm run tauri dev</code>
-            </div>
-
-            <!-- High-End Node Setup Guide -->
-            <div class="doc-section" id="doc-highend-setup">
-                <h3>🚀 High-End AI Node / Server Build</h3>
-                <p>Turning a dedicated rig into an autonomous, kernel-aware Red Team agent.</p>
-
-                <h4>1. Bare-metal Linux Preparation</h4>
-                <p>OmniClaw requires direct kernel access for its advanced security modules. Install Ubuntu Server and
-                    ensure your kernel headers are present:</p>
-                <code
-                    class="code-block">sudo apt update && sudo apt install -y build-essential linux-headers-$(uname -r) bpfcc-tools python3-dev</code>
-
-                <h4>2. GPU Orchestration</h4>
-                <p>Install the NVIDIA Container Toolkit or latest proprietary drivers. Pull your heavy models into
-                    Ollama (e.g., `mistral-nemo` or `command-r` for complex tasks):</p>
-                <code class="code-block">ollama pull gemma2:27b</code>
-
-                <h4>3. Compile the Immortal Kernel (eBPF)</h4>
-                <p>Run the setup script with the high-performance flag. This compiles the Rust/C eBPF bridges:</p>
-                <code
-                    class="code-block">curl -fsSL https://omniclaw.ai/setup.sh | sudo bash -s -- --enable-ebpf --compile-rust</code>
-                <p><i>Note: The system must be run with <code>sudo</code> or root privileges to attach eBPF probes to
-                        the network sockets.</i></p>
-            </div>
-
-            <div class="doc-section" id="doc-termux">
-                <h3>📱 Ultimate Android / Termux WiFi Host Guide</h3>
-                <p>Why leave a PC running when an old Android phone uses 2 Watts of power? You can turn any Android
-                    device into a 24/7 AI Node.</p>
-
-                <h4>1. Install the Proper Termux</h4>
-                <p>Do <b>NOT</b> download Termux from the Google Play Store (it is outdated and broken). You must
-                    download F-Droid, and install "Termux" from there.</p>
-
-                <h4>2. Initial Setup & File Permissions</h4>
-                <p>Open Termux and type:</p>
-                <code class="code-block">termux-setup-storage</code>
-                <p>Accept the popup. Then update everything:</p>
-                <code class="code-block">pkg update && pkg upgrade -y</code>
-
-                <h4>3. Enable Remote Access (SSH)</h4>
-                <p>Typing on a phone screen is hard. Let's connect it to your PC's keyboard via WiFi.</p>
-                <ul>
-                    <li>Install SSH server: <code>pkg install openssh -y</code></li>
-                    <li>Set a password: <code>passwd</code> (type a password, you won't see the letters)</li>
-                    <li>Start the server: <code>sshd</code></li>
-                    <li>Find your phone's IP address: <code>ifconfig</code> (Look for the `wlan0` section)</li>
-                    <li>Find your username: <code>whoami</code> (usually looks like u0_a123)</li>
-                    <li><b>On your Windows/Mac PC</b> open a terminal and type:
-                        <code>ssh -p 8022 your_username@192.168.x.x</code>
-                    </li>
-                </ul>
-
-                <h4>4. Install Dependencies & Ollama</h4>
-                <p>Inside Termux install tools:</p>
-                <code
-                    class="code-block">pkg install git python rust binutils nodejs-lts ollama -y<br>ollama serve &</code>
-
-                <h4>5. Install OmniClaw</h4>
-                <p>Run the installer script:</p>
-                <code class="code-block">curl -fsSL https://omniclaw.ai/setup.sh | bash</code>
-            </div>
-
-            <div class="doc-section" id="doc-gateway">
-                <h3>💬 Multi-Channel Gateway (Telegram, Discord, Slack)</h3>
-                <p>OmniClaw uses a centralized `messaging_gateway.py` class that connects to your social accounts. This
-                    lets you DM the robot from anywhere.</p>
-
-                <h4>Telegram Setup (The Easiest)</h4>
-                <ul>
-                    <li>Message <b>@BotFather</b> on Telegram. Send <code>/newbot</code>. Name it. Copy the HTTP API
-                        Token.</li>
-                    <li>Message <b>@userinfobot</b> on Telegram to get your personal ID.</li>
-                    <li>Open <code>config.yaml</code> and paste the Token and your personal ID under the
-                        <code>messaging.telegram</code> block.
-                    </li>
-                </ul>
-
-                <h4>Discord Setup</h4>
-                <p>Go to the Discord Developer Portal. Create an Application -> Add a Bot. Check all "Privileged Gateway
-                    Intents". Copy the Token and paste it into <code>config.yaml</code> under <code>discord</code>. Use
-                    the OAuth2 URL generator to invite it to your server.</p>
-            </div>
-
-            <div class="doc-section" id="doc-linux">
-                <h3>🛠️ How the Linux Native Tools Work</h3>
-                <p>OmniClaw is not a restricted web chatbot. It drops an autonomous Python `Worker` process directly
-                    into a terminal shell.</p>
-                <ul>
-                    <li><b>Tool Calling:</b> The LLM outputs structured JSON asking to run commands like
-                        <code>nmap -sV target.com</code> or <code>curl</code>.
-                    </li>
-                    <li><b>Execution:</b> The OmniClaw orchestrator runs this in a sandboxed subprocess and feeds the
-                        stdout/stderr back into the LLM context limits.</li>
-                    <li><b>Scripting:</b> If a generic tool doesn't exist, OmniClaw is instructed to write a Python or
-                        Bash script to <code>/tmp/</code>, execute it, read the result, and delete it.</li>
-                </ul>
-            </div>
-
-            <div class="doc-section" id="doc-swarm">
-                <h3>🧠 The Peer-Reviewed Swarm Architecture</h3>
-                <p>A single AI hallucinated often. OmniClaw chains APIs together to fix this.</p>
-                <ul>
-                    <li><b>The Manager (High IQ):</b> You configure a powerful, expensive model (like GPT-4 or
-                        Claude-3.5) as the Manager. It reads your Telegram prompt and breaks it into 5 technical steps.
-                    </li>
-                    <li><b>The Workers (Fast/Cheap/Local):</b> The Manager assigns step 1 to a local free model (like
-                        Ollama Llama3 8B). The worker executes terminal commands to complete step 1.</li>
-                    <li><b>The Reviewer:</b> Before the final answer is sent to you, another model looks at the output
-                        and the terminal logs, and rates it. If it fails, the loop restarts.</li>
-                </ul>
-            </div>
-
-            <div class="doc-section" id="doc-voice">
-                <h3>🎙️ Desktop Voice Wake</h3>
-                <p>Activating OmniClaw hands-free from across the room.</p>
-                <p>The <code>core/voice_wake.py</code> file uses Python's SpeechRecognition library. It runs
-                    continuously in the background using minimal CPU. When it hears the exact acoustic model for "Hey
-                    Omni", it triggers a generic software interrupt waking the main LLM loop. For Mac users, it hooks
-                    into the native macOS Accessibility dictation APIs.</p>
-                <p><b>Setup:</b> Ensure your PC microphone is unmuted. In Linux/Raspberry Pi, ensure
-                    <code>pyaudio</code> and ALSA drivers are configured.
-                </p>
-            </div>
-
-            <div class="doc-section" id="doc-ebpf">
-                <h3>🦠 eBPF Kernel Bridge (Advanced Linux Only)</h3>
-                <p>Standard agents run in "user space" and are blind to the operating system. OmniClaw compiles a Rust/C
-                    eBPF binary that attaches directly to the Linux Kernel.</p>
-                <ul>
-                    <li><b>Network Visibility:</b> The agent can intercept incoming DDoS packets or malicious SSH
-                        attempts at the socket layer before they even hit an application.</li>
-                    <li><b>Process Tracing:</b> It knows exactly when a file is opened or executed by any other program
-                        on the server.</li>
-                    <li><b>Requirement:</b> You MUST run OmniClaw as <code>root</code> on a Linux machine with kernel
-                        5.8+ to use this module. It will not work on Windows without true WSL2 compilation.</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Safety Warning (Removed from bottom as it was moved to top) -->
-        <section class="section" style="padding: 0;"></section>
-    </main>
-
+    <!-- Footer -->
     <footer>
-        <p style="margin-bottom: 12px;">OmniClaw &copy; 2026. Built for Advanced Cybernetic Architecture. <a
-                href="https://github.com/webspoilt/omniclaw">View Source</a></p>
-        <a href="https://studio.buymeacoffee.com/stream-alert/page/webspoilt?user_key=c9b02e97-3d1f-45f7-8c33-4b4813b12363" target="_blank" rel="noopener noreferrer"
-            style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #FF813F, #FFDD00); color: #000; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;">
-            ☕ Buy Me a Coffee
-        </a>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="brand">OmniClaw</a>
+                <p>The definitive 2026-era autonomous security platform. Built for architects, researchers, and engineers.</p>
+            </div>
+            <div class="footer-links">
+                <h5>Platform</h5>
+                <ul>
+                    <li><a href="#">Architecture</a></li>
+                    <li><a href="#">Swarm Nodes</a></li>
+                    <li><a href="#">Mission Control</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h5>Ecosystem</h5>
+                <ul>
+                    <li><a href="#">Knowledge Graph</a></li>
+                    <li><a href="#">Secure Enclave</a></li>
+                    <li><a href="#">Legacy Extensions</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h5>Community</h5>
+                <ul>
+                    <li><a href="#">GitHub</a></li>
+                    <li><a href="#">Security Policy</a></li>
+                    <li><a href="#">Whitepaper</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="bmc-footer">
+            <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="webspoilt" data-description="Support me on Buy me a coffee!" data-message="Supporting open security research" data-color="#3b82f6" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border-subtle);">
+            <p style="color: var(--text-muted); font-size: 0.8rem;">&copy; 2026 Sovereign Sentinel Projects. Inspired by OmniParser, AutoGPT, and the open-source community.</p>
+        </div>
     </footer>
 
-    <!-- Scripts including Typewriter -->
     <script>
-        // Typewriter Effect Logic
-        document.addEventListener("DOMContentLoaded", () => {
-            const textToType = "The Hybrid Hive AI Agent System.";
-            const typewriterElement = document.getElementById("typewriter");
-            const typingSpeed = 80; // ms per character
-            const initialDelay = 500; // start delay
+        // Typing Effect for Hero
+        const text = "omniclaw exploit --target zero-day --autonomous";
+        const element = document.getElementById("typing-text");
+        let i = 0;
 
-            let i = 0;
-
-            function typeWriter() {
-                if (i < textToType.length) {
-                    typewriterElement.textContent += textToType.charAt(i);
-                    i++;
-
-                    // Add a slight randomization to typing speed to seem more "human"
-                    const speedVariation = typingSpeed + (Math.random() * 50 - 25);
-                    setTimeout(typeWriter, speedVariation);
-                }
+        function type() {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(type, 100);
             }
-
-            // Start typing after initial delay
-            setTimeout(typeWriter, initialDelay);
-
-            // Install Command Copy Logic (Vercel/Netlify auto-host)
-            const host = window.location.hostname;
-            if (host && host !== "" && host !== "localhost") {
-                document.getElementById('installCommand').innerText = `curl -fsSL https://${host}/setup.sh | bash`;
-            }
-        });
-
-        function copyCode(btn) {
-            const text = document.getElementById('installCommand').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                const originalHtml = btn.innerHTML;
-                btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied`;
-
-                setTimeout(() => {
-                    btn.innerHTML = originalHtml;
-                }, 2000);
-            });
         }
+        setTimeout(type, 2000);
 
-        // ==========================================
-        // UI Physics & Math Engine
-        // ==========================================
-        document.addEventListener("DOMContentLoaded", () => {
-            const cards = document.querySelectorAll('.card, .terminal-block');
-
-            // Mathematic bounds for 3D rotation
-            const MAX_ROT_DEG = 8;
-            const PERSPECTIVE_PX = 1000;
-
-            cards.forEach(card => {
-                // Initialize physics state
-                card.style.transformStyle = 'preserve-3d';
-                let bounds, centerX, centerY;
-
-                card.addEventListener('mouseenter', () => {
-                    bounds = card.getBoundingClientRect();
-                    centerX = bounds.left + bounds.width / 2;
-                    centerY = bounds.top + bounds.height / 2;
-                    // Snappy spring-in
-                    card.style.transition = 'transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease';
-                });
-
-                card.addEventListener('mousemove', (e) => {
-                    if (!bounds) return;
-
-                    // 1. Calculate Cartesian Vector (distance from center)
-                    const dx = e.clientX - centerX;
-                    const dy = e.clientY - centerY;
-
-                    // 2. Normalize and compute Euler Angles
-                    const normalizeX = dx / (bounds.width / 2);
-                    const normalizeY = dy / (bounds.height / 2);
-
-                    const rotateX = normalizeY * -MAX_ROT_DEG; // Invert Y
-                    const rotateY = normalizeX * MAX_ROT_DEG;
-
-                    // 3. Dynamic directional lighting via shadow casting math
-                    const shadowDepthX = rotateY * -1.5;
-                    const shadowDepthY = rotateX * 1.5;
-
-                    // 4. Transform Matrix
-                    card.style.transform = `perspective(${PERSPECTIVE_PX}px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
-
-                    // Overwrite default border hover with dynamic glowing math
-                    card.style.boxShadow = `${shadowDepthX}px ${Math.max(10, shadowDepthY + 20)}px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(94, 106, 210, 0.3)`;
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    bounds = null;
-                    // Spring-back physics math curve (overshoot slightly and settle)
-                    card.style.transition = 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.6s ease';
-                    card.style.transform = `perspective(${PERSPECTIVE_PX}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                    card.style.boxShadow = ''; // Revert to CSS default hovering state
-                });
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
             });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
         });
     </script>
-    <!-- Buy Me a Coffee Widget Script -->
-    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="webspoilt" data-description="Support me on Buy me a coffee!" data-message="Thank you for visiting" data-color="#BD5FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 </body>
 
 </html>
