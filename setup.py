@@ -19,10 +19,10 @@ if requirements_path.exists():
 
 setup(
     name="omniclaw",
-    version="3.3.0",
-    author="Me",
-    author_email="support@omniclaw.ai",
-    description="The Hybrid Hive AI Agent System",
+    version="4.5.0",
+    author="ZeroDay Team",
+    author_email="heyzerodayhere@gmail.com",
+    description="The Sovereign Sentinel Hybrid Hive AI Agent System",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/omniclaw/omniclaw",

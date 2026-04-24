@@ -1,89 +1,124 @@
-# OmniClaw
-Your autonomous AI agent swarm for Linux. Deploy multiple AI models that collaborate to monitor, defend, and manage your systems.
+# Omniclaw: Sovereign Sentinel v4.5.0
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/webspoilt/omniclaw/main/public/logo.svg" width="180" height="180" alt="OmniClaw Logo">
-</p>
+<div align="center" style="font-size: 1.5em; margin: 20px 0;">
+    <strong>O</strong>rchestrated <strong>M</strong>odular <strong>N</strong>etwork <strong>I</strong>ntelligence for <strong>C</strong>yber <strong>L</strong>atent <strong>A</strong>gent <strong>W</strong>arfare
+</div>
+<br>
+<div align="center">
 
-<p align="center">
-  <a href="https://github.com/webspoilt/omniclaw/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/webspoilt/omniclaw/install-test.yml?style=flat-square" alt="CI Status">
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License">
-  </a>
-  <a href="https://python.org">
-    <img src="https://img.shields.io/badge/python-3.10+-blue.svg?style=flat-square" alt="Python">
-  </a>
-  <a href="https://github.com/webspoilt/omniclaw/issues">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome">
-  </a>
-</p>
+> **Join the Sovereignty!** Connect with security researchers, AI engineers, and fellow hive-defenders. Get support, share insights, and stay updated with the latest Omniclaw developments.
 
-### ⚡ One-Click Install
-Deploy the autonomous swarm instantly on Linux or Termux:
+[![Discord](https://img.shields.io/badge/Discord-7289DA?logo=discord&logoColor=white)](https://discord.gg/omniclaw)⠀[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)](https://t.me/omniclaw)
+
+<a href="https://github.com/webspoilt/omniclaw" target="_blank"><img src="https://img.shields.io/github/stars/webspoilt/omniclaw?style=for-the-badge&color=gold" alt="Omniclaw Stars" /></a>
+
+</div>
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Quick Start](#quick-start)
+- [AI Agent Supervision](#ai-agent-supervision)
+- [Kernel Bridge (eBPF)](#kernel-bridge-ebpf)
+- [Development](#development)
+- [Security](#security)
+- [Credits](#credits)
+- [License](#license)
+
+## Overview
+
+Omniclaw is an innovative autonomous cybersecurity platform that leverages a "Hybrid Hive" of AI agents to perform real-time threat detection, automated forensics, and kernel-level neutralization. Unlike traditional IPS/IDS, Omniclaw doesn't just watch—it acts.
+
+## Features
+
+- 🛡️ **Kernel-Level Defense.** Rust-based eBPF probes provide deep, zero-overhead visibility into system calls and network traffic.
+- 🤖 **Autonomous Swarm.** A decentralized team of AI agents that automatically determine and execute defensive steps without human intervention.
+- ⚡ **Zero-Trust Orchestration.** Secure communication between agents using P2P encryption and hardware-backed identity.
+- 🧩 **Modular Plugin System.** Hot-swap detection engines, notification connectors, and response playbooks without restarting.
+- 📊 **Mission Control.** A sleek, real-time dashboard for system monitoring, telemetry visualization, and manual override.
+- 🔗 **External SIEM Integration.** Out-of-the-box support for Splunk, Elastic, and custom webhooks.
+
+## Architecture
+
+Omniclaw is built on a distributed micro-agent architecture designed for resilience and speed.
+
+```mermaid
+graph TB
+    subgraph Core Services
+        UI[Mission Control<br/>React + TypeScript]
+        ORCH[Orchestrator<br/>Python + FastAPI]
+        DB[(PostgreSQL + pgvector)]
+        MQ[Task Queue<br/>Redis]
+        SWARM[AI Agent Swarm]
+    end
+
+    subgraph Security Layer
+        PROBE[eBPF Probes<br/>Rust]
+        KERNEL[Linux Kernel]
+    end
+
+    UI --> |WebSocket| ORCH
+    ORCH --> |Manage| SWARM
+    SWARM --> |Telemetry| DB
+    SWARM --> |Instructions| PROBE
+    PROBE --> |Filter| KERNEL
+    KERNEL --> |Events| PROBE
+    PROBE --> |Alerts| MQ
+    MQ --> |Process| ORCH
+```
+
+## Quick Start
+
+### Installation
+
+The fastest way to deploy the Sovereign Sentinel node is via the official setup script:
+
 ```bash
 curl -fsSL https://omniclaw.vercel.app/setup.sh | bash
 ```
 
----
+### Manual Setup
 
-## 🚀 Quick Start
-
-### 1. Install Dependencies
+1. **Clone and Install Dependencies**
 ```bash
+git clone https://github.com/webspoilt/omniclaw.git
+cd omniclaw
 pip install -r requirements.txt
 ```
 
-### 2. Configure
+2. **Configure Environment**
 ```bash
-cp config.example.yaml config.yaml
-# Add your API keys (OpenAI, Anthropic, Gemini, etc.)
+cp .env.example .env
+# Add your LLM API keys and configuration
 ```
 
-### 3. Launch
+3. **Launch the Orchestrator**
 ```bash
-python core/main.py
+python orchestrator.py
 ```
 
----
+## AI Agent Supervision
 
-## 🎯 What It Does
+Omniclaw includes sophisticated multi-layered agent supervision to ensure efficient task execution and prevent hallucination loops:
 
-OmniClaw is a 2026-era autonomous system designed for security research and system automation.
+- **Mentor Agent**: Automatically monitors agent behavior and recommends alternative attack/defense vectors.
+- **Pattern Detection**: Detects redundant tool calls and redirects agents to search for established solutions.
+- **Self-Healing**: If an agent fails to reach a target, the Reflector agent analyzes the failure and updates the Hive context.
 
--   **Swarm Intelligence**: Multiple AI models (GPT-4o, Claude 3.5, Gemini 2.0) collaborate on complex tasks through a manager-worker architecture.
--   **Kernel-Level Monitoring**: eBPF-powered intrusion prevention that observes system calls and blocks threats in real-time.
--   **Vision Module**: Optimized screen capture (1024px, JPEG 85%) for visual UI audits and automated computer use.
--   **Multimodal Analysis**: Sends screenshots to multimodal LLMs for high-fidelity understanding of UI elements and security leaks.
--   **Self-Healing**: Automatically detects runtime errors, analyzes them via LLM, and applies fixes to its own code.
+## Kernel Bridge (eBPF)
 
----
+The heart of Omniclaw's visibility is the Rust-based kernel bridge.
+- **Direct Link**: Connects the AI Hive directly to the Linux kernel.
+- **Zero Overhead**: eBPF bytecode executes in the kernel context for maximum performance.
+- **Packet-Level Inspection**: Inspects every packet before it reaches the network stack.
 
-## 📖 Documentation
+## Security
 
-The project has moved to a structured documentation system to reduce README clutter:
-
--   🛠️ **[Setup Guide](docs/setup.md)**: Detailed installation for Linux, macOS, and Termux (Android).
--   🧠 **[Architecture Deep Dive](docs/architecture.md)**: How the Hybrid Hive and Kernel Bridge work.
--   📋 **[Feature Catalog](docs/features.md)**: Full list of 30+ autonomous capabilities.
--   🎯 **[Real-World Use Cases](USE_CASES.md)**: Practical scenarios from SSH defense to bug bounty hunting.
--   📜 **[Changelog](docs/changelog.md)**: Version history and upcoming roadmap.
+Please report security vulnerabilities to **heyzerodayhere@gmail.com**. See [SECURITY.md](SECURITY.md) for more details.
 
 ---
 
-## 🛡️ Security & Privacy
-
--   **Isolation**: Designed to run in sandboxed environments (VMs/Docker).
--   **Local First**: Supports strictly offline execution via Ollama.
--   **No-Training Guarantee**: Programmatically opts-out of data retention for all major API providers.
-
-Read our **[Security Policy](SECURITY.md)** for more details.
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our **[Contributing Guide](CONTRIBUTING.md)** and **[Code of Conduct](CODE_OF_CONDUCT.md)**.
-
-Built with ❤️ by **Biswajeet Arukha** and the open-source community. Inspired by OmniParser, AutoGPT, and the global security community.
+Built with ❤️ by the **Omniclaw Team**
+⭐ Star us on [GitHub](https://github.com/webspoilt/omniclaw) if you believe in the future of autonomous defense!

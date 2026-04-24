@@ -11,12 +11,7 @@
 
 We take the security of OmniClaw very seriously. If you find a security vulnerability, please do **not** open a public issue.
 
-Instead, please report vulnerabilities by:
-1. Sending an email to **security@omniclaw.ai**
-2. Providing a detailed description of the vulnerability, including steps to reproduce.
-3. Attaching any relevant logs or screenshots.
-
-We will acknowledge your report within 48 hours and provide a timeline for a fix.
+Please report security vulnerabilities to **heyzerodayhere@gmail.com**. All reports will be acknowledged within 24 hours.
 
 ## Security Hygiene
 - **Secrets**: Never commit API keys to this repository.

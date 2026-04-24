@@ -8,6 +8,8 @@ First off, thank you for considering contributing to OmniClaw! It's people like 
 
 ## ⚠️ Important Disclaimer 
 
+If you have questions, please reach out to **heyzerodayhere@gmail.com**.
+
 Before contributing, please be aware that OmniClaw is currently in **Beta and is highly experimental**. Because of its deep system access capabilities (including Kernel features via eBPF), please ensure you develop and test your changes inside a safe Virtual Machine (VMware, VirtualBox, etc.). 
 
 ## 🤖 Local AI Support (Privacy First)
