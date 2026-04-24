@@ -453,8 +453,17 @@ class IPSAgent:
             self._event_source = MockEventSource()
             return
 
-        if os.geteuid() != 0:
-            logger.info("Not running as root — falling back to auth.log parser")
+        # Check for root/admin privileges
+        is_root = False
+        if os.name != "nt":
+            is_root = os.geteuid() == 0
+        else:
+            # On Windows, we assume non-root for IPS logic purposes
+            # (True admin check would require ctypes/shell APIs)
+            is_root = False
+
+        if not is_root:
+            logger.info("Not running as root/admin — falling back to auth.log parser")
             self._event_source = AuthLogParser(self.config.auth_log_path)
             return
 

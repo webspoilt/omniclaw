@@ -757,11 +757,15 @@ class SimulationRunner:
         else:
             # Unix: Use process group termination
             # Since start_new_session=True, process group ID equals main process PID
-            pgid = os.getpgid(process.pid)
+            # os.getpgid is not available on Windows
+            pgid = os.getpgid(process.pid) if os.name != "nt" else None
             logger.info(f"Terminate process group (Unix): simulation={simulation_id}, pgid={pgid}")
             
             # First send SIGTERM to the entire process group
-            os.killpg(pgid, signal.SIGTERM)
+            if pgid:
+                os.killpg(pgid, signal.SIGTERM)
+            else:
+                process.terminate()
             
             try:
                 process.wait(timeout=timeout)

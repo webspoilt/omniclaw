@@ -190,22 +190,14 @@ class ShellSandbox:
 
         # 3. Execute with sandbox constraints
         try:
-            # Use appropriate shell for OS
-            if os.name == "nt":
-                process = await asyncio.create_subprocess_shell(
-                    command,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE,
-                    cwd=str(self.workspace),
-                )
-            else:
-                process = await asyncio.create_subprocess_shell(
-                    command,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE,
-                    cwd=str(self.workspace),
-                    env=self._safe_env(),
-                )
+            # Use appropriate shell for OS with safe environment
+            process = await asyncio.create_subprocess_shell(
+                command,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                cwd=str(self.workspace),
+                env=self._safe_env(),
+            )
             stdout, stderr = await asyncio.wait_for(
                 process.communicate(), timeout=timeout
             )

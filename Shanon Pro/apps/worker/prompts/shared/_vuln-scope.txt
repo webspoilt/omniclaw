@@ -1,1 +1,0 @@
-**EXTERNAL ATTACKER SCOPE:** Only report vulnerabilities exploitable via {{WEB_URL}} from the internet. Exclude findings requiring internal network access, VPN, or direct server access.

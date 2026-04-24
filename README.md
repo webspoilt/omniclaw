@@ -38,7 +38,7 @@
 > 
 > **🛑 STRICT LEGAL WARNING:** Using OmniClaw for automated hacking, unauthorized network penetration, or malicious exploitation is **strictly illegal and punishable by law**. We do not encourage, endorse, or support malicious activities. You assume all risk and liability for how you deploy this autonomous tool.
 >
-> OmniClaw is integrated and inspired by many legendary open-source repositories like OmniParser, AutoGPT, and the global security community.
+> OmniClaw is integrated and inspired by many legendary open-source repositories like OmniParser, AutoGPT, and the global security community. This project serves as a unified orchestration layer for autonomous cybersecurity research.
 
 ## 🌟 Features
 
@@ -62,18 +62,19 @@
 - **Multi-Channel Inbox**: Out-of-the-box support for Telegram, WhatsApp, Discord, Slack, Matrix, and iMessage.
 - **Voice Wake & Audio**: Global hot-word activation (like Siri) for macOS desktop and mobile continuous conversation.
 
-### 4. Automation & Earning
-- **Financial Automation**: Trading platform hooks and earning workflows
-- **Persistent Memory**: Local Vector Database for context retention
+### 4. Advanced Automation
+- **Persistent Memory**: Local Vector Database (LanceDB) for context retention
 - **Bug Bounty Hunting**: Automated research and vulnerability detection
+- **CVE Monitoring**: Real-time tracking of NVD and GitHub Security Advisories
+- **PoC Factory**: Autonomous synthesis and validation of functional exploits
 
 ### 5. Absolute Data Privacy 🛡️
 - **No Training Guarantee**: All core API integrations (OpenAI, Anthropic, Gemini, etc.) programmatically opt-out of data retention and engine training, strictly enforcing data isolation.
 
 ### 6. OmniClaw Mission Control (Tauri Native GUI) 🖥️
-- **Cross-Platform Dashboard**: A performant React/Tauri desktop application built to monitor Swarm operations, view live Xterm.js terminal streams, and manually activate agent tools (like Bug Bounty or Algo Trader) seamlessly.
+- **Cross-Platform Dashboard**: A performant React/Tauri desktop application built to monitor Swarm operations, view live Xterm.js terminal streams, and manually activate agent tools (like Bug Bounty or Recon agents) seamlessly.
 - **WebSocket Telemetry**: OmniClaw streams reasoning logs and stdout intercepts directly to the UI dynamically without any clunky polling. 
-
+- **Security Viz**: Real-time visualization of eBPF kernel events and network topologies.
 ### 7. AI Companion & Custom Personas 💖
 - **Interactive Roleplay**: Set your Agent to act as a friend, partner, or specialized assistant.
 - **Proactive Engagement**: The `CompanionLoop` background thread monitors the time and spontaneously checks on you (e.g., asking if you've eaten lunch), forging a true companion connection.
@@ -212,7 +213,6 @@
 ### 22. Vision Module (v4.3.0) 👁️
 - **📱 Computer Use**: Cross-platform screen capture (X11/Wayland/macOS/Windows/Termux) with multimodal LLM analysis.
 - **📷 Termux Camera**: Capture via `termux-camera-photo` with base64 encoding and LLM analysis.
-- **🌱 Plant Health**: Leaf disease detection, pest identification, and care recommendations from plant images.
 
 ### 23. Memory Module (v4.3.0) 🧠
 - **💾 Vector Store**: LanceDB wrapper for embedding storage and similarity search with in-memory fallback.
@@ -241,9 +241,9 @@
 - **🕵️ Stealth Scraper**: Native integration of the `Scrapling` framework to bypass Cloudflare Turnstile, Kasada, and Incapsula natively using Playwright.
 - **🔓 Local Model Decensoring**: Agentic integration with `Heretic-LLM`, allowing OmniClaw to automatically download and directionally ablate HuggingFace models to remove censorship alignments locally.
 
-### 28. CashClaw Business Orchestrator (v4.3.0) 💰
-- **💼 Freelance Automation**: Fully integrated the CashClaw engine natively into OmniClaw. 12 powerful AI business skills (`cashclaw-seo-auditor`, `cashclaw-invoicer`, `cashclaw-content-writer`, etc.) are now available in the `skills` directory.
-- **💳 Stripe & HYRVEai**: OmniClaw agents can now accept gig marketplace requests, execute them using CashClaw capabilities, and generate Stripe invoices autonomously.
+### 28. Offensive Security Pipeline (v4.3.0) 🛡️
+- **CVE-to-PoC Factory**: Fully integrated engine natively into OmniClaw. 12 powerful AI security skills are now available in the `skills` directory.
+- **Vulnerability Orchestration**: OmniClaw agents can now accept security research requests, execute them using Red Team capabilities, and generate comprehensive PDF audit reports autonomously.
 
 ### 29. Sovereign Sentinel (v4.4.0) — The 2026 Fusion 🛡️🚀
 - **Unified pnpm Monorepo**: Clean, enterprise-grade architecture providing a high-performance security framework in a single workspace (`apps/`, `engines/`, `packages/`).
@@ -259,8 +259,8 @@
 Wondering what you can actually build with an autonomous agent swarm? 
 Check out our **[Real-World Use Cases](USE_CASES.md)** document to see how engineers are using OmniClaw for:
 - 🎯 Autonomous Bug Bounty Hunting
-- 🩺 24/7 Server Health & Incident Response
-- 🎙️ Hands-Free Smart Home Automation
+- 🛡️ 24/7 Sovereign Sentinel Defense
+- 🕳️ Proactive Shadow Shell Honeypots
 
 ## 🚀 Quick Start
 
@@ -561,21 +561,6 @@ omniclaw/
 │   │   └── scholar_config.json
 │   ├── startup/                  #   DevOps autopilot
 │   │   └── saas_manager.py
-│   ├── sensors/                  #   Bio-guardian
-│   │   └── plant_monitor.py
-│   ├── offensive/                #   Red Team tools
-│   │   └── model_decensor.py     #   Heretic-LLM integration
-│   ├── recon/                    #   Reconnaissance
-│   │   └── stealth_scraper.py    #   Scrapling Turnstile bypass
-│   ├── observability/            #   LLM Telemetry
-│   │   └── langwatch_tracer.py   #   LangWatch prompt tracking
-│   └── swarm_oracle/             #   🐋 50+ Agent Swarm Engine
-│       ├── manager.py
-│       ├── swarm_engine.py
-│       ├── auditor.py
-│       ├── knowledge.py
-│       ├── config.py
-│       ├── personas.py
 │       └── ebpf_bridge/          #   Rust eBPF/ETW Sentinel
 ├── connectors/                   # 🔌 MCP + integrations
 │   └── mcp_host.py               #   MCP server (fastmcp)
@@ -691,7 +676,11 @@ MIT License - see [LICENSE](LICENSE) file.
 ---
 
 <p align="center">
-  <b>OmniClaw</b> - The Future of Autonomous AI Agents
+  <b>OmniClaw</b> - The Future of Autonomous Cybersecurity Swarms
   <br>
   <sub>Built with ❤️ by Me</sub>
+  <br><br>
+  <a href="https://studio.buymeacoffee.com/stream-alert/page/webspoilt?user_key=c9b02e97-3d1f-45f7-8c33-4b4813b12363" target="_blank">
+    <img src="https://img.buymeacoffee.com/button-api/?text=Support my research&emoji=☕&slug=webspoilt&button_colour=BD5FFF&font_colour=ffffff&font_family=Inter&outline_colour=000000&coffee_colour=FFDD00" alt="Support my research" />
+  </a>
 </p>

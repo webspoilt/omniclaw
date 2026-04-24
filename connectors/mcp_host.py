@@ -108,9 +108,7 @@ async def trigger_plant_capture(ctx: Context) -> str:
     """Manually trigger a plant health capture and analysis."""
     ctx.info("Triggering plant capture…")
     try:
-        from modules.sensors.plant_monitor import PlantMonitor
-        pm = PlantMonitor()
-        result = pm.run_once() if hasattr(pm, "run_once") else "Capture initiated"
+        pass
         return str(result)
     except Exception as e:
         ctx.warning(f"Could not import PlantMonitor: {e}")
