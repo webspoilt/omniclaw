@@ -135,6 +135,34 @@
 
         .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
 
+        .copy-btn {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .copy-btn:hover {
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        .copy-btn.copied {
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
         .btn-github {
             display: inline-flex;
             align-items: center;
@@ -496,9 +524,15 @@
                 <div style="padding: 24px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-subtle);">
                     <h4 style="color: var(--accent-green); margin-bottom: 8px;">One-Click Install</h4>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Deploy the swarm to your Linux or Termux environment instantly.</p>
-                    <code style="display: block; background: #000; padding: 12px; border-radius: 8px; font-size: 0.8rem; border: 1px solid var(--border-subtle); color: var(--accent-blue); margin-bottom: 12px;">
-                        curl -fsSL https://omniclaw.vercel.app/setup.sh | bash
-                    </code>
+                    <div style="position: relative;">
+                        <code id="install-cmd" style="display: block; background: #000; padding: 12px; border-radius: 8px; font-size: 0.8rem; border: 1px solid var(--border-subtle); color: var(--accent-blue); margin-bottom: 12px; padding-right: 80px;">
+                            curl -fsSL https://omniclaw.vercel.app/setup.sh | bash
+                        </code>
+                        <button class="copy-btn" onclick="copyToClipboard()">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            Copy
+                        </button>
+                    </div>
                     <a href="https://github.com/webspoilt/omniclaw/blob/main/setup.sh" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">View Source</a>
                 </div>
                 <div style="padding: 24px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-subtle);">
@@ -566,6 +600,19 @@
     </footer>
 
     <script>
+        function copyToClipboard() {
+            const cmd = document.getElementById('install-cmd').innerText.trim();
+            navigator.clipboard.writeText(cmd).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
         // Typing Effect for Hero
         const text = "omniclaw exploit --target zero-day --autonomous";
         const element = document.getElementById("typing-text");
