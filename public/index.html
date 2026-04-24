@@ -135,6 +135,26 @@
 
         .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
 
+        .btn-github {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-github:hover {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
         /* Mobile Menu */
         .mobile-toggle { display: none; }
 
@@ -404,7 +424,13 @@
                 <a href="#docs">Docs</a>
                 <a href="#github">GitHub</a>
             </div>
-            <button class="nav-cta" onclick="window.location.href='#install'">Get Started</button>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <a href="https://github.com/webspoilt/omniclaw" class="btn-github">
+                    <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
+                    Star on GitHub
+                </a>
+                <button class="nav-cta" onclick="window.location.href='#install'">Get Started</button>
+            </div>
         </div>
     </nav>
 
@@ -516,7 +542,12 @@
             <div class="footer-links">
                 <h5>Community</h5>
                 <ul>
-                    <li><a href="#">GitHub</a></li>
+                    <li>
+                        <a href="https://github.com/webspoilt/omniclaw" class="btn-github" style="margin-top: 8px;">
+                            <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
+                            Star on GitHub
+                        </a>
+                    </li>
                     <li><a href="#">Security Policy</a></li>
                     <li><a href="#">Whitepaper</a></li>
                 </ul>
