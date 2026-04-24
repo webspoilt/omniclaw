@@ -16,7 +16,7 @@
   <a href="https://python.org">
     <img src="https://img.shields.io/badge/python-3.9%2B-yellow.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python">
   </a>
-  <a href="https://buymeacoffee.com/webspoilt">
+  <a href="https://studio.buymeacoffee.com/stream-alert/page/webspoilt?user_key=c9b02e97-3d1f-45f7-8c33-4b4813b12363">
     <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee">
   </a>
   <br><br>
