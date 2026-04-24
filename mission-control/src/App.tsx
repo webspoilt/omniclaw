@@ -3,6 +3,7 @@ import { Header } from '@/components/Layout/Header';
 import { Sidebar } from '@/components/Layout/Sidebar';
 import { ToolGrid } from '@/components/Grid/ToolGrid';
 import { SwarmPanel } from '@/components/Swarm/SwarmPanel';
+import { KernelTopology } from '@/components/Topology/KernelTopology';
 import { LiveTerminal } from '@/components/Terminal/LiveTerminal';
 import { ChatInterface } from '@/components/Chat/ChatInterface';
 import { useOmniClaw } from '@/hooks/useOmniClaw';
@@ -42,9 +43,14 @@ function App() {
                             <ToolGrid />
                         </div>
 
-                        {/* Swarm Panel (Right Side) */}
-                        <div className="w-80 p-6 pl-0 border-l border-white/5 hidden xl:block">
-                            <SwarmPanel />
+                        {/* Swarm & Topology (Right Side) */}
+                        <div className="w-80 p-6 pl-0 border-l border-white/5 hidden xl:flex flex-col gap-6">
+                            <div className="h-1/2">
+                                <KernelTopology />
+                            </div>
+                            <div className="flex-1">
+                                <SwarmPanel />
+                            </div>
                         </div>
                     </div>
 
