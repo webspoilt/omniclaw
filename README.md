@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-v4.4.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-v4.5.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <img src="https://img.shields.io/badge/status-active-brightgreen.svg?style=for-the-badge" alt="Status">
   <a href="LICENSE">
