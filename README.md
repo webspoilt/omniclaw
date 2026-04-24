@@ -120,5 +120,5 @@ Please report security vulnerabilities to **heyzerodayhere@gmail.com**. See [SEC
 
 ---
 
-Built with ❤️ by the **Omniclaw Team**
-⭐ Star us on [GitHub](https://github.com/webspoilt/omniclaw) if you believe in the future of autonomous defense!
+Built with ❤️ by the **zeroday**
+⭐ Star  on [GitHub](https://github.com/webspoilt/omniclaw) if you believe in the future of autonomous defense!
