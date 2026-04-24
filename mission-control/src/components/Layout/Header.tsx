@@ -21,6 +21,7 @@ export function Header() {
                     <h1 className="text-lg font-bold text-white tracking-tight">
                         OmniClaw
                         <span className="text-cyber-accent">.mission</span>
+                        <span className="ml-2 text-[10px] text-gray-500 font-mono">v4.5.2</span>
                     </h1>
                 </div>
             </div>

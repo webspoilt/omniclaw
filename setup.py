@@ -19,7 +19,7 @@ if requirements_path.exists():
 
 setup(
     name="omniclaw",
-    version="4.5.0",
+    version="4.5.2",
     author="ZeroDay Team",
     author_email="heyzerodayhere@gmail.com",
     description="The Sovereign Sentinel Hybrid Hive AI Agent System",

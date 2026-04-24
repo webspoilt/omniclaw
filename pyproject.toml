@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "omniclaw"
-version = "4.5.0"
+version = "4.5.2"
 authors = [ { name="ZeroDay Team", email="heyzerodayhere@gmail.com" } ]
 description = "The Sovereign Sentinel Hybrid Hive AI Agent System"
 readme = "README.md"

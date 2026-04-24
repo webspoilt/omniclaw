@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/webspoilt/omniclaw/main/public/logo.svg" width="120" height="120" alt="Omniclaw Logo">
 </p>
 
-# Omniclaw: Sovereign Sentinel v4.5.0
+# Omniclaw: Sovereign Sentinel v4.5.2
 
 <div align="center" style="font-size: 1.5em; margin: 20px 0;">
     <strong>O</strong>rchestrated <strong>M</strong>odular <strong>N</strong>etwork <strong>I</strong>ntelligence for <strong>C</strong>yber <strong>L</strong>atent <strong>A</strong>gent <strong>W</strong>arfare
@@ -49,8 +49,10 @@ Comprehensive documentation is available to help you deploy and master the Sover
 
 - 🛡️ **Kernel-Level Defense.** Rust-based eBPF probes provide deep, zero-overhead visibility into system calls and network traffic.
 - 🤖 **Autonomous Swarm.** A decentralized team of AI agents that automatically determine and execute defensive steps without human intervention.
+- 📉 **Sovereign Risk Engine.** (New) Real-time behavioral scoring system inspired by Tirreno, featuring automated LOCK and TERMINATE thresholds.
+- 🧰 **Advanced Security Toolkit.** (New) Specialized skills for WiFi Recon, OSINT Reputation (AbuseIPDB), and Injection Auditing (CyberInject).
 - ⚡ **Zero-Trust Orchestration.** Secure communication between agents using P2P encryption and hardware-backed identity.
-- 🧩 **Modular Plugin System.** Hot-swap detection engines, notification connectors, and response playbooks without restarting.
+- 🧩 **Modular Plugin System.** Hot-swap detection engines, notification connectors, and response playbooks.
 - 📊 **Mission Control.** A sleek, real-time dashboard for system monitoring, telemetry visualization, and manual override.
 - 🔗 **External SIEM Integration.** Out-of-the-box support for Splunk, Elastic, and custom webhooks.
 
