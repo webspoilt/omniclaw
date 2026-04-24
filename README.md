@@ -8,7 +8,7 @@
 
 > **Join the Sovereignty!** Connect with security researchers, AI engineers, and fellow hive-defenders. Get support, share insights, and stay updated with the latest Omniclaw developments.
 
-[![Discord](https://img.shields.io/badge/Discord-7289DA?logo=discord&logoColor=white)](https://discord.gg/omniclaw)⠀[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)](https://t.me/omniclaw)
+[![Discord](https://img.shields.io/badge/Discord-7289DA?logo=discord&logoColor=white)](https://discord.gg/omniclaw)⠀[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)](https://t.me/omniclaw)⠀[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-F7DF1E?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/webspoilt)
 
 <a href="https://github.com/webspoilt/omniclaw" target="_blank"><img src="https://img.shields.io/github/stars/webspoilt/omniclaw?style=for-the-badge&color=gold" alt="Omniclaw Stars" /></a>
 
