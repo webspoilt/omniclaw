@@ -37,6 +37,8 @@
 > - **Liability:** Use at your own risk!
 > 
 > **🛑 STRICT LEGAL WARNING:** Using OmniClaw for automated hacking, unauthorized network penetration, or malicious exploitation is **strictly illegal and punishable by law**. We do not encourage, endorse, or support malicious activities. You assume all risk and liability for how you deploy this autonomous tool.
+>
+> OmniClaw is integrated and inspired by many legendary open-source repositories like OmniParser, AutoGPT, and the global security community.
 
 ## 🌟 Features
 
@@ -244,7 +246,7 @@
 - **💳 Stripe & HYRVEai**: OmniClaw agents can now accept gig marketplace requests, execute them using CashClaw capabilities, and generate Stripe invoices autonomously.
 
 ### 29. Sovereign Sentinel (v4.4.0) — The 2026 Fusion 🛡️🚀
-- **Unified pnpm Monorepo**: Clean, enterprise-grade architecture fusing OmniClaw and Shannon Pro into a single workspace (`apps/`, `engines/`, `packages/`).
+- **Unified pnpm Monorepo**: Clean, enterprise-grade architecture providing a high-performance security framework in a single workspace (`apps/`, `engines/`, `packages/`).
 - **CVE-to-PoC Factory**: Autonomous pipeline that monitors NVD/GitHub, performs reachability-aware static analysis (CPG), and synthesizes functional Python exploits via specialized workers.
 - **eBPF Sentinel (Rust)**: High-performance `libbpf-rs` module for Ring-0 stealth, hooking `sys_execve` to detect security tools (EDR) and triggering automatic IP rotation/migration.
 - **Durable Worker (TS)**: TypeScript-based durable orchestrator (Inspired by Temporal.io) for long-running security missions that resume after failure.

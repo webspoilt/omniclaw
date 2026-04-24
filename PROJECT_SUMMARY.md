@@ -171,7 +171,7 @@ Total Lines of Code: ~15,000+
 - **🧬 Biometric Vibe Lock**: Only unlocks "Ghost Mode" tools based on keystroke/voice trust scores
 
 ### 11. Sovereign Sentinel (v4.4.0) — The 2026 Fusion ✅
-- **pnpm Monorepo**: Enterprise-grade structure fusing OmniClaw and Shannon Pro
+- **pnpm Monorepo**: Enterprise-grade structure for unified security research and automation
 - **CVE-to-PoC Factory**: Autonomous pipeline for zero-day recon and exploitation
 - **eBPF Sentinel**: Rust-based libbpf-rs module for Ring-0 stealth and EDR detection
 - **Durable Worker**: TypeScript-based resilient orchestrator for long-range missions
