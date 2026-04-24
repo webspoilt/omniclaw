@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/webspoilt/omniclaw/main/public/logo.svg" width="120" height="120" alt="Omniclaw Logo">
+</p>
+
 # Omniclaw: Sovereign Sentinel v4.5.0
 
 <div align="center" style="font-size: 1.5em; margin: 20px 0;">
