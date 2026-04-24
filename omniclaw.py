@@ -628,8 +628,10 @@ FAISS Enabled: {stats['faiss_enabled']}
                 report = doctor.run_audit()
                 return f"🛡️ Security Audit\n\n{report['summary']}"
             status = self.security.get_status()
+            risk_score = self.security.risk_engine.session_scores.get("default", 0)
             return (f"🛡️ Security Status\n\n"
                     f"Layers active: {status['layers_active']}\n"
+                    f"Current Risk Score: {risk_score}\n"
                     f"Workspace: {status['workspace']}\n"
                     f"Active sessions: {status['active_sessions']}\n"
                     f"Blocked patterns: {status['blocked_patterns']}\n"

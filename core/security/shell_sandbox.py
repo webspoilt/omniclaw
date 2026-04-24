@@ -15,6 +15,7 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Optional
+from core.security.risk_engine import RiskEngine
 
 logger = logging.getLogger("OmniClaw.Security.ShellSandbox")
 
@@ -99,9 +100,10 @@ class ShellSandbox:
         r"rmdir\s+/s",               # Windows rmdir
     ]
 
-    def __init__(self, workspace_dir: str | Path):
+    def __init__(self, workspace_dir: str | Path, risk_engine: Optional[RiskEngine] = None):
         self.workspace = Path(workspace_dir).resolve()
         self.workspace.mkdir(parents=True, exist_ok=True)
+        self.risk_engine = risk_engine
 
         # Pre-compile patterns for performance
         self._blocked_compiled = [
@@ -172,7 +174,25 @@ class ShellSandbox:
         is_blocked, pattern = self.is_blocked(command)
         if is_blocked:
             logger.warning(f"BLOCKED command: {command} (pattern: {pattern})")
+            if self.risk_engine:
+                self.risk_engine.evaluate_action("default", "bash_execute", f"[BLOCKED] {command}")
             raise SecurityError("BLOCKED: dangerous command detected")
+
+        # 1b. Evaluate Risk (Tirreno-style)
+        if self.risk_engine:
+            risk_result = self.risk_engine.evaluate_action("default", "bash_execute", command)
+            if risk_result["status"] == "TERMINATE":
+                logger.critical(f"RISK TERMINATE: {command} (Score: {risk_result['score']})")
+                raise SecurityError(f"RISK LIMIT EXCEEDED: Command terminated for safety. Score: {risk_result['score']}")
+            elif risk_result["status"] == "LOCK" and confirm_callback:
+                logger.warning(f"RISK LOCK: {command} (Score: {risk_result['score']})")
+                approved = await confirm_callback(
+                    f"⚠️ HIGH RISK DETECTED (Score: {risk_result['score']})\n"
+                    f"Agent wants to run: `{command}`\n"
+                    "Manual override required. Allow?"
+                )
+                if not approved:
+                    return ShellResult(output="Risk Lock: User denied execution", exit_code=-1)
 
         # 2. Check CONFIRM
         if self.needs_confirmation(command):

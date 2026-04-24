@@ -17,6 +17,7 @@ from core.security.shell_sandbox import ShellSandbox, ShellResult
 from core.security.prompt_guard import PromptGuard
 from core.security.session_budget import SessionBudget, SessionTracker
 from core.security.ips_agent import IPSAgent, IPSConfig, get_ips_agent
+from core.security.risk_engine import RiskEngine
 
 import logging
 
@@ -28,7 +29,8 @@ class SecurityLayer:
 
     def __init__(self, workspace_dir: str = "./workspace", ips_config: dict = None):
         self.file_guard = FileGuard(workspace_dir)
-        self.shell_sandbox = ShellSandbox(workspace_dir)
+        self.risk_engine = RiskEngine()
+        self.shell_sandbox = ShellSandbox(workspace_dir, risk_engine=self.risk_engine)
         self.prompt_guard = PromptGuard()
         self.session_budget = SessionBudget()
         self._sessions: dict[str, SessionTracker] = {}
