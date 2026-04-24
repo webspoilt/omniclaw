@@ -421,15 +421,15 @@
             <div class="nav-links">
                 <a href="#vision">Vision</a>
                 <a href="#security">Security</a>
-                <a href="#docs">Docs</a>
-                <a href="#github">GitHub</a>
+                <a href="./docs/setup.md">Docs</a>
+                <a href="https://github.com/webspoilt/omniclaw">GitHub</a>
             </div>
             <div style="display: flex; gap: 12px; align-items: center;">
                 <a href="https://github.com/webspoilt/omniclaw" class="btn-github">
                     <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
-                    Star on GitHub
+                    Star
                 </a>
-                <button class="nav-cta" onclick="window.location.href='#install'">Get Started</button>
+                <button class="nav-cta" onclick="document.getElementById('install').scrollIntoView({behavior: 'smooth'})">Get Started</button>
             </div>
         </div>
     </nav>
@@ -463,7 +463,7 @@
     </section>
 
     <!-- Core Engines -->
-    <section class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 32px;">
+    <section class="container" id="security" style="max-width: 1200px; margin: 0 auto; padding: 0 32px;">
         <span class="section-label">Core Infrastructure</span>
         <div class="features">
             <!-- 1. Kernel Bridge -->
@@ -479,7 +479,7 @@
                 <p>A hierarchical planning team of specialized agents working in parallel to solve complex security research tasks autonomously.</p>
             </div>
             <!-- 3. Vision Module -->
-            <div class="feature-card">
+            <div class="feature-card" id="vision">
                 <i>👁️</i>
                 <h3>Multimodal Vision 4.5</h3>
                 <p>Advanced screen capture and UI analysis with 1024px optimized processing. Detects threats and leaks across any OS surface.</p>
@@ -488,7 +488,7 @@
     </section>
 
     <!-- Detailed Security Section -->
-    <section class="container" style="max-width: 1200px; margin: 100px auto; padding: 0 32px;">
+    <section class="container" id="install" style="max-width: 1200px; margin: 100px auto; padding: 0 32px;">
         <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 32px; padding: 80px; text-align: center;">
             <span class="section-label">Offensive Excellence</span>
             <h2 style="font-size: 3rem; font-weight: 800; margin-bottom: 24px; letter-spacing: -0.04em;">Zero-Day Factory</h2>
@@ -545,11 +545,11 @@
                     <li>
                         <a href="https://github.com/webspoilt/omniclaw" class="btn-github" style="margin-top: 8px;">
                             <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
-                            Star on GitHub
+                            Star
                         </a>
                     </li>
-                    <li><a href="#">Security Policy</a></li>
-                    <li><a href="#">Whitepaper</a></li>
+                    <li><a href="https://github.com/webspoilt/omniclaw/blob/main/SECURITY.md">Security Policy</a></li>
+                    <li><a href="https://github.com/webspoilt/omniclaw/blob/main/docs/architecture.md">Whitepaper</a></li>
                 </ul>
             </div>
         </div>
