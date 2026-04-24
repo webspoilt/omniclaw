@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/webspoilt/omniclaw/releases">
-    <img src="https://img.shields.io/badge/version-v4.2.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
+    <img src="https://img.shields.io/badge/version-v4.4.0-blue.svg?style=for-the-badge&logo=appveyor" alt="Version">
   </a>
   <img src="https://img.shields.io/badge/status-active-brightgreen.svg?style=for-the-badge" alt="Status">
   <a href="LICENSE">
@@ -200,34 +200,58 @@
 - **🚨 Instant Alerts**: Telegram/Discord notifications for any HIGH or CRITICAL findings.
 - **🛡️ Safety First**: Exits immediately if target matches blocklist. No automatic exploitation — advisory only.
 
-### 21. Neural Mesh Protocol (v4.2.0) 🧠
+### 21. Neural Mesh Protocol (v4.3.0) 🧠
 - **🕸️ ZeroMQ Mesh**: ROUTER/DEALER P2P with capability-based heartbeat (CPU, memory, available models).
 - **📡 Task Offloading**: Route LLM inference or heavy compute to the least-loaded peer.
 - **📚 Knowledge Queries**: Cross-node vector/graph search via unified protocol.
 - **🔐 AES-256-GCM**: All messages encrypted with pre-shared key.
 - **📄 Typed Protocol**: `protocol.py` with dataclass messages and enum types (HEARTBEAT, TASK_REQUEST, KNOWLEDGE_QUERY, SYNC).
 
-### 22. Vision Module (v4.2.0) 👁️
+### 22. Vision Module (v4.3.0) 👁️
 - **📱 Computer Use**: Cross-platform screen capture (X11/Wayland/macOS/Windows/Termux) with multimodal LLM analysis.
 - **📷 Termux Camera**: Capture via `termux-camera-photo` with base64 encoding and LLM analysis.
 - **🌱 Plant Health**: Leaf disease detection, pest identification, and care recommendations from plant images.
 
-### 23. Memory Module (v4.2.0) 🧠
+### 23. Memory Module (v4.3.0) 🧠
 - **💾 Vector Store**: LanceDB wrapper for embedding storage and similarity search with in-memory fallback.
 - **📊 Graph Store**: NetworkX directed graph with JSON persistence for entity relationships.
 - **🔗 Knowledge Graph**: Unified layer combining vector similarity + relationship traversal.
 
-### 24. Orchestrator Daemon (v4.2.0) 🏛️
+### 24. Orchestrator Daemon (v4.3.0) 🏛️
 - **🚀 Unified Startup**: `core/main.py` daemon that boots all workers based on node type (desktop vs mobile).
 - **🛡️ Kill Switch**: Global halt for all autonomous shell execution — toggleable via MCP.
 - **📈 Resource Gating**: Battery/CPU/memory checks before every heavy operation on mobile.
 - **🧬 Genesis**: Self-evolution agent that collects telemetry and suggests refactoring.
 
-### 25. Secure Enclave & Hardware Locks (v4.2.0) 🔒
+### 25. Secure Enclave & Hardware Locks (v4.3.0) 🔒
 - **🔑 Hardware Authentication**: `YubiKeyManager` derives AES-256-GCM encryption keys via HMAC-SHA1 challenge-response.
 - **🛡️ Encrypted Configurations**: Sensitive modules load configs from `.yaml.aes` using the `SecureConfigLoader` bound to physical hardware.
 - **💻 Hardware-Locked Execution**: Evolution and code-refactor agents (Genesis, Janitor) strictly check `platform.node()` to ensure execution remains locally isolated on authorized hardware.
 - **📦 Private Submodules**: Sensitive operational capabilities seamlessly mount via Git submodules (`kernel_bridge/`, `offensive/`).
+
+### 26. OmniClaw Swarm Oracle (v4.3.0) 🐋
+- **🧠 50+ Agent Multi-Persona Swarm**: Spawns concurrent agents (Whale, Retailer, Skeptic, etc.) using Ollama to simulate complex market sentiment and cyber-security scenarios.
+- **🛡️ Predictive Auditor**: Built-in validation heuristic layer that intercepts Agent hallucinations and automatically rejects contradictory logic before execution.
+- **🕸️ ChromaDB Memory Graph**: Vector-based semantic persistence of past swarm simulations, allowing OmniClaw to reference previous state-changes and predictive outcomes.
+- **⚙️ Rust eBPF Sentinel Skeleton**: Lightweight Rust bridge (`libbpf-rs`) engineered for deep-kernel Windows ETW / Linux `execve` telemetry gathering during swarm activity.
+
+### 27. Advanced Anti-Bot & Decensoring (v4.3.0) 🦇
+- **🕵️ Stealth Scraper**: Native integration of the `Scrapling` framework to bypass Cloudflare Turnstile, Kasada, and Incapsula natively using Playwright.
+- **🔓 Local Model Decensoring**: Agentic integration with `Heretic-LLM`, allowing OmniClaw to automatically download and directionally ablate HuggingFace models to remove censorship alignments locally.
+
+### 28. CashClaw Business Orchestrator (v4.3.0) 💰
+- **💼 Freelance Automation**: Fully integrated the CashClaw engine natively into OmniClaw. 12 powerful AI business skills (`cashclaw-seo-auditor`, `cashclaw-invoicer`, `cashclaw-content-writer`, etc.) are now available in the `skills` directory.
+- **💳 Stripe & HYRVEai**: OmniClaw agents can now accept gig marketplace requests, execute them using CashClaw capabilities, and generate Stripe invoices autonomously.
+
+### 29. Sovereign Sentinel (v4.4.0) — The 2026 Fusion 🛡️🚀
+- **Unified pnpm Monorepo**: Clean, enterprise-grade architecture fusing OmniClaw and Shannon Pro into a single workspace (`apps/`, `engines/`, `packages/`).
+- **CVE-to-PoC Factory**: Autonomous pipeline that monitors NVD/GitHub, performs reachability-aware static analysis (CPG), and synthesizes functional Python exploits via specialized workers.
+- **eBPF Sentinel (Rust)**: High-performance `libbpf-rs` module for Ring-0 stealth, hooking `sys_execve` to detect security tools (EDR) and triggering automatic IP rotation/migration.
+- **Durable Worker (TS)**: TypeScript-based durable orchestrator (Inspired by Temporal.io) for long-running security missions that resume after failure.
+- **P2P Knowledge Mesh**: ZeroMQ + AES-256-GCM communication layer for offloading heavy analysis from mobile (Termux) to high-end PC nodes with unified vector memory (LanceDB).
+
+### 30. LangWatch Observability (v4.3.0) 📊
+- **📈 Global AI Tracing**: The entire orchestrator loop is natively wrapped in `LangWatch` context closures, tracking metrics on token costs, latency, and autonomous agent responses to your observability dashboard.
 
 ## 🌐 Real-World Use Cases
 Wondering what you can actually build with an autonomous agent swarm? 
@@ -535,8 +559,22 @@ omniclaw/
 │   │   └── scholar_config.json
 │   ├── startup/                  #   DevOps autopilot
 │   │   └── saas_manager.py
-│   └── sensors/                  #   Bio-guardian
-│       └── plant_monitor.py
+│   ├── sensors/                  #   Bio-guardian
+│   │   └── plant_monitor.py
+│   ├── offensive/                #   Red Team tools
+│   │   └── model_decensor.py     #   Heretic-LLM integration
+│   ├── recon/                    #   Reconnaissance
+│   │   └── stealth_scraper.py    #   Scrapling Turnstile bypass
+│   ├── observability/            #   LLM Telemetry
+│   │   └── langwatch_tracer.py   #   LangWatch prompt tracking
+│   └── swarm_oracle/             #   🐋 50+ Agent Swarm Engine
+│       ├── manager.py
+│       ├── swarm_engine.py
+│       ├── auditor.py
+│       ├── knowledge.py
+│       ├── config.py
+│       ├── personas.py
+│       └── ebpf_bridge/          #   Rust eBPF/ETW Sentinel
 ├── connectors/                   # 🔌 MCP + integrations
 │   └── mcp_host.py               #   MCP server (fastmcp)
 ├── p2p/                          # 🕸️ P2P hive network

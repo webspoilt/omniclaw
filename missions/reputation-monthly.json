@@ -1,0 +1,19 @@
+{
+  "template": "reputation-monthly",
+  "service_type": "reputation-management",
+  "tier": "pro",
+  "name": "Monthly Reputation Monitoring",
+  "description": "Ongoing monthly reputation monitoring with continuous review tracking, sentiment trend analysis, suggested response drafts for negative reviews, and a monthly executive summary report.",
+  "default_price_usd": 49,
+  "estimated_hours": 8,
+  "skills_required": ["cashclaw-reputation-manager"],
+  "deliverables": ["monthly-report.html", "sentiment-trends.json", "response-drafts.json", "alert-log.csv"],
+  "steps": [
+    "Set up continuous monitoring across review platforms and social channels",
+    "Track all new reviews, ratings, and brand mentions throughout the month",
+    "Run daily sentiment analysis and flag negative mentions for immediate response",
+    "Generate draft responses for negative and neutral reviews",
+    "Compile sentiment trend data and reputation score changes over time",
+    "Deliver monthly executive summary with insights, responses sent, and next actions"
+  ]
+}

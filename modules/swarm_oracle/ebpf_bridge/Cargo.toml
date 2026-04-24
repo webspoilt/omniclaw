@@ -1,0 +1,11 @@
+[package]
+name = "ebpf_bridge"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libbpf-rs = "0.22"
+anyhow = "1.0"
+
+[build-dependencies]
+libbpf-cargo = "0.22"

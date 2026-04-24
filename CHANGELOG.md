@@ -5,7 +5,17 @@ All notable changes to the OmniClaw project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.2.0] - "Sovereign Mesh" - 2026-03-18
+## [4.4.0] - "Sovereign Sentinel 2026" - 2026-04-24
+ 
++### Added
++- **#30 Sovereign Sentinel Fusion**: Unified pnpm monorepo structure merging OmniClaw and Shannon Pro.
++- **#31 CVE-to-PoC Factory**: Autonomous reconnaissance and reachability-aware static analysis engine.
++- **#32 eBPF Sentinel (Rust)**: `libbpf-rs` kernel bridge for Ring-0 stealth and EDR detection.
++- **#33 Durable Worker (TS)**: TypeScript-based durable orchestrator inspired by Temporal.io.
++- **#34 P2P Knowledge Mesh**: ZeroMQ + AES-256-GCM mesh for secure task offloading and vector sync.
++- **#35 Enterprise Dashboard**: Tauri + React mission control for real-time telemetry.
++
+ ## [4.2.0] - "Sovereign Mesh" - 2026-03-18
 
 ### Fixed
 - **#14 ShellSandbox Windows Paths**: `_safe_env()` now returns Windows-appropriate `System32` PATH and `COMSPEC` instead of Unix-only `/usr/local/bin` and `/bin/sh`. Cross-platform safe.

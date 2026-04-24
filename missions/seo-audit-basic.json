@@ -1,0 +1,19 @@
+{
+  "template": "seo-audit-basic",
+  "service_type": "seo-audit",
+  "tier": "basic",
+  "name": "Basic SEO Audit",
+  "description": "Quick automated SEO audit covering meta tags, headings, images, page speed, and mobile-friendliness. Delivers an HTML report with top-priority fixes.",
+  "default_price_usd": 9,
+  "estimated_hours": 1,
+  "skills_required": ["cashclaw-seo-auditor"],
+  "deliverables": ["seo-report.html"],
+  "steps": [
+    "Crawl target URL and extract page structure",
+    "Check meta tags (title, description, canonical, OG tags)",
+    "Analyze heading hierarchy (H1-H6)",
+    "Check image alt tags and file sizes",
+    "Run basic page speed check",
+    "Generate HTML report with findings and recommendations"
+  ]
+}

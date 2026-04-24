@@ -1,0 +1,34 @@
+version: "4.0"
+project: "Sovereign Sentinel"
+
+hive:
+  planning_agent: "claude-4.5-pro"
+  worker_swarm:
+    - id: "static-analyst"
+      model: "deepseek-coder-v3"
+      capability: ["cpg-slicing", "reachability"]
+    - id: "dynamic-exploiter"
+      model: "gpt-5-security"
+      capability: ["playwright", "poc-gen"]
+    - id: "recon-ghost"
+      model: "mistral-large-v2"
+      capability: ["subdomain-mapping", "api-discovery"]
+
+security:
+  file_guard:
+    scoped_paths: ["/apps", "/engines", "/packages"]
+    allow_write: true
+  shell_sandbox:
+    level: "confirm_high_risk"
+    blocked_commands: ["rm -rf /", "mkfs"]
+  prompt_guard:
+    injection_protection: true
+    unicode_normalization: true
+  budget:
+    max_token_cost_usd: 50.00
+    monthly_limit_usd: 500.00
+
+p2p:
+  encryption: "AES-256-GCM"
+  vector_store: "lancedb"
+  offload_threshold_cpu: 80

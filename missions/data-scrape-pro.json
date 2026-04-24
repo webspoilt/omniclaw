@@ -1,0 +1,19 @@
+{
+  "template": "data-scrape-pro",
+  "service_type": "data-scrape",
+  "tier": "pro",
+  "name": "Pro Data Scrape",
+  "description": "Multi-source scraping of up to 500 records with cross-source deduplication, data enrichment (email, phone, LinkedIn), and export in CSV and JSON. Built for serious lead generation and market research.",
+  "default_price_usd": 25,
+  "estimated_hours": 6,
+  "skills_required": ["cashclaw-data-scraper"],
+  "deliverables": ["scraped-data.csv", "scraped-data.json", "enrichment-report.json", "scrape-summary.json"],
+  "steps": [
+    "Map multiple target sources and define unified data schema",
+    "Configure scrapers for each source with field mapping and pagination",
+    "Extract up to 500 records across all sources with parallel processing",
+    "Cross-source deduplication and record merging by matching keys",
+    "Enrich records with additional contact data, social profiles, and verification",
+    "Export clean dataset in CSV and JSON with enrichment quality report"
+  ]
+}

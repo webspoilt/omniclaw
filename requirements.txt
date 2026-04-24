@@ -36,6 +36,8 @@ psutil>=5.9.0
 # Configuration
 pyyaml>=6.0.1
 python-dotenv>=1.0.0
+pydantic-settings>=2.0
+tenacity>=8.0.0
 
 # Utilities
 tqdm>=4.66.0
@@ -93,3 +95,10 @@ mypy>=1.7.0
 
 # GUI
 nicegui>=1.4.0
+
+# Advanced Scraping & Decensoring
+heretic-llm>=0.1.0
+scrapling[all]>=0.1.0
+
+# Observability
+langwatch>=0.1.0

@@ -1,0 +1,19 @@
+{
+  "template": "landing-page-basic",
+  "service_type": "landing-page",
+  "tier": "basic",
+  "name": "Basic Landing Page Copy",
+  "description": "Conversion-focused landing page copy including headline, subheadline, feature sections, social proof block, and a strong call-to-action. Text only, ready for your designer.",
+  "default_price_usd": 15,
+  "estimated_hours": 3,
+  "skills_required": ["cashclaw-landing-page"],
+  "deliverables": ["landing-page-copy.json", "copy-guidelines.txt"],
+  "steps": [
+    "Gather product details, target audience, and unique selling proposition",
+    "Write attention-grabbing headline and supporting subheadline",
+    "Create feature/benefit sections with concise persuasive copy",
+    "Draft social proof block with testimonial and trust signal placeholders",
+    "Write primary and secondary call-to-action copy",
+    "Export structured copy document with section labels and placement notes"
+  ]
+}

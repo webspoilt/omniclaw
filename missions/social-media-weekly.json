@@ -1,0 +1,19 @@
+{
+  "template": "social-media-weekly",
+  "service_type": "social-media",
+  "tier": "basic",
+  "name": "Weekly Social Media Post",
+  "description": "One professionally crafted social media post per week with copy, hashtags, and an image prompt. Covers LinkedIn, Twitter/X, or Instagram.",
+  "default_price_usd": 9,
+  "estimated_hours": 0.5,
+  "skills_required": ["cashclaw-social-media"],
+  "deliverables": ["social-post.md"],
+  "steps": [
+    "Review client brand guidelines and niche",
+    "Research trending topics in the niche",
+    "Write engaging post copy with CTA",
+    "Generate relevant hashtag set (10-15)",
+    "Create image/visual prompt for the post",
+    "Format and deliver as Markdown"
+  ]
+}

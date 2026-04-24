@@ -1,0 +1,23 @@
+{
+  "template": "seo-audit-pro",
+  "service_type": "seo-audit",
+  "tier": "pro",
+  "name": "Pro SEO Audit",
+  "description": "Comprehensive SEO audit including full-site crawl, technical SEO, backlink overview, competitor comparison, keyword gap analysis, and a detailed actionable report.",
+  "default_price_usd": 59,
+  "estimated_hours": 4,
+  "skills_required": ["cashclaw-seo-auditor"],
+  "deliverables": ["seo-report-full.html", "keyword-analysis.csv", "competitor-comparison.csv"],
+  "steps": [
+    "Full-site crawl (up to 100 pages)",
+    "Technical SEO check (robots.txt, sitemap, schema markup, SSL)",
+    "On-page SEO analysis for all crawled pages",
+    "Backlink profile overview",
+    "Competitor domain comparison (top 3)",
+    "Keyword gap analysis and opportunity list",
+    "Page speed and Core Web Vitals assessment",
+    "Mobile usability audit",
+    "Generate comprehensive HTML report",
+    "Export keyword and competitor data as CSV"
+  ]
+}

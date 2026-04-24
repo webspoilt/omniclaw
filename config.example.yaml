@@ -1,7 +1,7 @@
 # OmniClaw Configuration Example
 # Copy this file to config.yaml and customize for your setup
 
-version: "4.0.0"
+version: "4.3.0"
 
 # Device settings - auto-detected if not specified
 device:
@@ -167,6 +167,11 @@ logging:
   backup_count: 5
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
   console: true
+
+# Observability Configuration
+observability:
+  langwatch_api_key: "your-langwatch-api-key"
+  langwatch_endpoint: "https://app.langwatch.ai"
 
 # Security Settings
 security:

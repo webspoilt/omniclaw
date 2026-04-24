@@ -1,0 +1,19 @@
+{
+  "template": "landing-page-pro",
+  "service_type": "landing-page",
+  "tier": "pro",
+  "name": "Pro Landing Page",
+  "description": "Complete landing page delivery with conversion-optimized copy, responsive HTML/CSS build, and two A/B variant layouts for split testing. Includes hero, features, testimonials, FAQ, and CTA sections.",
+  "default_price_usd": 39,
+  "estimated_hours": 8,
+  "skills_required": ["cashclaw-landing-page"],
+  "deliverables": ["landing-page-a.html", "landing-page-b.html", "copy-variants.json", "assets-guide.txt"],
+  "steps": [
+    "Research target audience pain points and map conversion journey",
+    "Write full-page copy covering hero, features, proof, FAQ, and CTA sections",
+    "Build responsive HTML/CSS landing page with clean semantic markup",
+    "Create A/B variant with alternate headline, layout order, and CTA placement",
+    "Optimize for page load speed and mobile responsiveness",
+    "Export both HTML variants with copy variant mapping and asset guidelines"
+  ]
+}

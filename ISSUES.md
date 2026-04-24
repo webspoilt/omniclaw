@@ -30,6 +30,11 @@
 7. **#25 Exam Scholar Notifications**: `schedule_reminders(cron_scheduler)` + `generate_practice_question()` + `get_next_deadline()` added.
 8. **#26 Startup PM2 Monitor**: `PM2Monitor` class + `LeadStore` JSON persistence added to `saas_manager.py`.
 9. **#27 Orchestrator Daemon**: `core/main.py` now has `--no-mcp`, `--no-health`, `--no-mesh` CLI flags. Health server and honeypot wired in.
+10. **#28 OmniClaw Swarm Oracle**: 50+ persistent agent Swarm Simulator via Ollama, ChromaDB `KnowledgeGraph`, `PredictiveAuditor`, and Rust `ebpf_bridge` integration wired to the Worker` ANALYST` role.
+11. **#29 Heretic Decensor**: Automatic HuggingFace model decensoring capability (`heretic-llm`) integrated into `WorkerRole.CODER`.
+12. **#30 Scrapling Stealth Scraper**: Advanced Cloudflare/Turnstile bypassing scraper using `D4Vinci/Scrapling` integrated into `WorkerRole.RESEARCHER`.
+13. **#31 CashClaw Business Orchestrator**: 12 native AI freelancer business skills (`cashclaw-seo-auditor`, `cashclaw-invoicer`, etc.) added to the OpenClaw agent pipeline.
+14. **#32 LangWatch Observability**: Deep LLM latency, cost, and payload tracing via `langwatch` wrapping the orchestrator execution loop.
 
 ## Roadmap & Pending Issues (V4.3+)
 1. **Experimental eBPF Modules**: `ebpf_monitor` and `segfault_tracer` currently default to simulation mode on Windows/macOS. Actual kernel hooking requires Linux (Kernel 5.8+) and root permissions.

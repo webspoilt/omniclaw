@@ -1,0 +1,19 @@
+{
+  "template": "email-outreach-basic",
+  "service_type": "email-outreach",
+  "tier": "basic",
+  "name": "Basic Email Outreach",
+  "description": "3-email cold outreach sequence with personalized subject lines, body copy, and clear CTAs. Ideal for quick lead generation campaigns targeting a single audience segment.",
+  "default_price_usd": 9,
+  "estimated_hours": 2,
+  "skills_required": ["cashclaw-email-outreach"],
+  "deliverables": ["outreach-sequence.json", "email-templates.html"],
+  "steps": [
+    "Analyze target audience and define outreach persona",
+    "Write initial cold email with personalized subject line and hook",
+    "Create follow-up email #2 with value-add angle",
+    "Write final email #3 with urgency-based CTA",
+    "Review sequence for spam trigger words and deliverability",
+    "Export formatted email templates ready for sending"
+  ]
+}

@@ -7,7 +7,19 @@ OmniClaw is a fully deployable, open-source AI agent system implementing the "Hy
 
 ```
 omniclaw/
-├── core/                          # Core Python modules (1,500+ lines)
+├── apps/                          # Monorepo Applications (pnpm)
+│   ├── worker/                    # Durable Orchestrator (TypeScript/Temporal)
+│   └── mission-control/           # Tauri + React Dashboard
+│
+├── engines/                       # Specialized Security Engines
+│   ├── static-slicer/             # Python CPG reachability engine
+│   ├── dynamic-agent/             # Playwright exploitation agent
+│   └── recon/                     # Asynchronous reconnaissance engine
+│
+├── packages/                      # Monorepo Shared Packages
+│   └── kernel-bridge/             # Rust-based eBPF sentinel
+│
+├── core/                          # Legacy Core Python modules (1,500+ lines)
 │   ├── __init__.py               # Package initialization
 │   ├── orchestrator.py           # Hybrid Hive orchestrator (400+ lines)
 │   ├── manager.py                # Manager agent for goal decomposition (300+ lines)
@@ -158,7 +170,14 @@ Total Lines of Code: ~15,000+
 - **👻 The Immortal Kernel (Experimental)**: eBPF Segfault tracers auto-generating C++ hot-patches
 - **🧬 Biometric Vibe Lock**: Only unlocks "Ghost Mode" tools based on keystroke/voice trust scores
 
-### 11. Mission Control & Strategic Architecture (v3.3.0) ✅
+### 11. Sovereign Sentinel (v4.4.0) — The 2026 Fusion ✅
+- **pnpm Monorepo**: Enterprise-grade structure fusing OmniClaw and Shannon Pro
+- **CVE-to-PoC Factory**: Autonomous pipeline for zero-day recon and exploitation
+- **eBPF Sentinel**: Rust-based libbpf-rs module for Ring-0 stealth and EDR detection
+- **Durable Worker**: TypeScript-based resilient orchestrator for long-range missions
+- **P2P Knowledge Mesh**: ZeroMQ + AES-256-GCM secure communication and vector sync
+
+### 12. Mission Control & Strategic Architecture (v3.3.0) ✅
 - **💸 Financial Observability**: FastAPI + React dashboard tracking token usage and cost burn
 - **⚖️ LLM Council**: LangGraph-style workflow where Architect, Coder, and Reviewer agents debate
 - **🔌 MCP Tool Integration**: Standardized servers exposing kernel monitors to external models

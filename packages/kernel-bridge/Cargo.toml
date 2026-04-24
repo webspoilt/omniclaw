@@ -1,0 +1,13 @@
+[package]
+name = "kernel-bridge"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+libbpf-rs = "0.23"
+libc = "0.2"
+tokio = { version = "1", features = ["full"] }
+
+[build-dependencies]
+libbpf-cargo = "0.23"

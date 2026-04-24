@@ -98,6 +98,22 @@ OmniClaw integrates directly into exchange APIs (Binance, Alpaca, Coinbase) to d
 **The Problem:** Keeping up with cutting-edge academic papers in heavily specialized fields (like Quantum or DNA Computing) takes a massive amount of manual reading and synthesis.
 
 **The OmniClaw Solution:**
+OmniClaw uses Scrapling and memory networks to ingest full research documents, synthesize logic, and propose hypotheses.
+
+---
+
+## 💼 Use Case 7: Automated Freelance Agency
+
+**The Problem:** Freelancers spend huge amounts of time finding leads, writing cold emails, running SEO audits, and managing Stripe invoicing instead of completing actual deliverables.
+
+**The OmniClaw Solution:**
+Using the native **CashClaw** integration, OmniClaw functions as an autonomous business operator.
+
+**How it works:**
+1. **Lead Generation:** The `cashclaw-lead-generator` skill scrapes B2B targeted data based on your Ideal Customer Profile.
+2. **Execution:** It uses tools like `cashclaw-seo-auditor` to generate a comprehensive markdown SEO report.
+3. **Outreach:** OmniClaw constructs and sends an automated cold email with the audit attached.
+4. **Invoicing:** Once the gig is closed, the agent fundamentally calls the `cashclaw-invoicer` skill, generates a Stripe checkout link, and validates payment before completing final deliverables on HYRVEai.
 The `FutureTechExplorer` module allows OmniClaw to behave as an autonomous post-doc researcher natively simulating concepts.
 
 **How it works:**
@@ -276,3 +292,41 @@ OmniClaw implements a zero-trust Secure Enclave using physical hardware authenti
 4. **Resilience:** If the framework detects environment mismatch or lacks hardware presence, the enclave fails completely closed—protecting all sensitive capabilities and operational configurations.
 
 > *"Warning: Hardware Validation Failed. YubiKey not present. Secure Enclave halted. Orchestrator reverting to standard capability tier."*
+
+---
+
+## 🐋 Use Case 17: OmniClaw Swarm Oracle (Market Sentiment & Security Sandbox)
+
+**The Problem:** Asking a single LLM to predict market sentiment or analyze a complex cyber-security topology often results in hallucinations, bias, and shallow reasoning.
+
+**The OmniClaw Solution:**
+The new `OmniClaw-Swarm-Oracle` module spins up a 50+ agent simulated swarm to achieve hive-mind consensus.
+
+**How it works:**
+1. **Persona Injection:** The Manager Agent dynamically spawns 50 local Ollama instances running in parallel context. Each agent takes on a strict persona: "Whale", "Retailer", "Skeptic", "Day Trader", etc.
+2. **The Context:** You provide a prompt: *"Provide sentiment on a sudden $500M Bitcoin transfer to Coinbase."*
+3. **Swarm Execution:** All 50 agents debate the context concurrently. The "Whale" agent argues it's an OTC shuffle, while the "Retailer" panics about a dump.
+4. **Predictive Auditing:** The `Auditor` layer intercepts the 50 responses, analyzing the distribution matrix and blocking any illogical hallucinations or contradictory outputs.
+5. **Memory Graph Persistence:** The final aggregated "Consensus" is logged persistently into ChromaDB as a temporal vector, meaning the Swarm learns from past market movements and adjusts future predictions.
+
+> *The Swarm Simulator gives you the strategic advantage of 50 AI hedge-fund managers debating your prompt, rather than relying on a single chat response.*
+ 
+ ---
+ 
++## 🛡️ Use Case 18: Sovereign Sentinel: Autonomous Zero-Day Recon & Exploitation
++
++**The Problem:** Exploiting zero-day vulnerabilities or newly disclosed CVEs requires a rapid, high-precision pipeline: monitoring NVD, analyzing source code reachability, and synthesizing functional payloads before patches are widely deployed.
++
++**The Sovereign Sentinel Solution:**
++A fusion of OmniClaw and Shannon Pro into a unified pnpm monorepo that executes an autonomous end-to-end offensive security mission.
++
++**How it works:**
++1. **HPTSA Planning:** A Hierarchical Planning Team of Specialized Agents (HPTSA) monitors vulnerability feeds (NVD, GitHub Security Advisories) via the `recon` engine.
++2. **Reachability Analysis:** The `static-slicer` engine uses Code Property Graphs (CPG) and Joern to determine if a reported CVE is actually reachable via public-facing API inputs in a target repository.
++3. **Durable Orchestration:** The `apps/worker` (TypeScript/Temporal) ensures that even if a network drop occurs, the exploitation mission resumes exactly where it left off.
++4. **PoC Synthesis:** A specialized worker, utilizing a decensored local model, synthesizes a functional Python exploit based on the CPG dataflow path.
++5. **Evidence Capture:** The Playwright-driven `dynamic-agent` executes the PoC in a sandbox, capturing HAR files and screenshots as "POC-or-it-didn't-happen" evidence.
++6. **Ring-0 Protection:** The Rust `kernel-bridge` monitors for EDR detection. If a security tool is detected, the agent autonomously rotates its TorHive IP and migrates its process to a peer node in the P2P mesh.
++
++> *"Sovereign Sentinel detected CVE-2026-1337 disclosure at 02:00. Reachability confirmed at 02:05. PoC validated and evidence captured at 02:15. Target successfully mapped while maintaining eBPF stealth."*
++

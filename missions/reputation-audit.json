@@ -1,0 +1,19 @@
+{
+  "template": "reputation-audit",
+  "service_type": "reputation-management",
+  "tier": "basic",
+  "name": "Reputation Audit",
+  "description": "One-time reputation audit covering review platforms, social mentions, and sentiment analysis. Delivers a score-based report with risk areas highlighted and actionable improvement steps.",
+  "default_price_usd": 19,
+  "estimated_hours": 4,
+  "skills_required": ["cashclaw-reputation-manager"],
+  "deliverables": ["reputation-report.html", "sentiment-analysis.json", "review-summary.csv"],
+  "steps": [
+    "Scan major review platforms for brand mentions and ratings",
+    "Collect social media mentions and public comments",
+    "Run sentiment analysis on all collected reviews and mentions",
+    "Calculate overall reputation score and identify risk areas",
+    "Generate HTML report with sentiment breakdown and priority issues",
+    "Provide actionable recommendations for reputation improvement"
+  ]
+}

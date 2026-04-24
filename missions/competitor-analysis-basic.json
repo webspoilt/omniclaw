@@ -1,0 +1,19 @@
+{
+  "template": "competitor-analysis-basic",
+  "service_type": "competitor-analysis",
+  "tier": "basic",
+  "name": "Basic Competitor Analysis",
+  "description": "Deep-dive analysis of a single competitor covering their product offering, pricing, online presence, strengths, weaknesses, and key takeaways for your positioning.",
+  "default_price_usd": 19,
+  "estimated_hours": 4,
+  "skills_required": ["cashclaw-competitor-analyzer"],
+  "deliverables": ["competitor-report.html", "swot-summary.json"],
+  "steps": [
+    "Identify and verify competitor domain, products, and key pages",
+    "Analyze competitor pricing model, feature set, and value proposition",
+    "Audit their online presence including website, social profiles, and reviews",
+    "Perform SWOT analysis with strengths, weaknesses, opportunities, and threats",
+    "Identify gaps and positioning opportunities for your business",
+    "Generate HTML report with findings and strategic recommendations"
+  ]
+}

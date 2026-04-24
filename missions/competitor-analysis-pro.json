@@ -1,0 +1,19 @@
+{
+  "template": "competitor-analysis-pro",
+  "service_type": "competitor-analysis",
+  "tier": "pro",
+  "name": "Pro Competitor Analysis",
+  "description": "Comprehensive analysis of up to 5 competitors with a full market map, feature comparison matrix, pricing benchmark, traffic estimates, and strategic positioning recommendations.",
+  "default_price_usd": 49,
+  "estimated_hours": 12,
+  "skills_required": ["cashclaw-competitor-analyzer"],
+  "deliverables": ["market-map.html", "competitor-matrix.csv", "feature-comparison.json", "positioning-report.html"],
+  "steps": [
+    "Research and profile up to 5 competitors across product, pricing, and audience",
+    "Build feature-by-feature comparison matrix with scoring",
+    "Analyze each competitor's traffic sources, SEO keywords, and ad strategy",
+    "Create visual market map plotting competitors by price and feature depth",
+    "Benchmark pricing tiers and identify underserved market segments",
+    "Generate comprehensive report with positioning strategy and actionable next steps"
+  ]
+}

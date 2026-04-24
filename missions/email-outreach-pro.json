@@ -1,0 +1,19 @@
+{
+  "template": "email-outreach-pro",
+  "service_type": "email-outreach",
+  "tier": "pro",
+  "name": "Pro Email Outreach",
+  "description": "Full 7-email outreach sequence with A/B subject line variants, conditional follow-up branches, and performance tracking hooks. Covers multiple audience segments with tailored messaging.",
+  "default_price_usd": 29,
+  "estimated_hours": 8,
+  "skills_required": ["cashclaw-email-outreach"],
+  "deliverables": ["outreach-sequence-full.json", "email-templates.html", "ab-test-variants.json", "follow-up-logic.json"],
+  "steps": [
+    "Research target segments and build detailed outreach personas",
+    "Write 7-email sequence covering intro, value, proof, urgency, and breakup stages",
+    "Create A/B variants for subject lines and opening hooks",
+    "Design conditional follow-up branches based on open and reply signals",
+    "Optimize all copy for spam score and deliverability best practices",
+    "Export complete sequence with merge tags and tracking placeholders"
+  ]
+}

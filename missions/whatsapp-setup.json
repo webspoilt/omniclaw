@@ -1,0 +1,22 @@
+{
+  "template": "whatsapp-setup",
+  "service_type": "whatsapp-management",
+  "tier": "setup",
+  "name": "WhatsApp Business Setup",
+  "description": "Complete WhatsApp Business profile setup including business info, automated greeting and away messages, quick replies, catalog structure, and a welcome flow.",
+  "default_price_usd": 19,
+  "estimated_hours": 2,
+  "skills_required": ["cashclaw-whatsapp-manager"],
+  "deliverables": ["whatsapp-config.json", "message-templates.md", "setup-guide.md"],
+  "steps": [
+    "Gather business info (name, description, hours, address)",
+    "Configure business profile and category",
+    "Write automated greeting message",
+    "Write away/out-of-hours message",
+    "Create 5 quick reply templates",
+    "Design basic catalog structure",
+    "Create welcome flow with 3 automated responses",
+    "Document setup in a guide with screenshots instructions",
+    "Export config and templates"
+  ]
+}

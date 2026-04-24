@@ -1,4 +1,4 @@
-# 🍼 The "Very Simple" OmniClaw Guide (v3.3.0)
+# 🍼 The "Very Simple" OmniClaw Guide (v4.4.0)
 
 Welcome! If you want to build a super-smart robot assistant that you can text from your phone, and you want it to run **24 hours a day, 7 days a week** for your personal life or business—this guide is for you! 
 
@@ -156,6 +156,11 @@ nano config.yaml
 # 3. Launch it!
 chmod +x setup.sh
 ./setup.sh
+
+# 4. (Advanced) Launch Sovereign Sentinel Monorepo
+# Requires pnpm: npm install -g pnpm
+pnpm install
+python orchestrator.py
 ```
 
 ### What happens when I hit enter?
@@ -180,12 +185,16 @@ Try typing exactly this:
 - `/task Check my system memory usage`
 - `/status`
 
-### Running the Red Team Exploitation Suite 🛑
-You can directly run the new automated vulnerability assessment module (includes Contextual Fuzzer, Adversarial Refiner, PoC Validator, and Disclosure Engine) via its orchestrator:
+### Running the Sovereign Sentinel Exploitation Suite 🛑
+The v4.4.0 update introduces a high-performance monorepo for autonomous offensive missions:
 ```bash
+# 1. Start the durable TS worker
+cd apps/worker && pnpm start
+
+# 2. Launch the Hybrid Hive Orchestrator
 python orchestrator.py
 ```
-*Note: Make sure Ollama is running (`ollama serve &`) and adjust the `config` within `orchestrator.py` to point to an authorized sandbox target.*
+*Note: Make sure Ollama is running (`ollama serve &`) and the kernel-bridge is compiled (`cd packages/kernel-bridge && cargo build`).*
 
 Congratulations! You now own an autonomous, 24/7 AI employee that lives in a computer or phone and takes orders from anywhere in the world! 🎉
 

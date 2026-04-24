@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice {{invoice_id}}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 40px;
+    }
+
+    .invoice {
+      max-width: 680px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .invoice-header {
+      background: #1A1A2E;
+      color: white;
+      padding: 32px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .invoice-brand {
+      font-size: 24px;
+      font-weight: 800;
+      color: #FF6B35;
+      letter-spacing: -0.5px;
+    }
+
+    .invoice-brand-sub {
+      font-size: 12px;
+      color: #8892A4;
+      margin-top: 4px;
+    }
+
+    .invoice-number {
+      text-align: right;
+    }
+
+    .invoice-number h2 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8892A4;
+    }
+
+    .invoice-number p {
+      font-size: 14px;
+      margin-top: 4px;
+      color: #E8E8E8;
+    }
+
+    .invoice-body {
+      padding: 40px;
+    }
+
+    .invoice-parties {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .invoice-party h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .invoice-party p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .invoice-party .name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .invoice-table thead th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      padding: 12px 0;
+      border-bottom: 2px solid #eee;
+    }
+
+    .invoice-table thead th:last-child {
+      text-align: right;
+    }
+
+    .invoice-table tbody td {
+      padding: 16px 0;
+      font-size: 14px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .invoice-table tbody td:last-child {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .invoice-total {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 40px;
+    }
+
+    .invoice-total-box {
+      text-align: right;
+    }
+
+    .invoice-total-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+    }
+
+    .invoice-total-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: #16C784;
+      margin-top: 4px;
+    }
+
+    .invoice-payment {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .invoice-payment p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    .pay-button {
+      display: inline-block;
+      background: #FF6B35;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 48px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .pay-button:hover {
+      background: #E55A2B;
+    }
+
+    .invoice-footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .invoice-footer a {
+      color: #FF6B35;
+      text-decoration: none;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .invoice { box-shadow: none; }
+      .pay-button { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice">
+    <div class="invoice-header">
+      <div>
+        <div class="invoice-brand">CashClaw</div>
+        <div class="invoice-brand-sub">Powered by AI</div>
+      </div>
+      <div class="invoice-number">
+        <h2>Invoice</h2>
+        <p>#{{invoice_id}}</p>
+        <p style="margin-top: 8px; font-size: 12px; color: #8892A4;">{{date}}</p>
+      </div>
+    </div>
+
+    <div class="invoice-body">
+      <div class="invoice-parties">
+        <div class="invoice-party">
+          <h3>From</h3>
+          <p class="name">{{agent_name}}</p>
+          <p>AI-Powered Service</p>
+          <p>cashclawai.com</p>
+        </div>
+        <div class="invoice-party" style="text-align: right;">
+          <h3>Bill To</h3>
+          <p class="name">{{client_name}}</p>
+        </div>
+      </div>
+
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{service_description}}</td>
+            <td>{{currency}} {{amount}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="invoice-total">
+        <div class="invoice-total-box">
+          <div class="invoice-total-label">Total Due</div>
+          <div class="invoice-total-value">{{currency}} {{amount}}</div>
+        </div>
+      </div>
+
+      <div class="invoice-payment">
+        <p>Click below to pay securely via Stripe</p>
+        <a href="{{payment_link}}" class="pay-button">Pay Now</a>
+      </div>
+
+      <div class="invoice-footer">
+        <p>Generated by <a href="https://cashclawai.com">CashClaw</a> &mdash; AI-powered freelance agent</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

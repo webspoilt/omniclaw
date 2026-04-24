@@ -13,6 +13,11 @@ import asyncio
 from .orchestrator import SubTask, TaskStatus, WorkerRole
 from .temporal_memory_v2 import TemporalMemoryV2
 from .advanced_features.recommendation_engine import recommendation_engine
+from modules.swarm_oracle import SwarmSimulator, config
+from modules.pentagi import PentagiClient, PentagiLauncher
+from modules.offensive.model_decensor import HereticDecensor
+from modules.recon.stealth_scraper import StealthScraper
+from modules.observability.langwatch_tracer import omniclaw_trace
 
 logger = logging.getLogger("OmniClaw.Worker")
 
@@ -62,6 +67,7 @@ class WorkerAgent:
             tools["web_search"] = self._web_search
             tools["data_extraction"] = self._data_extraction
             tools["future_tech_explore"] = self._future_tech_explore
+            tools["web_scrape_stealth"] = self._web_scrape_stealth
             
         elif self.role == WorkerRole.EXECUTOR:
             tools["shell_execute"] = self._shell_execute
@@ -76,10 +82,13 @@ class WorkerAgent:
             tools["code_generate"] = self._code_generate
             tools["code_debug"] = self._code_debug
             tools["test_generate"] = self._test_generate
+            tools["decensor_local_model"] = self._decensor_local_model
             
         elif self.role == WorkerRole.ANALYST:
             tools["data_analysis"] = self._data_analysis
             tools["report_generate"] = self._report_generate
+            tools["swarm_predict"] = self._swarm_predict
+            tools["run_pentagi_operation"] = self._run_pentagi_operation
             
         elif self.role == WorkerRole.CREATIVE:
             tools["content_generate"] = self._content_generate
@@ -109,27 +118,33 @@ class WorkerAgent:
         start_time = time.time()
         
         try:
-            if self.mode == "chain_of_thought":
-                result = await self._execute_chain_of_thought(subtask, context)
-            else:
-                result = await self._execute_specialized(subtask, context)
-            
-            execution_time = time.time() - start_time
-            
-            # Record execution
-            self.execution_history.append({
-                "subtask_id": subtask.id,
-                "description": subtask.description,
-                "result": result,
-                "execution_time": execution_time,
-                "timestamp": time.time()
-            })
-            
-            self.status = "idle"
-            self.current_load -= 1
-            
-            return result
-            
+            with omniclaw_trace("execute_subtask", user_id=self.worker_id, 
+                                metadata={"role": getattr(self.role, "value", str(self.role)), 
+                                        "description": subtask.description}) as trace:
+                if self.mode == "chain_of_thought":
+                    result = await self._execute_chain_of_thought(subtask, context)
+                else:
+                    result = await self._execute_specialized(subtask, context)
+                
+                execution_time = time.time() - start_time
+                
+                if hasattr(trace, "update"):
+                    trace.update(output=str(result))
+                
+                # Record execution
+                self.execution_history.append({
+                    "subtask_id": subtask.id,
+                    "description": subtask.description,
+                    "result": result,
+                    "execution_time": execution_time,
+                    "timestamp": time.time()
+                })
+                
+                self.status = "idle"
+                self.current_load -= 1
+                
+                return result
+                
         except Exception as e:
             self.status = "error"
             self.current_load -= 1
@@ -469,6 +484,42 @@ Respond with the complete corrected output."""
         """Generate report"""
         return {"format": format, "report": "", "status": "placeholder"}
     
+    async def _swarm_predict(self, context: str) -> Dict:
+        """Run a swarm simulation for market sentiment or security."""
+        try:
+            simulator = SwarmSimulator(
+                model=config.settings.OLLAMA_MODEL,
+                num_agents=config.settings.NUM_AGENTS,
+                base_url=config.settings.OLLAMA_BASE_URL
+            )
+            result = await simulator.run(context)
+            return {"status": "success", "prediction": result}
+        except Exception as e:
+            logger.error(f"Swarm simulation failed: {e}")
+            return {"status": "error", "error": str(e)}
+            
+    async def _run_pentagi_operation(self, target: str, flow_type: str = "pentest", objective: str = "") -> Dict:
+        """Trigger an autonomous penetration test using the external PentAGI agent stack."""
+        try:
+            # Optionally, we can launcher.boot() if the docker stack isn't running
+            # launcher = PentagiLauncher()
+            # launcher.boot()
+            
+            client = PentagiClient()
+            success = await client.authenticate()
+            if not success:
+                return {"status": "error", "error": "Could not authenticate to PentAGI subsystem. Ensure it is running on https://localhost:8443"}
+                
+            flow_id = await client.start_flow(target=target, flow_type=flow_type, objective=objective)
+            return {
+                "status": "success", 
+                "message": f"PentAGI flow '{flow_id}' initiated against {target}. Results will be synchronized when done.",
+                "flow_id": flow_id
+            }
+        except Exception as e:
+            logger.error(f"PentAGI execution wrapper failed: {e}")
+            return {"status": "error", "error": str(e)}
+    
     async def _content_generate(self, prompt: str, content_type: str = "text") -> Dict:
         """Generate creative content"""
         return {"content_type": content_type, "content": "", "status": "placeholder"}
@@ -515,3 +566,13 @@ Respond with the complete corrected output."""
         """Explore future technology domains"""
         from .advanced_features.future_tech_explorer import FutureTechExplorer
         return await FutureTechExplorer.explore(domain, focus)
+
+    async def _web_scrape_stealth(self, url: str, css_selector: str = "body") -> Dict:
+        """Use Scrapling stealth mode to bypass Cloudflare Turnstile blocks."""
+        scraper = StealthScraper()
+        return scraper.scrape(url, css_selector)
+        
+    async def _decensor_local_model(self, model_name: str, quantization: str = "bnb_4bit") -> Dict:
+        """Use Heretic-LLM directional ablation to decensor a HuggingFace model locally."""
+        decensor = HereticDecensor()
+        return decensor.decensor_model(model_name, options={"quantization": quantization})

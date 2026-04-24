@@ -1,0 +1,19 @@
+{
+  "template": "blog-post-500",
+  "service_type": "content-writing",
+  "tier": "basic",
+  "name": "500-Word Blog Post",
+  "description": "SEO-optimized 500-word blog post with a focus keyword, meta description, and proper heading structure. Ready to publish.",
+  "default_price_usd": 5,
+  "estimated_hours": 0.5,
+  "skills_required": ["cashclaw-content-writer"],
+  "deliverables": ["blog-post.md"],
+  "steps": [
+    "Research topic and identify focus keyword",
+    "Create outline with H2/H3 structure",
+    "Write 500-word post with natural keyword integration",
+    "Add meta title and description",
+    "Proofread and format as Markdown",
+    "Deliver final blog-post.md file"
+  ]
+}

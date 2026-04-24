@@ -1,0 +1,47 @@
+version: '3.8'
+
+networks:
+  default:
+    name: shannon-net
+
+services:
+  # Orchestration
+  temporal:
+    image: temporalio/temporal:latest
+    container_name: shannon-temporal
+    command: ["server", "start-dev", "--db-filename", "/home/temporal/temporal.db", "--ip", "0.0.0.0"]
+    ports:
+      - "127.0.0.1:7233:7233"
+      - "127.0.0.1:8233:8233"
+    volumes:
+      - temporal-data:/home/temporal
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "localhost:7233"]
+      interval: 10s
+      retries: 10
+
+  # Engine Persistence
+  postgres:
+    image: postgres:16-alpine
+    container_name: shannon-postgres
+    environment:
+      POSTGRES_DB: shannon_pro
+      POSTGRES_PASSWORD: shannon_password
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # Exploit Queue
+  redis:
+    image: redis:7-alpine
+    container_name: shannon-redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  temporal-data:
+  postgres-data:
+  redis-data:

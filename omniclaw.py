@@ -473,7 +473,7 @@ class OmniClaw:
         # Register default commands
         self._register_commands()
         
-        logger.info("OmniClaw v4.0.0 initialization complete")
+        logger.info("OmniClaw v4.3.0 initialization complete")
     
     def _register_commands(self):
         """Register default messaging commands"""

@@ -1,0 +1,21 @@
+{
+  "name": "shannon-pro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unified AI Pentesting Platform - Professional Edition",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && pnpm -r exec rm -rf node_modules dist",
+    "setup": "pnpm install && python -m venv .venv && .\\.venv\\Scripts\\activate && pip install -r engines/requirements.txt"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

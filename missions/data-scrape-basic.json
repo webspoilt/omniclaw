@@ -1,0 +1,19 @@
+{
+  "template": "data-scrape-basic",
+  "service_type": "data-scrape",
+  "tier": "basic",
+  "name": "Basic Data Scrape",
+  "description": "Extract up to 50 structured records from a single source. Includes data cleaning, deduplication, and export in CSV format. Ideal for quick lead lists or product catalogs.",
+  "default_price_usd": 9,
+  "estimated_hours": 2,
+  "skills_required": ["cashclaw-data-scraper"],
+  "deliverables": ["scraped-data.csv", "scrape-summary.json"],
+  "steps": [
+    "Validate target source URL and identify data structure",
+    "Configure scraper for target fields and pagination pattern",
+    "Extract up to 50 records with error handling and retries",
+    "Clean and normalize extracted data, remove duplicates",
+    "Export results as structured CSV with column headers",
+    "Generate scrape summary with record count and quality metrics"
+  ]
+}

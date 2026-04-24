@@ -1,6 +1,6 @@
 #!/bin/bash
-# OmniClaw One-Click Installer 🚀 (v4.0.0)
-echo "Starting OmniClaw Environment Setup for version 4.0.0..."
+# OmniClaw One-Click Installer 🚀 (v4.3.0)
+echo "Starting OmniClaw Environment Setup for version 4.3.0..."
 
 # 1. Detect Hardware & OS
 RAM_GB=$(free -g 2>/dev/null | awk '/^Mem:/{print $2}')
@@ -39,6 +39,14 @@ echo "Installing Python dependencies..."
 if [ -f "requirements.txt" ]; then
     pip3 install --upgrade pip
     pip3 install -r requirements.txt
+fi
+
+# 4.5 Install CashClaw Orchestrator
+echo "Installing CashClaw Orchestrator..."
+if command -v npm &> /dev/null; then
+    npm install -g cashclaw
+else
+    echo "npm not found. Skipping CashClaw installation. You can install it manually if needed."
 fi
 
 # 5. Auto-Configure AI Models
@@ -87,13 +95,13 @@ echo "Starting OmniClaw Core..."
 nohup python3 omniclaw.py daemon > omniclaw.log 2>&1 &
 
 echo "========================================================="
-echo "✅ OmniClaw v4.0.0 is READY!"
+echo "✅ OmniClaw v4.3.0 is READY!"
 echo ""
 echo "Quick Start:"
 echo "  python3 omniclaw.py chat          # Interactive chat"
 echo "  python3 omniclaw.py daemon        # Background daemon mode"
 echo ""
-echo "New in v4.0.0:"
+echo "New in v4.3.0:"
 echo "  🛡️  5-layer security sandbox"
 echo "  📦 Custom skill system (~/.omniclaw/skills/)"
 echo "  ⏰ Persistent cron scheduler"

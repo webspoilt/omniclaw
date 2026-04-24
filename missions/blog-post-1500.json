@@ -1,0 +1,21 @@
+{
+  "template": "blog-post-1500",
+  "service_type": "content-writing",
+  "tier": "standard",
+  "name": "1500-Word Blog Post",
+  "description": "In-depth 1500-word blog article with keyword research, internal linking suggestions, meta tags, and a table of contents. Includes a featured image prompt.",
+  "default_price_usd": 12,
+  "estimated_hours": 1.5,
+  "skills_required": ["cashclaw-content-writer"],
+  "deliverables": ["blog-post.md", "image-prompt.txt"],
+  "steps": [
+    "Research topic and analyze top-ranking content",
+    "Identify primary and secondary keywords",
+    "Create detailed outline with table of contents",
+    "Write 1500-word article with keyword optimization",
+    "Suggest 3-5 internal linking opportunities",
+    "Write meta title, description, and OG tags",
+    "Generate featured image prompt for AI image tools",
+    "Proofread, format, and deliver"
+  ]
+}

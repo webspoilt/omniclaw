@@ -1,0 +1,20 @@
+{
+  "template": "lead-list-50",
+  "service_type": "lead-generation",
+  "tier": "standard",
+  "name": "Standard Lead List (50 Leads)",
+  "description": "Curated list of 50 targeted leads with company name, contact person, email, LinkedIn URL, and a relevance score. Filtered by industry, location, and company size.",
+  "default_price_usd": 15,
+  "estimated_hours": 2,
+  "skills_required": ["cashclaw-lead-generator"],
+  "deliverables": ["leads.csv", "lead-summary.md"],
+  "steps": [
+    "Define target criteria (industry, location, company size)",
+    "Research and identify 60+ potential leads",
+    "Verify contact information and emails",
+    "Score leads by relevance (1-10)",
+    "Filter to top 50 qualified leads",
+    "Export as CSV with all fields",
+    "Write summary report with outreach recommendations"
+  ]
+}
