@@ -2,16 +2,16 @@
 # Requirements
 
 # Core
-pyyaml>=6.0
+pyyaml>=6.0.3
 
 # Git integration (for Time Machine Debugger)
-GitPython>=3.1
+GitPython>=3.1.50
 
 # Database (for Memory Graph, Predictor)
 # sqlite3 is built-in
 
 # Watching (for Living Diagram auto-update)
-watchdog>=3.0
+watchdog>=6.0.0
 
 # Optional: For better AST parsing
 # (ast is built-in)
@@ -20,5 +20,5 @@ watchdog>=3.0
 # hcl2>=1.0  # For Terraform parsing
 
 # Testing
-pytest>=7.0
-pytest-asyncio>=0.21
+pytest>=9.0.3
+pytest-asyncio>=1.3.0

@@ -8,9 +8,8 @@
     "build": "tsc",
     "test": "vitest run"
   },
-  "dependencies": {},
   "devDependencies": {
     "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
+    "vitest": "^4.1.6"
   }
 }
