@@ -42,3 +42,8 @@ workspace/
 test_workspace/
 data/
 *.db
+
+# Backups and references
+enterprise_backup/
+legacy/
+omniclawgithub/

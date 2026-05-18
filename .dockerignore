@@ -1,0 +1,17 @@
+legacy/
+.git/
+.venv/
+__pycache__/
+*.pyc
+.env
+*.md
+tests/
+site/
+.vscode/
+.idea/
+*.zip
+*.tar.gz
+node_modules/
+data/
+workspace/
+test_workspace/
