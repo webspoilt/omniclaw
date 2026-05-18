@@ -1,40 +1,30 @@
-[build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "omniclaw"
-version = "4.5.2"
-authors = [ { name="ZeroDay Team", email="heyzerodayhere@gmail.com" } ]
-description = "The Sovereign Sentinel Hybrid Hive AI Agent System"
-readme = "README.md"
-license = { text = "MIT" }
-requires-python = ">=3.9"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
-dynamic = ["dependencies"]
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "black>=23.0.0",
-    "mypy>=1.7.0"
-]
-gpu = [
+version = "2.0.0"
+description = "A distributed autonomous cognition and orchestration platform"
+requires-python = ">=3.12"
+dependencies = [
+    "temporalio>=1.5.0",
+    "nats-py>=2.6.0",
+    "redis>=5.0.1",
+    "sqlalchemy>=2.0.0",
+    "asyncpg>=0.29.0",
+    "psycopg2-binary>=2.9.9",
+    "opentelemetry-api>=1.22.0",
+    "opentelemetry-sdk>=1.22.0",
+    "opentelemetry-exporter-otlp>=1.22.0",
+    "opentelemetry-instrumentation-fastapi>=0.43b0",
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "langchain>=0.1.0",
+    "litellm>=1.0.0",
+    "playwright>=1.40.0",
+    "pyrtlsdr>=0.2.9",
+    "numpy>=1.26.0",
+    "scipy>=1.11.0",
     "torch>=2.1.0",
-    "faiss-gpu>=1.7.4"
 ]
 
-[project.scripts]
-omniclaw = "omniclaw:main"
-omniclaw-daemon = "omniclaw.daemon:main"
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

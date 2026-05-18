@@ -1,140 +1,47 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/webspoilt/omniclaw/main/public/logo.svg" width="120" height="120" alt="Omniclaw Logo">
-</p>
+# OmniClaw: Distributed Autonomous Cognition & Orchestration
 
-# Omniclaw: Sovereign Sentinel v4.5.2
+> A distributed autonomous cognition and orchestration platform for edge, offensive simulation, cyber-defense automation, and resilient infrastructure coordination.
 
-<div align="center" style="font-size: 1.5em; margin: 20px 0;">
-    <strong>O</strong>rchestrated <strong>M</strong>odular <strong>N</strong>etwork <strong>I</strong>ntelligence for <strong>C</strong>yber <strong>L</strong>atent <strong>A</strong>gent <strong>W</strong>arfare
-</div>
-<br>
-<div align="center">
+![OmniClaw Architecture](https://img.shields.io/badge/Architecture-Distributed%20Microservices-blue)
+![State](https://img.shields.io/badge/State-Self--Healing-brightgreen)
+![Resilience](https://img.shields.io/badge/Resilience-Fault--Tolerant-purple)
 
-> **Join the Sovereignty!** Connect with security researchers, AI engineers, and fellow hive-defenders. Get support, share insights, and stay updated with the latest Omniclaw developments.
+## Core Identity
 
-[![Discord](https://img.shields.io/badge/Discord-7289DA?logo=discord&logoColor=white)](https://discord.gg/omniclaw)⠀[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)](https://t.me/omniclaw)⠀[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-F7DF1E?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/webspoilt)
+OmniClaw has evolved from a monolithic LLM-agent experiment into a production-grade, distributed cyber-cognitive engine. Its architecture is explicitly designed for high-stakes, adversarial environments requiring deep resilience and physical-layer intelligence.
 
-<a href="https://github.com/webspoilt/omniclaw" target="_blank"><img src="https://img.shields.io/github/stars/webspoilt/omniclaw?style=for-the-badge&color=gold" alt="Omniclaw Stars" /></a>
+*   **Self-Healing & Resilient**: Temporal-backed durable execution ensures that no thought or workflow is lost to node failure.
+*   **Adaptive & Distributed**: Agent cognition and physical tool execution are fully decoupled, allowing execution nodes to run in edge, cloud, or sandboxed environments.
+*   **Kernel-Aware**: Deep system observability via eBPF bridges, ensuring prompt security and system telemetry at the OS-level.
+*   **Event-Driven**: NATS-powered low-latency messaging backbone for instantaneous swarm coordination.
+*   **Policy-Constrained**: Strict capability enforcement engine validating every LLM intention before execution.
+*   **Observability-First**: Complete OpenTelemetry lineage tracking traces, logs, and token metrics from thought to action.
 
-</div>
+## Advanced Intelligence Modules
 
-## Table of Contents
+OmniClaw integrates bleeding-edge offensive intelligence capabilities:
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [AI Agent Supervision](#ai-agent-supervision)
-- [Kernel Bridge (eBPF)](#kernel-bridge-ebpf)
-- [Security](#security)
-- [Credits](#credits)
-- [License](#license)
+1.  **RF Fingerprinting (SIGINT)**: Identifies and tracks unique hardware devices via SDR-captured RF physical layer anomalies.
+2.  **Acoustic Side-Channel Keystroke Recovery**: Neural networks reconstructing keystrokes via microscopic accelerometer vibrations.
+3.  **Generative Social Engineering (GSE)**: Autonomous infiltration personas leveraging LLM personality mirroring and generative rendering.
+4.  **eBPF LLM Guard**: A kernel-level "firewall for words" that drops prompt injection payloads before they reach the cognition engine.
 
-## Overview
+## Infrastructure Stack
 
-Omniclaw is an innovative autonomous cybersecurity platform that leverages a "Hybrid Hive" of AI agents to perform real-time threat detection, automated forensics, and kernel-level neutralization. Unlike traditional IPS/IDS, Omniclaw doesn't just watch—it acts.
-
-## Documentation 📚
-
-Comprehensive documentation is available to help you deploy and master the Sovereign Sentinel platform:
-
-- 🍼 **[Deployment Guide](docs/setup.md)**: Step-by-step instructions for Linux, macOS, and Android (Termux).
-- 🚀 **[Use Cases](docs/use_cases.md)**: Real-world scenarios for security, sysadmin, and research.
-- 📖 **[GitHub Wiki](https://github.com/webspoilt/omniclaw/wiki)**: Deep-dives into Architecture, Security Layers, and P2P Networking.
-- 🛡️ **[Security Policy](SECURITY.md)**: Guidelines for reporting vulnerabilities.
-- 🤝 **[Contributing Guide](CONTRIBUTING.md)**: How to join the ZeroDay development team.
-
-## Features
-
-- 🛡️ **Kernel-Level Defense.** Rust-based eBPF probes provide deep, zero-overhead visibility into system calls and network traffic.
-- 🤖 **Autonomous Swarm.** A decentralized team of AI agents that automatically determine and execute defensive steps without human intervention.
-- 📉 **Sovereign Risk Engine.** (New) Real-time behavioral scoring system inspired by Tirreno, featuring automated LOCK and TERMINATE thresholds.
-- 🧰 **Advanced Security Toolkit.** (New) Specialized skills for WiFi Recon, OSINT Reputation (AbuseIPDB), and Injection Auditing (CyberInject).
-- ⚡ **Zero-Trust Orchestration.** Secure communication between agents using P2P encryption and hardware-backed identity.
-- 🧩 **Modular Plugin System.** Hot-swap detection engines, notification connectors, and response playbooks.
-- 📊 **Mission Control.** A sleek, real-time dashboard for system monitoring, telemetry visualization, and manual override.
-- 🔗 **External SIEM Integration.** Out-of-the-box support for Splunk, Elastic, and custom webhooks.
-
-## Architecture
-
-Omniclaw is built on a distributed micro-agent architecture designed for resilience and speed.
-
-```mermaid
-graph TB
-    subgraph Core Services
-        UI[Mission Control<br/>React + TypeScript]
-        ORCH[Orchestrator<br/>Python + FastAPI]
-        DB[(PostgreSQL + pgvector)]
-        MQ[Task Queue<br/>Redis]
-        SWARM[AI Agent Swarm]
-    end
-
-    subgraph Security Layer
-        PROBE[eBPF Probes<br/>Rust]
-        KERNEL[Linux Kernel]
-    end
-
-    UI --> |WebSocket| ORCH
-    ORCH --> |Manage| SWARM
-    SWARM --> |Telemetry| DB
-    SWARM --> |Instructions| PROBE
-    PROBE --> |Filter| KERNEL
-    KERNEL --> |Events| PROBE
-    PROBE --> |Alerts| MQ
-    MQ --> |Process| ORCH
-```
+*   **Orchestration**: Temporal
+*   **State & Memory**: PostgreSQL
+*   **Coordination**: Redis
+*   **Message Bus**: NATS
+*   **Observability**: OpenTelemetry, Prometheus, Jaeger, Grafana
 
 ## Quick Start
 
-### Installation
-
-The fastest way to deploy the Sovereign Sentinel node is via the official setup script:
-
 ```bash
-curl -fsSL https://omniclaw.vercel.app/setup.sh | bash
+# Spin up the infrastructure backbone
+docker-compose up -d postgres redis nats temporal prometheus jaeger
+
+# Start the core cognition and telemetry services
+python -m planner_service.main
+python -m telemetry_service.main
+python -m execution_service.main
 ```
-
-### Manual Setup
-
-1. **Clone and Install Dependencies**
-```bash
-git clone https://github.com/webspoilt/omniclaw.git
-cd omniclaw
-pip install -r requirements.txt
-```
-
-2. **Configure Environment**
-```bash
-cp .env.example .env
-# Add your LLM API keys and configuration
-```
-
-3. **Launch the Orchestrator**
-```bash
-python orchestrator.py
-```
-
-## AI Agent Supervision
-
-Omniclaw includes sophisticated multi-layered agent supervision to ensure efficient task execution and prevent hallucination loops:
-
-- **Mentor Agent**: Automatically monitors agent behavior and recommends alternative attack/defense vectors.
-- **Pattern Detection**: Detects redundant tool calls and redirects agents to search for established solutions.
-- **Self-Healing**: If an agent fails to reach a target, the Reflector agent analyzes the failure and updates the Hive context.
-
-## Kernel Bridge (eBPF)
-
-The heart of Omniclaw's visibility is the Rust-based kernel bridge.
-- **Direct Link**: Connects the AI Hive directly to the Linux kernel.
-- **Zero Overhead**: eBPF bytecode executes in the kernel context for maximum performance.
-- **Packet-Level Inspection**: Inspects every packet before it reaches the network stack.
-
-## Security
-
-Please report security vulnerabilities to **heyzerodayhere@gmail.com**. See [SECURITY.md](SECURITY.md) for more details.
-
----
-
-Built with ❤️ by  **zeroday**
-⭐ Star  on [GitHub](https://github.com/webspoilt/omniclaw) if you believe in the future of autonomous defense!

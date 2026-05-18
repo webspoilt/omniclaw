@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=omniclaw
+      - POSTGRES_PASSWORD=omniclaw_pass
+      - POSTGRES_DB=omniclaw_state
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - omniclaw_network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - omniclaw_network
+
+  nats:
+    image: nats:2.9
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: ["-m", "8222"]
+    networks:
+      - omniclaw_network
+
+  temporal:
+    image: temporalio/auto-setup:1.22.2
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=omniclaw
+      - POSTGRES_PWD=omniclaw_pass
+      - POSTGRES_SEEDS=postgres
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+    ports:
+      - "7233:7233"
+    depends_on:
+      - postgres
+    networks:
+      - omniclaw_network
+
+  temporal-ui:
+    image: temporalio/ui:2.21.3
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - temporal
+    networks:
+      - omniclaw_network
+
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - omniclaw_network
+
+  grafana:
+    image: grafana/grafana:10.1.1
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    networks:
+      - omniclaw_network
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.49
+    ports:
+      - "16686:16686"
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+    networks:
+      - omniclaw_network
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.85.0
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./config/otel-collector.yml:/etc/otel-collector-config.yaml
+    ports:
+      - "1888:1888"   # pprof extension
+      - "8888:8888"   # Prometheus metrics exposed by the collector
+      - "8889:8889"   # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+    depends_on:
+      - jaeger
+      - prometheus
+    networks:
+      - omniclaw_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  omniclaw_network:
+    driver: bridge
