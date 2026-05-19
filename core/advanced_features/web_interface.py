@@ -628,17 +628,20 @@ def api_status():
 
 def main():
     """Run web interface"""
-    print("""
+    import os
+    host = os.environ.get('OMNICLAW_WEB_HOST', '127.0.0.1')
+    port = int(os.environ.get('OMNICLAW_WEB_PORT', 5000))
+    print(f"""
     ╔══════════════════════════════════════════════════════════════════════════╗
     ║           🌐 OMNICLAW WEB INTERFACE - Starting...                       ║
     ║                                                                          ║
-    ║   Open your browser to: http://localhost:5000                          ║
+    ║   Open your browser to: http://{host}:{port}                          ║
     ║                                                                          ║
     ║   Or run CLI launcher: python -m omniclaw_advanced_features.launcher   ║
     ╚══════════════════════════════════════════════════════════════════════════╝
     """)
     
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host=host, port=port, debug=False)
 
 
 if __name__ == '__main__':

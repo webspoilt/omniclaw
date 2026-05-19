@@ -102,3 +102,9 @@ scrapling[all]>=0.4.8
 
 # Observability
 langwatch>=0.22.0
+
+# Database State Store
+sqlalchemy>=2.0.0
+aiosqlite>=0.20.0
+psycopg2-binary>=2.9.0
+

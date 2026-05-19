@@ -67,12 +67,29 @@ function extractTagAttr(html, tag, attr) {
   return results;
 }
 
+function stripTags(html) {
+  let text = "";
+  let inTag = false;
+  for (let i = 0; i < html.length; i++) {
+    const char = html[i];
+    if (char === '<') {
+      inTag = true;
+    } else if (char === '>') {
+      inTag = false;
+      text += " ";
+    } else if (!inTag) {
+      text += char;
+    }
+  }
+  return text.replace(/\s+/g, " ").trim();
+}
+
 function extractLinks(html) {
   const re = /<a[^>]*href=["']([^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi;
   const links = [];
   let m;
   while ((m = re.exec(html)) !== null) {
-    links.push({ href: m[1], text: m[2].replace(/<[^>]*>/g, "").trim() });
+    links.push({ href: m[1], text: stripTags(m[2]) });
   }
   return links;
 }
@@ -92,13 +109,41 @@ function extractImages(html) {
 }
 
 function wordCount(html) {
-  const text = html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  return text ? text.split(" ").length : 0;
+  let text = "";
+  let inTag = false;
+  let inScript = false;
+  let inStyle = false;
+  let tagBuffer = "";
+  
+  for (let i = 0; i < html.length; i++) {
+    const char = html[i];
+    if (char === '<') {
+      inTag = true;
+      tagBuffer = "<";
+    } else if (char === '>') {
+      inTag = false;
+      tagBuffer += ">";
+      const tagLower = tagBuffer.toLowerCase();
+      if (tagLower.startsWith("<script")) {
+        inScript = true;
+      } else if (tagLower.startsWith("<style")) {
+        inStyle = true;
+      } else if (tagLower.startsWith("</script")) {
+        inScript = false;
+      } else if (tagLower.startsWith("</style")) {
+        inStyle = false;
+      }
+      tagBuffer = "";
+      text += " ";
+    } else if (inTag) {
+      tagBuffer += char;
+    } else if (!inScript && !inStyle) {
+      text += char;
+    }
+  }
+  
+  const words = text.replace(/\s+/g, " ").trim();
+  return words ? words.split(" ").length : 0;
 }
 
 // ---------------------------------------------------------------------------

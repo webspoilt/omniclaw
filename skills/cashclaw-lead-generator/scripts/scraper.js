@@ -116,15 +116,19 @@ function extractEmails(html) {
   const re = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
   const found = html.match(re) || [];
   // Filter out common false positives
-  return [...new Set(found)].filter(
-    (e) =>
-      !e.endsWith(".png") &&
-      !e.endsWith(".jpg") &&
-      !e.endsWith(".svg") &&
-      !e.includes("example.com") &&
-      !e.includes("sentry") &&
-      !e.includes("webpack")
-  );
+  return [...new Set(found)].filter((e) => {
+    const parts = e.split("@");
+    if (parts.length !== 2) return false;
+    const domain = parts[1].toLowerCase();
+    return (
+      !domain.endsWith(".png") &&
+      !domain.endsWith(".jpg") &&
+      !domain.endsWith(".svg") &&
+      domain !== "example.com" &&
+      !domain.includes("sentry") &&
+      !domain.includes("webpack")
+    );
+  });
 }
 
 function extractPhones(html) {
@@ -213,15 +217,25 @@ async function searchAndScrape(query, count, filters) {
 
     // Extract URLs from search results
     const urlRe = /https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\/[^\s"'<>)]*)?/g;
-    const urls = [...new Set((html.match(urlRe) || []))].filter(
-      (u) =>
-        !u.includes("google.com") &&
-        !u.includes("googleapis.com") &&
-        !u.includes("gstatic.com") &&
-        !u.includes("youtube.com") &&
-        !u.includes("wikipedia.org") &&
-        !u.includes("w3.org")
-    );
+    const urls = [...new Set((html.match(urlRe) || []))].filter((u) => {
+      const domain = extractDomain(u);
+      if (!domain) return false;
+      const lowerDomain = domain.toLowerCase();
+      return (
+        lowerDomain !== "google.com" &&
+        lowerDomain !== "googleapis.com" &&
+        lowerDomain !== "gstatic.com" &&
+        lowerDomain !== "youtube.com" &&
+        lowerDomain !== "wikipedia.org" &&
+        lowerDomain !== "w3.org" &&
+        !lowerDomain.endsWith(".google.com") &&
+        !lowerDomain.endsWith(".googleapis.com") &&
+        !lowerDomain.endsWith(".gstatic.com") &&
+        !lowerDomain.endsWith(".youtube.com") &&
+        !lowerDomain.endsWith(".wikipedia.org") &&
+        !lowerDomain.endsWith(".w3.org")
+      );
+    });
 
     console.log(`  Found ${urls.length} candidate URLs`);
 

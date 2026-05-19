@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="orbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="50%" stop-color="#4facfe" />
+      <stop offset="100%" stop-color="#002147" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4facfe" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#00f2fe" stop-opacity="0" />
+    </linearGradient>
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glassReflect">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" />
+      <feSpecularLighting in="blur" surfaceScale="5" specularConstant=".75" specularExponent="20" lighting-color="#ffffff" result="specOut">
+        <fePointLight x="-50" y="-50" z="200" />
+      </feSpecularLighting>
+      <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut" />
+      <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+    </filter>
+  </defs>
+
+  <!-- Background Glow -->
+  <circle cx="250" cy="250" r="180" fill="url(#glowGrad)" filter="url(#neonGlow)" />
+  
+  <!-- Main Sphere -->
+  <circle cx="250" cy="250" r="150" fill="url(#orbGrad)" filter="url(#glassReflect)" />
+  
+  <!-- Outer Rings (Hive/Orbit) -->
+  <ellipse cx="250" cy="250" rx="190" ry="70" fill="none" stroke="rgba(255, 255, 255, 0.4)" stroke-width="4" transform="rotate(30 250 250)" filter="url(#neonGlow)" />
+  <ellipse cx="250" cy="250" rx="190" ry="70" fill="none" stroke="rgba(0, 242, 254, 0.6)" stroke-width="2" transform="rotate(-30 250 250)" filter="url(#neonGlow)" />
+  <ellipse cx="250" cy="250" rx="220" ry="40" fill="none" stroke="rgba(79, 172, 254, 0.3)" stroke-width="1.5" transform="rotate(90 250 250)" />
+
+  <!-- The "Claw" / Central Tech Core -->
+  <path d="M 250 160 L 290 220 L 250 340 L 210 220 Z" fill="#ffffff" filter="url(#glassReflect)" />
+  <path d="M 250 160 L 290 220 L 250 240 L 210 220 Z" fill="#b3e5fc" />
+  <circle cx="250" cy="250" r="15" fill="#000000" />
+  <circle cx="250" cy="250" r="8" fill="#00f2fe" filter="url(#neonGlow)" />
+
+  <!-- Data Nodes -->
+  <circle cx="290" cy="220" r="6" fill="#ffffff" filter="url(#neonGlow)" />
+  <circle cx="210" cy="220" r="6" fill="#ffffff" filter="url(#neonGlow)" />
+  <circle cx="250" cy="160" r="8" fill="#ffffff" filter="url(#neonGlow)" />
+  <circle cx="250" cy="340" r="8" fill="#ffffff" filter="url(#neonGlow)" />
+
+</svg>

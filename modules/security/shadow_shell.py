@@ -53,8 +53,10 @@ class ShadowShell:
         "cat /etc/shadow": "Permission denied\n",
     }
 
-    def __init__(self, port: int = 2222, llm_model: str = "llama3:latest"):
-        self.port = port
+    def __init__(self, host: str = None, port: int = None, llm_model: str = "llama3:latest"):
+        import os
+        self.host = host or os.environ.get("OMNICLAW_SHADOW_HOST", "127.0.0.1")
+        self.port = port or int(os.environ.get("OMNICLAW_SHADOW_PORT", "2222"))
         self.llm_model = llm_model
         self.ollama_url = "http://localhost:11434"
         self.log_dir = Path("./logs/honeypot")
@@ -64,9 +66,9 @@ class ShadowShell:
         check_kill_switch()
         srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        srv.bind(("0.0.0.0", self.port))
+        srv.bind((self.host, self.port))
         srv.listen(5)
-        logger.info(f"Shadow shell listening on :{self.port}")
+        logger.info(f"Shadow shell listening on {self.host}:{self.port}")
 
         while True:
             client, addr = srv.accept()

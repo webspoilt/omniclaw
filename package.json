@@ -1,0 +1,10 @@
+{
+  "name": "omniclaw-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "pnpm --filter web build",
+    "dev": "pnpm --filter web dev",
+    "start": "pnpm --filter web start",
+    "lint": "pnpm --filter web lint"
+  }
+}
