@@ -142,7 +142,8 @@ jobs:
     needs: [build]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: staging
+    environment:
+      name: staging
     steps:
       - name: Deploy to staging
         run: |
@@ -153,7 +154,8 @@ jobs:
     needs: [deploy-staging]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    environment: production
+    environment:
+      name: production
     steps:
       - name: Deploy to production
         run: |
