@@ -1,67 +1,98 @@
-# OmniClaw System Installation Guide (v3.3.0+)
+# OmniClaw — Installation Reference
 
-This guide contains the OS-specific system prerequisites required to run OmniClaw's advanced features (eBPF, audio capabilities, and binary requirements) natively before pip installing the Python requirements.
+This document covers system-level prerequisites for the Compute Core (Linux) and Edge Node (Android/Termux).
 
 ---
 
-## 🐧 Ubuntu / Debian
-Run the following commands to install the necessary compiler tools, audio headers, and eBPF dependencies:
+## Compute Core (Linux)
+
+### System Dependencies
+
+Ubuntu 22.04+ / Debian 12+:
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y \
+sudo apt-get update && sudo apt-get install -y \
     python3-dev \
-    libaudiodev-dev \
-    portaudio19-dev \
     build-essential \
+    portaudio19-dev \
     linux-headers-$(uname -r) \
-    bpfcc-tools \
-    linux-headers-generic
+    clang \
+    llvm \
+    libbpf-dev \
+    bpfcc-tools
 ```
 
-## 🍏 macOS
-If you use macOS, you will only have partial features (no true eBPF ring-0 kernel hooks), but you can still run OmniClaw with full audio and API support.
+> **Note:** `libbpf-dev` and `clang` are required only if you intend to compile and run the eBPF Security Bridge. They are not needed for Python-only deployments.
+
+### macOS (Partial Support)
+
+macOS supports the orchestration and Athena layers. The eBPF Security Bridge is Linux-only.
 
 ```bash
-# Ensure Homebrew is installed, then run:
-brew install portaudio
-brew install python-dev
+brew install portaudio python
 ```
 
-## 🪟 Windows (WSL2)
-Native Windows is NOT supported for the kernel bridge. You must use WSL2 (Ubuntu).
+### Windows (WSL2 Only)
 
-1. Install WSL2 and Ubuntu from the Microsoft Store.
-2. Open the WSL terminal and run the Ubuntu/Debian commands above. 
-3. *Note: Advanced audio (PyAudio) routing from WSL2 into Windows requires additional PulseAudio network configurations.*
+Native Windows is not supported for the Compute Core. Use WSL2 running Ubuntu 22.04:
+
+1. Install WSL2 via `wsl --install -d Ubuntu-22.04`
+2. Run the Ubuntu system dependency commands above within WSL2.
+
+> **Note:** eBPF requires a real Linux kernel. WSL2's kernel has limited BPF support. Test in a VM for full eBPF functionality.
+
+---
+
+## Edge Node (Termux / Android)
+
+```bash
+# Core runtime dependencies
+pkg install python git openssh
+
+# ZeroMQ and SQLite bindings
+pip install pyzmq sqlite-vec msgpack
+```
+
+---
+
+## Python Environment Setup
+
+```bash
+# 1. Create isolated environment
+python -m venv .venv
+source .venv/bin/activate   # Linux/macOS
+# .venv\Scripts\activate    # Windows/WSL2
+
+# 2. Install core requirements
+pip install -r requirements.txt
+
+# 3. Install optional feature packages
+pip install lancedb networkx croniter
+```
 
 ---
 
 ## Optional Feature Dependencies
 
-Some OmniClaw features require additional packages not listed in the core `requirements.txt`:
-
 | Package | Feature | Install |
 |---|---|---|
-| `croniter>=1.4.0` | Cron expression scheduling (CronScheduler) | `pip install croniter` |
-| `mss>=9.0.0` | Cross-platform screen capture (Vision module) | `pip install mss` |
-| `lancedb>=0.6.0` | Vector store memory backend | `pip install lancedb` |
-| `networkx>=3.0` | Knowledge graph memory backend | `pip install networkx` |
-
-> **Note (Issue #16):** `croniter` is optional. Without it, the CronScheduler will skip cron-expression jobs and only run interval-based jobs. A warning will be logged.
+| `lancedb >= 0.6.0` | Compute Core vector knowledge store | `pip install lancedb` |
+| `sqlite-vec >= 0.1.0` | Edge Node vector cache | `pip install sqlite-vec` |
+| `networkx >= 3.0` | Knowledge graph traversal | `pip install networkx` |
+| `croniter >= 1.4.0` | Scheduled task expressions | `pip install croniter` |
+| `lean4` (binary) | Formal theorem verification (Athena) | See [Lean4 installation](https://leanprover.github.io/lean4/doc/setup.html) |
 
 ---
 
-## Next Steps
-Once these system dependencies are installed, you can proceed with the standard Python environment setup:
+## Verifying the Installation
+
 ```bash
-# 1. Create a virtual environment
-python -m venv .venv
-source .venv/bin/activate
+# Start the orchestrator in dry-run mode to verify imports and config
+python3 -m core.zmq_orchestrator --dry-run
 
-# 2. Install Python requirements
-pip install -r requirements.txt
-
-# 3. (Optional) Install extra feature deps
-pip install croniter mss lancedb networkx
+# Expected output:
+# [OK] ZeroMQ ROUTER socket initialized
+# [OK] Policy loaded from config/policy.yaml
+# [OK] LanceDB backend available
+# [DRY-RUN] Exiting without binding.
 ```

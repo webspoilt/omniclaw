@@ -1,248 +1,133 @@
-# OmniClaw v4.1 — Deployment Guide
+# OmniClaw — Operations Runbook
 
-## Prerequisites
+This document supersedes the earlier `deployment_v2.md`. It covers the operational details for running OmniClaw in a multi-node topology.
 
-| Component | Desktop (Asus TUF) | Mobile (Poco X3 / Termux) |
+---
+
+## Node Roles
+
+| Role | Process | Bind Address |
 |---|---|---|
-| **Python** | 3.9+ | via `pkg install python` |
-| **Git** | ✓ | via `pkg install git` |
-| **ZeroMQ** | `pip install pyzmq` | `pip install pyzmq` |
-| **Crypto** | `pip install pycryptodome` | `pip install pycryptodome` |
-| **Watchdog** | `pip install watchdog` | `pip install watchdog` |
-| **LLM** | Ollama or OpenAI API | Ollama (if resources allow) |
-| **eBPF** | `libbpf`, `bpftool`, kernel 5.8+ | ❌ Not supported |
-| **Termux:API** | ❌ | `pkg install termux-api` |
-| **PM2** | `npm install -g pm2` | Optional |
-| **MCP** | `pip install fastmcp` | Optional |
+| **Manager** | `core.zmq_orchestrator` | `tcp://0.0.0.0:5555` (ROUTER) |
+| **Athena GPU Worker** | `modules.athena.transpiler_worker` | connects → 5555 (DEALER) |
+| **eBPF Daemon** | `kernel_bridge/user_daemon` | IPC with orchestrator via ZMQ IPC socket |
+| **Edge Gateway** | `edge.gateway` | connects → Manager IP:5555 (DEALER) |
 
 ---
 
-## 1. Configuration
+## Startup Sequence (Compute Core)
 
-### Environment Variables (P2P)
+Start services in dependency order:
 
 ```bash
-export NODE_ID="mobile"          # or "desktop"
-export PORT="5555"
-export PEERS="100.64.1.2:5555"   # Tailscale IP of peer
-export AES_KEY="base64encoded32byteskey=="  # Pre-shared key
+# 1. Activate environment
+source .venv/bin/activate
+
+# 2. Load policy and start eBPF daemon (requires CAP_BPF)
+sudo ./kernel_bridge/user_daemon --policy config/policy.yaml &
+
+# 3. Start the ZeroMQ orchestrator (Manager)
+python3 -m core.zmq_orchestrator --bind tcp://0.0.0.0:5555 &
+
+# 4. Start Athena workers
+python3 -m modules.athena.transpiler_worker --connect tcp://localhost:5555 &
+python3 -m modules.athena.lean_worker --connect tcp://localhost:5555 &
+
+# 5. (Optional) Start MCP server for IDE integration
+python3 connectors/mcp_host.py &
 ```
 
-### Config Files
+---
 
-| Module | Config File | Location |
+## Startup Sequence (Edge Node)
+
+```bash
+# On Android via Termux
+export OMNICLAW_MANAGER_IP=100.64.1.2   # Tailscale IP of Compute Core
+export OMNICLAW_NODE_ID=$(hostname)
+
+python3 -m edge.gateway \
+    --manager tcp://$OMNICLAW_MANAGER_IP:5555 \
+    --node-id $OMNICLAW_NODE_ID
+```
+
+---
+
+## Environment Variables
+
+| Variable | Default | Description |
 |---|---|---|
-| Evolution Agent | `config.yaml` | `modules/evolution/` |
-| Scholar | `scholar_config.json` | `modules/scholar/` |
-| Scout Agent | `scout_config.yaml` | Project root |
-| Hive Sync | `hive_config.yaml` | Project root |
-| IPS Agent | `config.example.yaml` → `security.ips` | Project root |
+| `OMNICLAW_MANAGER_IP` | `127.0.0.1` | IP of the ZeroMQ Manager Node |
+| `OMNICLAW_NODE_ID` | `$(hostname)` | Unique identifier for this node |
+| `OMNICLAW_POLICY_PATH` | `config/policy.yaml` | Path to the runtime policy file |
+| `OMNICLAW_AES_KEY` | — | Base64-encoded 32-byte pre-shared key for P2P mesh |
 
 ---
 
-## 2. Module Startup
+## eBPF Shield Operational Details
 
-### Desktop (Asus TUF)
+The eBPF probe attaches at `do_exit` and `mprotect`. When an anomaly threshold is breached:
+
+1. The ring buffer emits a `forensic_event` to `user_daemon`.
+2. `user_daemon` writes CPU registers and 256 bytes of stack to `/var/omniclaw/forensics/<pid>_<ts>.bin`.
+3. The process's `cgroup v2` slice is frozen via `cgroup.freeze`.
+4. A `ANOMALY_ALERT` message is dispatched to the Manager over ZeroMQ IPC.
+5. The Manager logs the event and issues `SIGKILL` to the frozen process.
 
 ```bash
-# 1. P2P Node
-NODE_ID=desktop PORT=5555 python p2p/p2p_network.py &
-
-# 2. Evolution Agent (self-healing)
-python modules/evolution/evolution_agent.py &
-
-# 3. IPS Agent (requires root for live blocking)
-sudo python -c "from core.security.ips_agent import IPSAgent; IPSAgent().start()"
-
-# 4. Shadow Shell Honeypot (requires root for iptables)
-sudo python modules/security/shadow_shell.py &
-sudo python modules/security/iptables_helper.py &
-
-# 5. Startup Autopilot (PM2 monitor)
-python modules/startup/saas_manager.py &
-
-# 6. Scholar (daily briefings at 07:00)
-python modules/scholar/exam_intelligence.py &
-
-# 7. Scout Agent (on-demand)
-python core/scout_agent.py example.com
-
-### 7. Core Services
-
-**Desktop Mode Only:**
-- Genesis Evolution Agent: Monitors telemetry and suggests optimizations.
-
-**Mobile Mode Only:**
-- Termux Camera: Periodic photo capture and LLM analysis (`modules/vision/termux_camera.py`).
-- Plant Monitor: Specific crop/plant monitoring workflow (`modules/sensors/plant_monitor.py`).
-
-# 8. MCP Server (for IDE integration)
-python connectors/mcp_host.py &
+# Monitor forensic vault output in real-time
+sudo journalctl -f -u omniclaw-daemon
 ```
 
-### Mobile (Poco X3 / Termux)
+---
+
+## MCP Server (IDE Integration)
+
+The MCP server exposes orchestrator state and control tools to external IDEs.
 
 ```bash
-# 1. P2P Node
-NODE_ID=mobile PORT=5555 python p2p/p2p_network.py &
-
-# 2. Plant Monitor (uses Termux camera)
-python modules/sensors/plant_monitor.py &
-
-# 3. Evolution Agent (lightweight)
-python modules/evolution/evolution_agent.py &
-
-# 4. Scholar (briefings)
-python modules/scholar/exam_intelligence.py &
+python3 connectors/mcp_host.py --port 8000
 ```
 
----
+**Available Resources:**
 
-## 3. Resource Awareness
-
-All modules import `resource_check()` from `core/resource_utils.py`:
-
-```python
-from core.resource_utils import resource_check
-
-if resource_check(is_mobile=True):
-    # Proceed with heavy operation
-```
-
-**Mobile thresholds** (tune in `resource_utils.py`):
-- Battery < 20% → abort
-- CPU > 70% → abort
-- Memory > 80% → abort
-
-Desktop always returns `True`.
-
----
-
-## 4. Kill Switch
-
-```python
-from core.kill_switch import check_kill_switch, activate, deactivate
-
-# Before any autonomous action:
-check_kill_switch()  # raises RuntimeError if active
-
-# Toggle via MCP or code:
-activate()    # halt everything
-deactivate()  # resume
-```
-
-The kill switch can also be toggled via the MCP server tool `toggle_kill_switch`.
-
----
-
-## 5. eBPF Programs
-
-### IPS Monitor
-
-```bash
-cd kernel_bridge
-make ips        # Builds monitor.bpf.o
-sudo make install
-```
-
-### Honeypot XDP
-
-```bash
-cd modules/security
-clang -O2 -target bpf -c honeypot.cpp -o honeypot.bpf.o
-sudo ip link set dev eth0 xdp obj honeypot.bpf.o sec xdp
-```
-
----
-
-## 6. MCP Server
-
-Runs on port 8000. External IDEs connect via WebSocket.
-
-**Resources:** `system://cpu`, `system://memory`, `plant://latest_health`, `exam://next_deadline`, `security://kill_switch`
-
-**Tools:** `send_telegram_message`, `trigger_plant_capture`, `toggle_kill_switch`, `get_pm2_status`
-
----
-
-## 🔒 Secure Enclave & Hardware Authentication (Optional)
-
-OmniClaw supports isolating sensitive operational capabilities and forcing hardware authentication to unlock the framework.
-
-1. **Prerequisites**: You must have `yubikey-personalization` installed and a YubiKey present.
-    ```bash
-    # Ubuntu/Debian
-    sudo apt install yubikey-personalization
-    
-    # Termux
-    pkg install yubikey-personalization
-    ```
-2. **Setup YubiKey**: Run the setup script to format Slot 2 for HMAC-SHA1 Challenge-Response.
-    ```bash
-    chmod +x scripts/setup_yubikey.sh
-    ./scripts/setup_yubikey.sh
-    ```
-3. **Hardware Lock**: In `modules/evolution/local_code_janitor.py` and `genesis_local.py`, modify `AUTHORIZED_HARDWARE_NODE` to exactly match the result of `hostname` on your isolated secure machine, guaranteeing evolution logic never leaks.
-
----
-
-## 7. Directory Structure
-
-```
-OmniClaw/
-├── core/
-│   ├── resource_utils.py        # Resource-awareness helper
-│   ├── kill_switch.py           # Global kill flag
-│   ├── security/                # IPS Agent, SecurityLayer
-│   ├── evolution_agent.py       # Core-level evolution agent
-│   ├── hive_sync.py             # Core-level hive sync
-│   └── scout_agent.py           # Core-level scout agent
-├── connectors/
-│   └── mcp_host.py              # MCP server (fastmcp)
-├── modules/
-│   ├── evolution/               # Self-healing code janitor
-│   │   ├── evolution_agent.py
-│   │   ├── sandbox.py
-│   │   └── config.yaml
-│   ├── security/                # eBPF honeypot + shadow shell
-│   │   ├── honeypot.cpp
-│   │   ├── shadow_shell.py
-│   │   └── iptables_helper.py
-│   ├── scholar/                 # Exam War-Room
-│   │   ├── exam_intelligence.py
-│   │   └── scholar_config.json
-│   ├── startup/                 # DevOps autopilot
-│   │   └── saas_manager.py
-│   └── sensors/                 # Bio-guardian
-│       └── plant_monitor.py
-├── p2p/
-│   ├── crypto.py                # AES-256 helpers
-│   └── peers.json               # Known peer list
-├── kernel_bridge/               # eBPF + C++ bridge
-├── logs/
-├── tests/
-└── deployment_v2.md
-```
-
----
-
-## 8. Security Notes
-
-- Keep the AES key **secret**. Distribute via env vars or secure vault.
-- eBPF programs require **root**. Run in controlled environments.
-- The scout agent **never exploits** — advisory only.
-- Shadow shell logs are in `logs/honeypot/`.
-- Kill switch halts **all** autonomous shell execution.
-
----
-
-## 9. Troubleshooting
-
-| Issue | Solution |
+| Resource URI | Description |
 |---|---|
-| Module crashes | `evolution_agent` will detect and attempt self-heal |
-| P2P connection fails | Check Tailscale connectivity, verify `PEERS` env var |
-| eBPF load fails | Ensure kernel 5.8+, `libbpf` installed, running as root |
-| LLM timeout | Verify Ollama is running: `ollama list` |
-| PM2 not found | Install: `npm install -g pm2` |
-| Kill switch stuck | Call `core.kill_switch.deactivate()` or MCP tool |
+| `system://cpu` | Current CPU utilization |
+| `system://memory` | Memory pressure metrics |
+| `security://kill_switch` | Kill switch state |
+
+**Available Tools:**
+
+| Tool | Description |
+|---|---|
+| `toggle_kill_switch` | Activate or deactivate the global execution halt |
+| `get_orchestrator_status` | Returns active worker count and queue depth |
+| `get_vector_sync_status` | Returns LanceDB / SQLite-vec sync state |
+
+---
+
+## Kill Switch
+
+```bash
+# Activate via Python
+python3 -c "from core.kill_switch import activate; activate()"
+
+# Deactivate after manual review
+python3 -c "from core.kill_switch import deactivate; deactivate()"
+```
+
+When active, all workers exit their task loops cleanly, pending tasks are serialized to the local state store, and no new tasks are dispatched.
+
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Resolution |
+|---|---|---|
+| `Permission denied: bpf()` | Missing `CAP_BPF` | Run daemon with `sudo` or set capability on binary |
+| `ZMQ: Connection refused` | Manager not yet bound | Ensure orchestrator starts before workers |
+| Edge gateway disconnects | Android kills background Termux | Set Termux to "Unrestricted" in Battery settings |
+| `eBPF load error: BTF not supported` | Kernel < 5.8 or BTF not compiled | Upgrade to Ubuntu 22.04 kernel |
+| Vector sync stalls | LanceDB locked by another process | Stop the conflicting process; LanceDB uses file locking |
+| Lean 4 worker exits immediately | Lean binary not found in PATH | Install Lean4 and ensure `lean` is on `$PATH` |

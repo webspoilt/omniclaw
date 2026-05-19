@@ -1,0 +1,37 @@
+# OmniClaw Unified Policy Configuration
+
+ebpf_heuristics:
+  max_mprotect_per_sec: 50
+  oom_prediction_lead_seconds: 30
+  enable_sidechannel_mitigation: true
+
+athena:
+  max_gpu_temp_c: 82
+  max_parallel_sweeps: 4
+  allowed_pde_categories:
+    - "elliptic"
+    - "parabolic"
+    - "hyperbolic"
+
+network_qos:
+  orchestration_dscp: 46   # Expedited Forwarding (Critical)
+  vector_sync_dscp: 26     # Assured Forwarding (High)
+  sensor_data_dscp: 0      # Best Effort (Low)
+
+janitor:
+  auto_commit: false
+  require_approval_for:
+    - "production"
+    - "kernel"
+
+vector_db:
+  phone:
+    engine: sqlite-vec
+    max_rows: 50000
+    sync_on_wifi_only: true
+    cache_ttl_hours: 168
+  laptop:
+    engine: lancedb
+    index_type: ivf_pq
+    store_path: /data/omniclaw/vectors
+  handoff_threshold: 0.75  # Cosine similarity below which queries offload

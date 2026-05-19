@@ -1,47 +1,166 @@
-# OmniClaw: Distributed Autonomous Cognition & Orchestration
+# OmniClaw
 
-> A distributed autonomous cognition and orchestration platform for edge, offensive simulation, cyber-defense automation, and resilient infrastructure coordination.
+**A secure distributed orchestration runtime for autonomous and edge-native AI systems.**
 
-![OmniClaw Architecture](https://img.shields.io/badge/Architecture-Distributed%20Microservices-blue)
-![State](https://img.shields.io/badge/State-Self--Healing-brightgreen)
-![Resilience](https://img.shields.io/badge/Resilience-Fault--Tolerant-purple)
+OmniClaw is an event-driven execution platform designed to safely orchestrate local and distributed AI workflows. It provides the necessary infrastructure—deterministic routing, policy-constrained sandboxing, and unified telemetry—to bridge the gap between probabilistic LLM planners and secure, resilient host execution.
 
-## Core Identity
+Built on ZeroMQ and engineered for heterogeneous topologies, OmniClaw allows workloads to scale from constrained edge nodes (Android/ARM) to GPU-accelerated Compute Cores, all governed by strict capability-based access controls.
 
-OmniClaw has evolved from a monolithic LLM-agent experiment into a production-grade, distributed cyber-cognitive engine. Its architecture is explicitly designed for high-stakes, adversarial environments requiring deep resilience and physical-layer intelligence.
+---
 
-*   **Self-Healing & Resilient**: Temporal-backed durable execution ensures that no thought or workflow is lost to node failure.
-*   **Adaptive & Distributed**: Agent cognition and physical tool execution are fully decoupled, allowing execution nodes to run in edge, cloud, or sandboxed environments.
-*   **Kernel-Aware**: Deep system observability via eBPF bridges, ensuring prompt security and system telemetry at the OS-level.
-*   **Event-Driven**: NATS-powered low-latency messaging backbone for instantaneous swarm coordination.
-*   **Policy-Constrained**: Strict capability enforcement engine validating every LLM intention before execution.
-*   **Observability-First**: Complete OpenTelemetry lineage tracking traces, logs, and token metrics from thought to action.
+## Core Philosophy
 
-## Advanced Intelligence Modules
+Probabilistic intelligence requires deterministic infrastructure.
 
-OmniClaw integrates bleeding-edge offensive intelligence capabilities:
+LLMs are planners, not trusted operating systems. OmniClaw operates on the principle that autonomous systems must be strictly supervised, their execution boundaries explicitly defined, and their state heavily observable. We do not build "unconstrained AI swarms"; we build the high-assurance execution pipelines required to make autonomous workflows reliable in production.
 
-1.  **RF Fingerprinting (SIGINT)**: Identifies and tracks unique hardware devices via SDR-captured RF physical layer anomalies.
-2.  **Acoustic Side-Channel Keystroke Recovery**: Neural networks reconstructing keystrokes via microscopic accelerometer vibrations.
-3.  **Generative Social Engineering (GSE)**: Autonomous infiltration personas leveraging LLM personality mirroring and generative rendering.
-4.  **eBPF LLM Guard**: A kernel-level "firewall for words" that drops prompt injection payloads before they reach the cognition engine.
+- **Deterministic Execution:** Workflows are structured as predictable, replayable DAGs.
+- **Policy-Constrained Autonomy:** Every action is intercepted and evaluated against predefined execution policies.
+- **Edge-Native Architecture:** Resource scheduling adapts dynamically to thermal and memory constraints.
+- **Unified Observability:** Every sub-task, routing decision, and security intervention is traced.
 
-## Infrastructure Stack
+---
 
-*   **Orchestration**: Temporal
-*   **State & Memory**: PostgreSQL
-*   **Coordination**: Redis
-*   **Message Bus**: NATS
-*   **Observability**: OpenTelemetry, Prometheus, Jaeger, Grafana
+## Architecture Overview
+
+OmniClaw uses a decentralized `ROUTER-DEALER` topology to manage execution across varying hardware footprints.
+
+```mermaid
+graph TD
+    subgraph Compute Core
+        M[Manager Node] -->|ZeroMQ| O[Orchestrator]
+        O --> PE[Policy Engine]
+        O --> |Task Dispatch| W1[Athena GPU Worker]
+        O --> |Task Dispatch| W2[Sandboxed Executor]
+        PE --> |eBPF Telemetry| Telemetry
+        DB[(LanceDB Vector Store)]
+    end
+
+    subgraph Edge Node
+        EN[Edge Gateway] -->|Sensor Data| SQLite[(SQLite-vec Cache)]
+        EN -->|Context Handoff| M
+    end
+
+    W1 -.-> DB
+```
+
+The system is split across two primary trust domains:
+
+1. **Compute Core:** The sovereign backend handling heavy orchestration, eBPF-enforced sandboxing, vector search (LanceDB), and large model inference.
+2. **Edge Node:** An unprivileged, highly constrained sensor hub (e.g., an ARM-based phone running Termux) that handles lightweight inference, localized vector caching (SQLite-vec), and context handoff to the core.
+
+---
+
+## Execution Pipeline
+
+OmniClaw strictly separates intent parsing from execution.
+
+```mermaid
+sequenceDiagram
+    participant User/Sensor
+    participant Orchestrator
+    participant Planner (LLM)
+    participant Policy Engine
+    participant Sandbox
+
+    User/Sensor->>Orchestrator: Event / Request
+    Orchestrator->>Planner: Request Intent Parsing
+    Planner-->>Orchestrator: Proposed Execution Plan (DAG)
+    Orchestrator->>Policy Engine: Validate Capabilities
+    alt Policy Denied
+        Policy Engine-->>Orchestrator: Reject (Out of bounds)
+    else Policy Approved
+        Orchestrator->>Sandbox: Dispatch Subtask
+        Sandbox-->>Orchestrator: Deterministic Result / Trace
+    end
+```
+
+---
+
+## Security Model
+
+OmniClaw assumes the planner is compromised or hallucinating.
+
+- **eBPF Shield (Compute Core):** Deep kernel-level introspection monitors execution anomalies, preventing out-of-bounds syscalls or unauthorized network connections.
+- **Process Sandboxing:** Code executed by the system (e.g., SymPy scripts, Python patches) runs in an `unshare` chroot environment with isolated cgroups.
+- **Capability-Based Execution:** Workers define explicit capabilities during the `REGISTER` phase. The manager routes tasks only to authorized, sandboxed workers.
+- **Edge Isolation:** The Edge Node operates strictly in userspace (`proot`/`strace`) without root privileges, treating the Compute Core as the ultimate source of truth and security.
+
+---
+
+## Orchestration Engine
+
+The orchestration layer is built entirely on asynchronous ZeroMQ messaging, replacing brittle synchronous HTTP calls with resilient, multiplexed sockets.
+
+- **Event-Driven Routing:** MessagePack payloads stream over a central `ROUTER` socket, ensuring low latency.
+- **Deadlock Resolution:** The Manager implements timeout handling and worker reassignment for stalled tasks.
+- **Context Handoffs:** If an Edge Node lacks the context to fulfill a query locally, it issues a `CONTEXT_HANDOFF_REQUEST` to the Compute Core's LanceDB.
+
+---
+
+## Observability Stack
+
+You cannot secure what you cannot see. OmniClaw instruments every layer of the execution pipeline.
+
+- **Distributed Tracing:** Spans are created for intention parsing, policy checks, queue residency, and actual execution.
+- **Telemetry Daemons:** Ring buffers expose underlying system health, allowing the orchestrator to dynamically shed load during Out-of-Memory (OOM) predictions or GPU thermal throttling events.
+
+---
+
+## Deployment Topology
+
+Deploying OmniClaw requires mapping its components to your hardware topology.
+
+```yaml
+# policy.yaml (Abridged)
+ebpf_heuristics:
+  oom_prediction_lead_seconds: 30
+athena:
+  max_gpu_temp_c: 82
+network_qos:
+  orchestration_dscp: 46   # Expedited Forwarding
+```
+
+- **Primary Node:** Requires Linux (Ubuntu/Debian recommended), `bpf` capabilities, and Docker.
+- **Edge Node:** Runs entirely within Termux (Android) utilizing Python and lightweight C++ bindings.
+
+---
 
 ## Quick Start
 
-```bash
-# Spin up the infrastructure backbone
-docker-compose up -d postgres redis nats temporal prometheus jaeger
+### 1. Compute Core Installation
 
-# Start the core cognition and telemetry services
-python -m planner_service.main
-python -m telemetry_service.main
-python -m execution_service.main
+```bash
+git clone https://github.com/webspoilt/omniclaw.git
+cd omniclaw
+
+# Install core dependencies (requires Python 3.10+)
+pip install -r requirements.txt
+
+# Start the ZeroMQ Orchestrator
+python3 -m core.zmq_orchestrator
 ```
+
+### 2. Edge Node Attachment (Termux)
+
+```bash
+# On your Android device
+pkg install python zmq sqlite
+pip install -r requirements-edge.txt
+
+# Attach to the Compute Core
+OMNICLAW_MANAGER_IP=192.168.1.50 python3 -m edge.gateway
+```
+
+---
+
+## Contribution Guide
+
+OmniClaw is an open-source infrastructure project. We welcome contributions focused on:
+
+- eBPF probe enhancements
+- ZeroMQ queue optimization
+- Deterministic mathematical solvers for the Athena engine
+- Cross-platform vector sync optimizations
+
+Please review `CONTRIBUTING.md` for our strict PR guidelines and testing requirements.

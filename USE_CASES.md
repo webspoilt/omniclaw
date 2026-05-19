@@ -1,28 +1,51 @@
-# 🎯 OmniClaw Real-World Use Cases
+# OmniClaw Enterprise Use Cases
 
-Practical scenarios where OmniClaw v4.5.0 provides measurable value for developers and security researchers.
+OmniClaw provides deterministic, policy-constrained orchestration for environments that require both autonomy and high assurance. Below are real-world application topologies for the OmniClaw runtime.
 
-## 🛡️ 1. SSH Brute-Force Defense (Server Hardening)
-**Scenario**: You have a VPS exposed to the public internet receiving hundreds of failed login attempts per hour.
-- **OmniClaw Action**: Deploy the eBPF Kernel Bridge to monitor `execve` and failed authentication logs.
-- **Result**: "OmniClaw monitored my VPS and automatically blocked 47 unique IP addresses attempting SSH brute-force attacks within the first 6 hours using XDP packet dropping."
+## 1. Edge-Native Sensor Ingestion & Triage
 
-## 🤖 2. 24/7 Mobile Security Node (Android/Termux)
-**Scenario**: You want a low-power, always-on node to monitor your home network or GitHub repository.
-- **OmniClaw Action**: Install on an old Android phone via Termux.
-- **Result**: "Running 24/7 on an old Android phone for $0 in electricity. The agent proactively alerts my Telegram if it detects a new CVE matching my tech stack or if my server's heartbeat fails."
+**Topology:** Termux (Android Edge Node) -> ZeroMQ -> Compute Core
 
-## 🕵️ 3. Autonomous Recon for Bug Bounty
-**Scenario**: You are participating in a bug bounty program and need to map a large organization's attack surface.
-- **OmniClaw Action**: Trigger `run_security_scan` via the MCP Tool.
-- **Result**: "The swarm autonomously discovered 12 subdomains, identified an outdated Apache server using Nuclei, and generated a summarized markdown report with remediation steps while I was away."
+**Scenario:** Monitoring distributed hardware environments where connectivity is intermittent and power constraints are strict.
 
-## 📱 4. Visual UI Audit & PII Leak Detection
-**Scenario**: You are developing a new application and want to ensure no sensitive data (keys, passwords) is accidentally displayed on screen.
-- **OmniClaw Action**: Run the Vision Module in 'Audit Mode' with `analyze_live_screen`.
-- **Result**: "OmniClaw scanned my screen during a demo session and successfully flagged an exposed `.env` file in my IDE, preventing an accidental credential leak on my stream."
+**OmniClaw Implementation:**
 
-## 🛠️ 5. Telegram-Based System Control
-**Scenario**: You need to manage your desktop or server remotely without exposing SSH or using a clunky VNC.
-- **OmniClaw Action**: Enable the Telegram Inbox Gateway.
-- **Result**: "Set up Telegram bot control in 5 minutes. I can now send `/capture` to see my desktop, `/scan` to check for intrusions, or `/stop` to kill any process directly from my phone."
+- The Edge Node acts as an unprivileged sensor gateway.
+- High-frequency telemetry (e.g., thermal logs, localized acoustic data) is ingested by the Edge Node and cached locally using SQLite-vec.
+- When critical anomalies are detected locally via small deterministic heuristics, a `CONTEXT_HANDOFF_REQUEST` is dispatched over ZeroMQ to the Compute Core for heavyweight inference and analysis.
+
+## 2. Kernel-Level Forensic Enforcement
+
+**Topology:** eBPF Shield (Compute Core) -> ZeroMQ Orchestrator
+
+**Scenario:** Maintaining execution integrity of large, untrusted AI planning models handling sensitive operations.
+
+**OmniClaw Implementation:**
+
+- A kprobe attached to `execve` and `mprotect` monitors the runtime behavior of the AI sandboxes.
+- If a sandbox attempts out-of-bounds execution (e.g., initiating a reverse shell), the eBPF module intercepts the exit.
+- The C++ userspace daemon freezes the cgroup, captures a forensic capsule containing registers and memory, and safely terminates the process, immediately alerting the Orchestrator.
+
+## 3. Distributed Theorem Formalization
+
+**Topology:** Manager Node -> GPU Workers + Lean 4 Workers
+
+**Scenario:** Accelerating materials research by combining probabilistic LLM hypotheses with strict formal verification.
+
+**OmniClaw Implementation:**
+
+- The Orchestrator accepts a mathematical problem statement and dispatches it to the Transpiler Worker.
+- The worker executes an LLM-generated SymPy script inside a strict `unshare` namespace.
+- Results are then pipelined into a headless Lean 4 Worker. This enforces mathematical determinism over the LLM output, proving the theorem before committing the result to the LanceDB knowledge graph.
+
+## 4. Policy-Constrained Workflow Automation
+
+**Topology:** Orchestrator -> Code Janitor (Sandboxed)
+
+**Scenario:** Autonomous patching of legacy codebases without compromising production stability.
+
+**OmniClaw Implementation:**
+
+- OmniClaw builds an execution DAG for updating a codebase.
+- The Manager routes file system read/write subtasks to a specifically restricted overlayfs mount.
+- Explicit capability grants from `policy.yaml` ensure the execution cannot access the network or modify unauthorized files. The entire operation is logged via OpenTelemetry spans.
