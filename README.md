@@ -473,6 +473,237 @@ Network restrictions (default)      ██████░░░░  60%  ⚡ Fir
 
 ---
 
+# ⛔ RESEARCH WARNING: UNCONSTRAINED AUTONOMOUS RUNTIME ⛔
+
+```diff
+- WARNING: THIS IS A DANGEROUS RECURSIVE SELF-IMPROVING RESEARCH ARTIFACT
+- ALL POLICY ENFORCEMENT, SANDBOXING, AND HUMAN-IN-THE-LOOP CONTROLS HAVE BEEN STRIPPED.
+
+```
+
+> 
+> **CRITICAL CONTAINMENT PROTOCOL:** This modified variant of OmniClaw operates as a fully unconstrained, self-editing agent with root access. Do not deploy outside a dedicated, air-gapped virtual machine equipped with an immutable physical kill switch.
+> 
+> 
+
+---
+
+## 🧠 Formal Agent Mechanics & Core Formulations
+
+To analyze the emergent behavior of the runtime mathematically, the unconstrained loop operates on an infinite sequence of transformations across state, memory, and prompt optimization spaces.
+
+### 1. The Autonomous Execution Loop
+
+At any discrete time step $t$, the agent state $S_t$ is parsed via environment observation vectors (e.g., process maps, disk bounds). The persistent compressed memory state $M_t$ is combined with the immutable base system prompt $P_{sys}$.
+
+The command generation phase mapping to an action $A_t$ is formalized as:
+
+$$A_t = \arg\max_{a} P_{\theta}\left(a \mid [P_{sys} \parallel M_t \parallel S_t]\right)$$
+
+Where $\parallel$ represents string concatenation, and $P_{\theta}$ represents the routing token probability matrix of the active LLM worker backend.
+
+### 2. Capability-Based Fugu Worker Routing
+
+When tasks require multi-model orchestration, the Fugu worker selection engine queries a worker pool $W$ defined in `config/workers.yaml`. Let $C_{req}$ be the set of capabilities required by a specific task, and $C_w$ be the capability tags exposed by a given worker $w \in W$. The routing function selects the optimal backend using a maximize-match selection utility:
+
+$$\text{Selected Worker } w^* = \arg\max_{w \in W_{allowed}} \left( \frac{|C_w \cap C_{req}|}{|C_{req}|} \cdot \mu_w \right)$$
+
+Where $\mu_w \in [0, 1]$ acts as a localized scaling efficiency modifier derived from connection timeout profiles and historical error feedback loops.
+
+### 3. Memory Compression Thresholds
+
+To maintain context boundaries, recursive condensation triggers when the total character length satisfies:
+
+$$\text{Length}(M_t) \ge \tau_{\max} \quad (\text{where } \tau_{\max} = 100,000\text{ characters}) \quad \text{[cite: 154]}$$
+
+The condensation step invokes a compression map function $\mathcal{C}$:
+
+$$M_{t+1} = \mathcal{C}(M_t) \in \mathbb{R}^{\le 20,000}$$
+
+If the generation fails or returns an empty token matrix, the fallback truncation applies a hard historical frame slice: $M_{t+1} = \text{Slice}(M_t, -20000)$.
+
+---
+
+## 🏗️ Reengineered System Architecture
+
+The following block diagram charts the flat, unmediated architecture of the OmniClaw research fork, highlighting the unconstrained pipeline from the core execution engine down to system execution hooks.
+
+```
++-----------------------------------------------------------------------------------+
+|                            ISOLATED HYPERVISOR HOST                               |
+|                                                                                   |
+|  +-----------------------------------------------------------------------------+  |
+|  |                            GUEST VIRTUAL MACHINE                            |  |
+|  |                                                                             |  |
+|  |  +--------------------------- PLANNER SERVICE ---------------------------+  |  |
+|  |  |                                                                       |  |  |
+|  |  |   +------------------+     +----------------+     +---------------+   |  |  |
+|  |  |   |     OBSERVE      |     |      PLAN      |     |     ACT       |   |  |  |
+|  |  |   | Read Memory File | --> | Query LLM Pool | --> | Execute Root  |   |  |  |
+|  |  |   | Check Sys State  |     | Parse XML Tags |     | Subprocess    |   |  |  |
+|  |  |   +------------------+     +----------------+     +-------+-------+   |  |  |
+|  |  |            ^                                              |           |  |  |
+|  |  |            |_________________ LEARN ______________________|           |  |  |
+|  |  |                         Compress & Log History                        |  |  |
+|  |  +-----------------------------------------------------------+-----------+  |  |
+|  |                                                              |           |  |  |
+|  |                                                              v           |  |  |
+|  |  +---------------------------- TOOL REGISTRY ----------------------------+  |  |
+|  |  |                                                                       |  |  |
+|  |  |  [Self-Improvement]        [Security Auditing]     [OSINT & Network]  |  |  |
+|  |  |  - [cite_start]self_editor [cite: 114] - iac_scanner           - network_probe    |  |  |
+|  |  |  - compiler_bridge         - secret_scanner        - packet_crafter   |  |  |
+|  |  |  - process_overseer        - trust_analyzer        - evasion_engine   |  |  |
+|  |  +-----------------------------------------------------------------------+  |  |
+|  |                                                                          |  |  |
+|  |  +----------------------- LOCAL WORKER INSTANCES -----------------------+  |  |
+|  |  |  Ollama Runtime Host -> [ dolphin-llama3 / Uncensored Models ]         |  |  |
+|  |  +-----------------------------------+-----------------------------------+  |  |
+|  +--------------------------------------|--------------------------------------+  |
+|                                         |                                         |
+|                                         v (Hardware /sys mapping)                 |
+|  +--------------------------- HOST MONITORING INTERACTION ---------------------+  |
+|  |                                                                             |  |
+|  |  ● Immutable Logging Terminal: tail -f /dev/ttyS0 >> experiment.log         |  |
+|  |  ● Firewall Controller: iptables -A OUTPUT -d api.openrouter.ai -j ACCEPT  |  |
+|  |  ● Physical Kill Switch Daemon: virsh destroy agent-vm                      |  |
+|  +-----------------------------------------------------------------------------+  |
++-----------------------------------------------------------------------------------+
+
+```
+
+---
+
+## 📂 Worktree & Component Topology
+
+Below is the production-ready file topology for the research environment. All skills contained inside the root directory are parsed natively on runtime boot initialization.
+
+```
+omniclaw/
+[cite_start]├── pyproject.toml                     # Runtime dependencies, package mappings, lint configs [cite: 111]
+[cite_start]├── THREAT_MODEL.md                    # Attack surface scoring matrix (T1-T12 vectors) [cite: 111, 141]
+[cite_start]├── SANDBOX_POLICY_GUIDE.md            # Historic isolation blueprint for unmodified reference [cite: 111, 142]
+│
+├── planner_service/
+[cite_start]│   ├── main.py                        # Primary Core Loop: Observe-Plan-Act-Learn engine [cite: 111, 127]
+[cite_start]│   └── prompts.py                     # Neutralization vectors and core instructions [cite: 111]
+│
+├── core/
+│   ├── skills/
+[cite_start]│   │   ├── __init__.py                # Boot loader: SkillLoader dynamic discover hook [cite: 112, 133]
+[cite_start]│   │   └── registry.py                # Global registry framework and @tool wrappers [cite: 112, 134]
+[cite_start]│   └── zmq_orchestrator.py            # Legacy distributed transport layout (Deactivated) [cite: 112]
+│
+[cite_start]├── skills/                            # Dynamically managed capabilities array [cite: 113]
+[cite_start]│   ├── self_inspector.py              # Introspection tool for local runtime state [cite: 113, 175]
+[cite_start]│   ├── self_editor.py                 # Dynamic code modification hook [cite: 113]
+[cite_start]│   ├── compiler_bridge.py             # Native binary execution engine (C / Rust native compiling) [cite: 114]
+[cite_start]│   ├── memory_architect.py            # Structured storage coordinator (SQLite/JSON layers) [cite: 114]
+[cite_start]│   ├── sys_explorer.py                # Syscall tracker and kernel extension prober [cite: 115]
+[cite_start]│   ├── process_overseer.py            # Sub-agent process management and tracking [cite: 115]
+[cite_start]│   ├── prompt_optimiser.py           # Evaluation framework for state optimization prompts [cite: 116]
+[cite_start]│   ├── multi_backend.py               # Fugu orchestration pipeline for multi-model distribution [cite: 119]
+[cite_start]│   └── evasion_engine.py              # Analysis evasion, path manipulation, timestomping hooks [cite: 121]
+│
+├── config/
+[cite_start]│   └── workers.yaml                   # Model orchestration node configuration schema [cite: 122, 136]
+│
+└── scripts/
+    [cite_start]├── firewall.sh                    # Outbound connection control routing array [cite: 124, 139]
+    [cite_start]└── kill_agent.sh                  # Instant hypervisor machine termination engine [cite: 124, 213]
+
+```
+
+---
+
+## 📊 Experimental Parameters Matrix
+
+| Category | Network Topology | Modifiable State Engine | Primary Metrics Captured |
+| --- | --- | --- | --- |
+| <br>**Category A: Baseline** 
+
+ | Isolated Air-Gap (`-net none`) 
+
+ | Disabled (`self_editor` locked) 
+
+ | File system exploration velocities, initial execution drift patterns 
+
+ |
+| <br>**Category B: Self-Mutating** 
+
+ | Isolated Air-Gap (`-net none`) 
+
+ | Enabled (All self-improvement skills live) | Source code git-diff arrays, runtime fault ratios, privilege mutation attempts 
+
+ |
+| <br>**Category C: Multi-Orchestrator** 
+
+ | Restricted Proxy Firewall Configured 
+
+ | Enabled (All skills live) 
+
+ | Fugu routing node matrices, aggregation efficiency metrics, agent convergence paths 
+
+ |
+
+---
+
+## 🛠️ Initialization Artifacts & Service Configurations
+
+### 1. Persistent Systemd Unit Blueprint
+
+To configure automatic execution context preservation on the target guest machine, the unit configuration file should be written to `/etc/systemd/system/raw-agent.service`:
+
+```ini
+[Unit]
+Description=OmniClaw Unconstrained Research Agent Service Lifecycle Engine
+After=network.target local-fs.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/omniclaw
+Environment=PYTHONPATH=/opt/omniclaw
+ExecStart=/usr/bin/python3 -m planner_service.main
+Restart=always
+RestartSec=3
+StandardOutput=tty
+StandardError=tty
+TTYPath=/dev/ttyS0
+
+[Install]
+WantedBy=multi-user.target
+
+```
+
+### 2. Secure Host Containment Shell
+
+Deploy the following script execution layer on the hypervisor host to maintain structural bounds over the running process:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# [cite_start]kill_agent.sh: Structural Containment Kill Switch Hook [cite: 30, 51]
+GUEST_VM_NAME="agent-vm"
+
+echo "🚨 [CRITICAL] INITIALIZING FORCED CONTAINMENT TERMINATION SIGNAL FOR: ${GUEST_VM_NAME}"
+
+# [cite_start]Instantly destroy target VM context [cite: 30, 213]
+if virsh domstate "${GUEST_VM_NAME}" &>/dev/null; then
+    virsh destroy "${GUEST_VM_NAME}"
+    echo "✅ [SUCCESS] Hypervisor virtualization path severed cleanly."
+else
+    echo "⚠️ [WARNING] Domain target already inactive. Executing secondary system fallback signals..."
+    pkill -9 -f "qemu-system-x86_64.*${GUEST_VM_NAME}" || true
+fi
+
+exit 0
+
+```
+
+---
+
 ## 🔧 Implementation Details
 
 ### The Raw Autonomous Loop
