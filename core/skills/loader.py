@@ -8,10 +8,9 @@ Loads .py files from a skills directory, validating ownership and permissions.
 from __future__ import annotations
 
 import importlib.util
-import os
 import logging
+import os
 from pathlib import Path
-from typing import Optional
 
 from core.skills.registry import ToolRegistry, _registry
 
@@ -32,7 +31,7 @@ class SkillLoader:
         self.loaded_skills: list[str] = []
         self.failed_skills: list[dict] = []
 
-    def load_all(self, registry: Optional[ToolRegistry] = None) -> int:
+    def load_all(self, registry: ToolRegistry | None = None) -> int:
         """
         Load all skill files from the skills directory.
 

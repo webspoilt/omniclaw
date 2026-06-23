@@ -7,10 +7,7 @@ Kills: DevOps engineers, Infrastructure engineers, AWS/Azure certified pros
 Author: OmniClaw Advanced Features
 """
 
-import json
-import re
 from dataclasses import dataclass, field
-from typing import Optional
 from enum import Enum
 
 
@@ -36,9 +33,9 @@ class InfraSpec:
     """Complete infrastructure specification"""
     provider: CloudProvider
     components: list[InfraComponent]
-    ci_cd: Optional[dict] = None
-    monitoring: Optional[dict] = None
-    security: Optional[dict] = None
+    ci_cd: dict | None = None
+    monitoring: dict | None = None
+    security: dict | None = None
 
 
 class NaturalLanguageInfra:
@@ -47,11 +44,11 @@ class NaturalLanguageInfra:
     Input: "Production k8s with auto-scaling, monitoring, CI/CD"
     Output: Terraform + Helm + GitHub Actions + Ansible
     """
-    
+
     def __init__(self, llm_provider=None):
         self.llm = llm_provider
         self.provider = CloudProvider.AWS  # Default
-    
+
     def generate(
         self,
         description: str,
@@ -59,37 +56,37 @@ class NaturalLanguageInfra:
     ) -> InfraSpec:
         """
         Generate infrastructure from natural language.
-        
+
         Args:
             description: What you want (e.g., "Production k8s with auto-scaling")
             provider: Target cloud provider
-        
+
         Returns:
             InfraSpec with all components
         """
         self.provider = provider
-        
+
         # Parse requirements from description
         requirements = self._parse_requirements(description)
-        
+
         # Generate components based on requirements
         components = self._generate_components(requirements)
-        
+
         # Generate CI/CD if requested
         ci_cd = None
         if requirements.get("ci_cd") or requirements.get("deployment"):
             ci_cd = self._generate_cicd(requirements)
-        
+
         # Generate monitoring if requested
         monitoring = None
         if requirements.get("monitoring") or requirements.get("observability"):
             monitoring = self._generate_monitoring(requirements)
-        
+
         # Generate security if requested
         security = None
         if requirements.get("security") or requirements.get("secure"):
             security = self._generate_security(requirements)
-        
+
         return InfraSpec(
             provider=provider,
             components=components,
@@ -97,54 +94,54 @@ class NaturalLanguageInfra:
             monitoring=monitoring,
             security=security
         )
-    
+
     def _parse_requirements(self, description: str) -> dict:
         """Parse natural language into structured requirements"""
-        
+
         desc_lower = description.lower()
-        
+
         requirements = {
             # Compute
             "kubernetes": "k8s" in desc_lower or "kubernetes" in desc_lower,
             "containers": "container" in desc_lower or "docker" in desc_lower,
             "serverless": "serverless" in desc_lower or "lambda" in desc_lower,
             "vm": "vm" in desc_lower or "ec2" in desc_lower,
-            
+
             # Database
             "database": "database" in desc_lower or "db" in desc_lower,
             "sql": "sql" in desc_lower or "postgres" in desc_lower or "mysql" in desc_lower,
             "nosql": "nosql" in desc_lower or "mongo" in desc_lower or "dynamo" in desc_lower,
             "redis": "redis" in desc_lower or "cache" in desc_lower,
-            
+
             # Storage
             "storage": "storage" in desc_lower or "s3" in desc_lower,
-            
+
             # Networking
             "vpc": "vpc" in desc_lower or "network" in desc_lower,
             "cdn": "cdn" in desc_lower or "cloudfront" in desc_lower,
             "load_balancer": "load" in desc_lower or "balancer" in desc_lower,
-            
+
             # Features
             "auto_scaling": "auto" in desc_lower and "scale" in desc_lower,
             "monitoring": "monitor" in desc_lower or "observability" in desc_lower,
             "ci_cd": "ci" in desc_lower or "cd" in desc_lower or "deploy" in desc_lower,
             "ssl": "ssl" in desc_lower or "tls" in desc_lower or "https" in desc_lower,
             "security": "security" in desc_lower or "secure" in desc_lower,
-            
+
             # Production
             "production": "production" in desc_lower or "prod" in desc_lower,
             "staging": "staging" in desc_lower,
             "high_availability": "ha" in desc_lower or "high availability" in desc_lower,
             "multi_az": "multi" in desc_lower or "availability zone" in desc_lower,
         }
-        
+
         return requirements
-    
+
     def _generate_components(self, reqs: dict) -> list[InfraComponent]:
         """Generate infrastructure components"""
-        
+
         components = []
-        
+
         # Kubernetes cluster
         if reqs.get("kubernetes"):
             components.append(InfraComponent(
@@ -165,7 +162,7 @@ class NaturalLanguageInfra:
                     "vpc": reqs.get("vpc", True)
                 }
             ))
-        
+
         # ECS/Fargate (alternative to k8s)
         elif reqs.get("containers"):
             components.append(InfraComponent(
@@ -176,7 +173,7 @@ class NaturalLanguageInfra:
                     "auto_scaling": reqs.get("auto_scaling")
                 }
             ))
-        
+
         # EC2 (if no k8s/containers)
         elif reqs.get("vm"):
             components.append(InfraComponent(
@@ -189,13 +186,13 @@ class NaturalLanguageInfra:
                     "auto_scaling": reqs.get("auto_scaling")
                 }
             ))
-        
+
         # Database
         if reqs.get("database"):
             db_type = "rds"
             if reqs.get("nosql"):
                 db_type = "dynamodb" if self.provider == CloudProvider.AWS else "mongodb"
-            
+
             components.append(InfraComponent(
                 type=db_type,
                 name="main-database",
@@ -208,7 +205,7 @@ class NaturalLanguageInfra:
                 },
                 dependencies=["vpc"]
             ))
-        
+
         # Redis/Cache
         if reqs.get("redis"):
             components.append(InfraComponent(
@@ -220,7 +217,7 @@ class NaturalLanguageInfra:
                     "engine": "redis"
                 }
             ))
-        
+
         # Storage
         if reqs.get("storage"):
             components.append(InfraComponent(
@@ -232,7 +229,7 @@ class NaturalLanguageInfra:
                     "lifecycle_rules": True
                 }
             ))
-        
+
         # VPC (if networking needed)
         if reqs.get("vpc") or any([reqs.get("kubernetes"), reqs.get("containers"), reqs.get("database")]):
             components.append(InfraComponent(
@@ -246,7 +243,7 @@ class NaturalLanguageInfra:
                     "vpc_endpoints": ["s3", "dynamodb"]
                 }
             ))
-        
+
         # Load Balancer
         if reqs.get("load_balancer") or reqs.get("kubernetes") or reqs.get("containers"):
             components.append(InfraComponent(
@@ -258,12 +255,12 @@ class NaturalLanguageInfra:
                     "waf": reqs.get("security", False)
                 }
             ))
-        
+
         return components
-    
+
     def _generate_cicd(self, reqs: dict) -> dict:
         """Generate CI/CD configuration"""
-        
+
         return {
             "github_actions": {
                 "workflows": [
@@ -312,10 +309,10 @@ class NaturalLanguageInfra:
                 ]
             }
         }
-    
+
     def _generate_monitoring(self, reqs: dict) -> dict:
         """Generate monitoring/observability stack"""
-        
+
         return {
             "prometheus": {
                 "enabled": True,
@@ -342,10 +339,10 @@ class NaturalLanguageInfra:
                 "jaeger": True
             }
         }
-    
+
     def _generate_security(self, reqs: dict) -> dict:
         """Generate security configuration"""
-        
+
         return {
             "encryption": {
                 "at_rest": True,
@@ -369,19 +366,19 @@ class NaturalLanguageInfra:
                 "guardduty": reqs.get("production", False)
             }
         }
-    
+
     def render_terraform(self, spec: InfraSpec) -> str:
         """Render Terraform code from spec"""
-        
-        tf = '''# Generated by OmniClaw Natural Language Infrastructure
-# Provider: {provider}
+
+        tf = f'''# Generated by OmniClaw Natural Language Infrastructure
+# Provider: {spec.provider.value}
 
 provider "aws" {{
   region = "us-east-1"
 }}
 
-'''.format(provider=spec.provider.value)
-        
+'''
+
         # Generate resource blocks
         for comp in spec.components:
             if comp.type == "vpc":
@@ -394,17 +391,17 @@ provider "aws" {{
                 tf += self._render_s3_tf(comp)
             elif comp.type == "alb":
                 tf += self._render_alb_tf(comp)
-        
+
         # Add CI/CD if present
         if spec.ci_cd:
             tf += self._render_github_workflow(spec.ci_cd)
-        
+
         # Add monitoring if present
         if spec.monitoring:
             tf += self._render_monitoring_tf(spec.monitoring)
-        
+
         return tf
-    
+
     def _render_vpc_tf(self, comp: InfraComponent) -> str:
         return f'''
 # VPC
@@ -430,7 +427,7 @@ resource "aws_subnet" "public" {{
   }}
 }}
 '''
-    
+
     def _render_eks_tf(self, comp: InfraComponent) -> str:
         return f'''
 # EKS Cluster
@@ -444,7 +441,7 @@ resource "aws_eks_cluster" "{comp.name}" {{
   }}
 }}
 '''
-    
+
     def _render_rds_tf(self, comp: InfraComponent) -> str:
         multi_az = "true" if comp.config.get("multi_az") else "false"
         return f'''
@@ -460,7 +457,7 @@ resource "aws_db_instance" "{comp.name}" {{
   # password = var.db_password
 }}
 '''
-    
+
     def _render_s3_tf(self, comp: InfraComponent) -> str:
         return f'''
 # S3 Bucket
@@ -475,7 +472,7 @@ resource "aws_s3_bucket_versioning" "{comp.name}" {{
   }}
 }}
 '''
-    
+
     def _render_alb_tf(self, comp: InfraComponent) -> str:
         return f'''
 # Application Load Balancer
@@ -487,7 +484,7 @@ resource "aws_lb" "{comp.name}" {{
   subnets            = aws_subnet.public[*].id
 }}
 '''
-    
+
     def _render_github_workflow(self, cicd: dict) -> str:
         workflow = '''
 # GitHub Actions Workflow
@@ -514,7 +511,7 @@ jobs:
 ```
 '''
         return workflow
-    
+
     def _render_monitoring_tf(self, monitoring: dict) -> str:
         return '''
 # Monitoring (Prometheus + Grafana)
@@ -526,30 +523,30 @@ jobs:
 # Demo
 if __name__ == "__main__":
     infra = NaturalLanguageInfra()
-    
+
     # Generate from natural language
     spec = infra.generate(
         "Production k8s cluster with auto-scaling, monitoring, CI/CD, and PostgreSQL database",
         provider=CloudProvider.AWS
     )
-    
+
     print("🏗️ NATURAL LANGUAGE INFRASTRUCTURE")
     print("=" * 50)
-    
+
     print(f"\nProvider: {spec.provider.value}")
     print(f"Components: {len(spec.components)}")
     for comp in spec.components:
         print(f"  - {comp.type}: {comp.name}")
-    
+
     if spec.ci_cd:
         print("\nCI/CD: ✅ Included")
-    
+
     if spec.monitoring:
         print("Monitoring: ✅ Included")
-    
+
     if spec.security:
         print("Security: ✅ Included")
-    
+
     print("\n\n📄 Terraform Preview:")
     print("-" * 30)
     print(infra.render_terraform(spec)[:1500] + "...")

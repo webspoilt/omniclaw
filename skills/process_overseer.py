@@ -6,10 +6,9 @@ import signal
 import subprocess
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
-
 
 _active_workers: dict[str, subprocess.Popen] = {}
 
@@ -24,7 +23,7 @@ _active_workers: dict[str, subprocess.Popen] = {}
     },
     required=["script_path", "worker_id"],
 )
-async def spawn_worker(script_path: str, worker_id: str, args: Optional[str] = None) -> dict[str, Any]:
+async def spawn_worker(script_path: str, worker_id: str, args: str | None = None) -> dict[str, Any]:
     if worker_id in _active_workers:
         proc = _active_workers[worker_id]
         if proc.poll() is None:

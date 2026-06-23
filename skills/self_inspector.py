@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from core.skills.registry import tool, get_tool_registry
+from core.skills.registry import get_tool_registry, tool
 
 
 def _project_root() -> Path:

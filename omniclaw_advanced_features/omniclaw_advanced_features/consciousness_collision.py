@@ -7,10 +7,9 @@ Author: OmniClaw Advanced Features
 """
 
 import asyncio
-from enum import Enum
-from dataclasses import dataclass
-from typing import Optional
 import hashlib
+from dataclasses import dataclass
+from enum import Enum
 
 
 class AgentPersona(Enum):
@@ -27,7 +26,7 @@ class ShadowAgent:
     name: str
     specialty_focus: str
     criticism_style: str
-    
+
     @classmethod
     def create_all(cls) -> list['ShadowAgent']:
         return [
@@ -69,15 +68,15 @@ class ConsciousnessCollision:
     Spawns multiple shadow agents to review code from different perspectives.
     Each agent has distinct training/prompts for their viewpoint.
     """
-    
+
     def __init__(self, llm_provider=None):
         self.llm = llm_provider  # Your LLM API wrapper
         self.shadow_agents = ShadowAgent.create_all()
         self.results: dict[AgentPersona, dict] = {}
-    
+
     def get_system_prompt(self, agent: ShadowAgent, code: str, context: str) -> str:
         """Generate specialized system prompt based on persona"""
-        
+
         base_prompt = f"""You are {agent.name}, a {agent.persona.value} AI code reviewer.
 Your specialty: {agent.specialty_focus}
 Your style: {agent.criticism_style}
@@ -109,7 +108,7 @@ Provide your review in this JSON format:
 }}
 """
         return base_prompt
-    
+
     def _detect_language(self, code: str) -> str:
         """Detect programming language from code content"""
         if "import " in code or "def " in code or "class " in code:
@@ -126,21 +125,21 @@ Provide your review in this JSON format:
         if "#include" in code:
             return "cpp"
         return ""
-    
+
     async def review_code(
-        self, 
-        code: str, 
+        self,
+        code: str,
         context: str = "",
         parallel: bool = True
     ) -> dict:
         """
         Run all shadow agents on the code.
-        
+
         Args:
             code: Source code to review
             context: Project context, requirements, etc.
             parallel: If True, run all agents simultaneously
-        
+
         Returns:
             Consolidated review from all perspectives
         """
@@ -155,20 +154,20 @@ Provide your review in this JSON format:
             for agent in self.shadow_agents:
                 result = await self._run_agent(agent, code, context)
                 results.append(result)
-        
+
         return self._consolidate_results(results)
-    
+
     async def _run_agent(
-        self, 
-        agent: ShadowAgent, 
-        code: str, 
+        self,
+        agent: ShadowAgent,
+        code: str,
         context: str
     ) -> dict:
         """Run a single shadow agent review"""
-        
+
         # Generate specialized prompt
         system_prompt = self.get_system_prompt(agent, code, context)
-        
+
         # Call LLM (placeholder - integrate with your LLM)
         if self.llm:
             response = await self.llm.generate(
@@ -185,12 +184,12 @@ Provide your review in this JSON format:
                 "score": 8,
                 "summary": "Mock review - integrate LLM to enable"
             }
-    
+
     def _parse_response(self, persona: AgentPersona, response: str) -> dict:
         """Parse LLM response into structured format"""
         import json
         import re
-        
+
         try:
             # Try to extract JSON from response
             json_match = re.search(r'\{[^{}]*\}', response, re.DOTALL)
@@ -203,29 +202,29 @@ Provide your review in this JSON format:
                 }
         except:
             pass
-        
+
         return {
             "persona": persona.value,
             "issues": [],
             "score": 5,
             "summary": "Could not parse response"
         }
-    
+
     def _consolidate_results(self, results: list[dict]) -> dict:
         """Merge all agent reviews into unified output"""
-        
+
         critical_issues = []
         all_issues = []
-        
+
         for result in results:
             all_issues.extend(result.get("issues", []))
             critical_issues.extend(
-                i for i in result.get("issues", []) 
+                i for i in result.get("issues", [])
                 if i.get("severity") == "critical"
             )
-        
+
         avg_score = sum(r.get("score", 5) for r in results) / len(results) if results else 5
-        
+
         # Find issues mentioned by multiple agents (consensus)
         issue_signatures = {}
         for issue in all_issues:
@@ -235,12 +234,12 @@ Provide your review in this JSON format:
             if sig not in issue_signatures:
                 issue_signatures[sig] = []
             issue_signatures[sig].append(issue)
-        
+
         consensus_critical = {
             sig: issues for sig, issues in issue_signatures.items()
             if len(issues) >= 2 and any(i.get("severity") == "critical" for i in issues)
         }
-        
+
         return {
             "total_agents": len(results),
             "average_score": round(avg_score, 2),
@@ -267,10 +266,10 @@ Provide your review in this JSON format:
             ],
             "recommendation": self._generate_recommendation(avg_score, critical_issues)
         }
-    
+
     def _generate_recommendation(self, score: float, criticals: list) -> str:
         """Generate final recommendation based on all reviews"""
-        
+
         if score >= 8 and not criticals:
             return "✅ APPROVED - Code is production ready"
         elif score >= 6:
@@ -283,26 +282,26 @@ Provide your review in this JSON format:
 if __name__ == "__main__":
     async def demo():
         collision = ConsciousnessCollision()
-        
+
         sample_code = '''
 def get_user(user_id):
     user = db.query(f"SELECT * FROM users WHERE id = {user_id}")
     return user
 '''
-        
+
         result = await collision.review_code(
             code=sample_code,
             context="User authentication service",
             parallel=True
         )
-        
+
         print("🔮 CONSCIOUSNESS COLLISION RESULTS")
         print("=" * 50)
         print(f"Average Score: {result['average_score']}/10")
         print(f"Critical Issues: {result['critical_issues']}")
         print(f"\nRecommendation: {result['recommendation']}")
-        print(f"\nConsensus Critical Issues:")
+        print("\nConsensus Critical Issues:")
         for issue in result.get('consensus_critical', []):
             print(f"  - {issue['description']} (agreed by {issue['agreed_by']} agents)")
-    
+
     asyncio.run(demo())

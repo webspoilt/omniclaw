@@ -6,11 +6,11 @@ Connects to trading platforms for automated trading
 
 import asyncio
 import logging
-from typing import Dict, List, Optional, Any, Callable
+import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-import time
-import json
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.Trading")
 
@@ -43,13 +43,13 @@ class Order:
     side: OrderSide
     order_type: OrderType
     quantity: float
-    price: Optional[float] = None
-    stop_price: Optional[float] = None
-    order_id: Optional[str] = None
+    price: float | None = None
+    stop_price: float | None = None
+    order_id: str | None = None
     status: str = "pending"
     created_at: float = 0
-    filled_at: Optional[float] = None
-    
+    filled_at: float | None = None
+
     def __post_init__(self):
         if self.created_at == 0:
             self.created_at = time.time()
@@ -86,23 +86,23 @@ class TradingInterface:
     Unified trading interface for multiple platforms
     Supports crypto and stock trading
     """
-    
-    def __init__(self, platform: TradingPlatform, config: Dict[str, Any]):
+
+    def __init__(self, platform: TradingPlatform, config: dict[str, Any]):
         self.platform = platform
         self.config = config
         self.client = None
-        self.positions: Dict[str, Position] = {}
-        self.orders: Dict[str, Order] = {}
-        self.market_data: Dict[str, MarketData] = {}
-        self.price_callbacks: List[Callable[[str, float], None]] = []
+        self.positions: dict[str, Position] = {}
+        self.orders: dict[str, Order] = {}
+        self.market_data: dict[str, MarketData] = {}
+        self.price_callbacks: list[Callable[[str, float], None]] = []
         self.running = False
         self.price_stream_task = None
-        
+
         # Initialize client
         self._initialize_client()
-        
+
         logger.info(f"Trading interface initialized for {platform.value}")
-    
+
     def _initialize_client(self):
         """Initialize the trading platform client"""
         if self.platform == TradingPlatform.BINANCE:
@@ -118,7 +118,7 @@ class TradingInterface:
                 })
             except ImportError:
                 logger.error("ccxt not installed. Run: pip install ccxt")
-                
+
         elif self.platform == TradingPlatform.COINBASE:
             try:
                 import ccxt
@@ -129,7 +129,7 @@ class TradingInterface:
                 })
             except ImportError:
                 logger.error("ccxt not installed")
-                
+
         elif self.platform == TradingPlatform.ALPACA:
             try:
                 import alpaca_trade_api as tradeapi
@@ -140,55 +140,55 @@ class TradingInterface:
                 )
             except ImportError:
                 logger.error("alpaca-trade-api not installed")
-                
+
         elif self.platform == TradingPlatform.CUSTOM:
             # Custom API integration
             self.client = CustomTradingClient(self.config)
-    
+
     async def start(self):
         """Start trading interface"""
         self.running = True
-        
+
         # Start price stream
         self.price_stream_task = asyncio.create_task(self._price_stream_loop())
-        
+
         logger.info("Trading interface started")
-    
+
     async def stop(self):
         """Stop trading interface"""
         self.running = False
-        
+
         if self.price_stream_task:
             self.price_stream_task.cancel()
-        
+
         logger.info("Trading interface stopped")
-    
+
     async def _price_stream_loop(self):
         """Background loop for price updates"""
         symbols = self.config.get('watch_symbols', ['BTC/USDT', 'ETH/USDT'])
-        
+
         while self.running:
             try:
                 for symbol in symbols:
                     data = await self.get_market_data(symbol)
                     if data:
                         self.market_data[symbol] = data
-                        
+
                         # Notify callbacks
                         for callback in self.price_callbacks:
                             callback(symbol, data.price)
-                
+
                 await asyncio.sleep(self.config.get('update_interval', 5))
-                
+
             except Exception as e:
                 logger.error(f"Price stream error: {e}")
                 await asyncio.sleep(10)
-    
+
     def add_price_callback(self, callback: Callable[[str, float], None]):
         """Add price update callback"""
         self.price_callbacks.append(callback)
-    
-    async def get_balance(self) -> Dict[str, float]:
+
+    async def get_balance(self) -> dict[str, float]:
         """Get account balance"""
         try:
             if hasattr(self.client, 'fetch_balance'):
@@ -203,8 +203,8 @@ class TradingInterface:
         except Exception as e:
             logger.error(f"Failed to get balance: {e}")
             return {}
-    
-    async def get_market_data(self, symbol: str) -> Optional[MarketData]:
+
+    async def get_market_data(self, symbol: str) -> MarketData | None:
         """Get market data for symbol"""
         try:
             if hasattr(self.client, 'fetch_ticker'):
@@ -236,7 +236,7 @@ class TradingInterface:
         except Exception as e:
             logger.error(f"Failed to get market data: {e}")
             return None
-    
+
     async def place_order(self, order: Order) -> Order:
         """Place a trading order"""
         try:
@@ -248,10 +248,10 @@ class TradingInterface:
                     amount=order.quantity,
                     price=order.price
                 )
-                
+
                 order.order_id = result.get('id')
                 order.status = result.get('status', 'open')
-                
+
             elif hasattr(self.client, 'submit_order'):
                 result = self.client.submit_order(
                     symbol=order.symbol,
@@ -261,20 +261,20 @@ class TradingInterface:
                     limit_price=order.price,
                     stop_price=order.stop_price
                 )
-                
+
                 order.order_id = result.id
                 order.status = result.status
-            
+
             self.orders[order.order_id] = order
             logger.info(f"Order placed: {order.order_id}")
-            
+
             return order
-            
+
         except Exception as e:
             logger.error(f"Failed to place order: {e}")
             order.status = "failed"
             return order
-    
+
     async def cancel_order(self, order_id: str) -> bool:
         """Cancel an order"""
         try:
@@ -282,21 +282,21 @@ class TradingInterface:
                 self.client.cancel_order(order_id)
             elif hasattr(self.client, 'cancel_order'):
                 self.client.cancel_order(order_id)
-            
+
             if order_id in self.orders:
                 self.orders[order_id].status = "canceled"
-            
+
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to cancel order: {e}")
             return False
-    
-    async def get_positions(self) -> List[Position]:
+
+    async def get_positions(self) -> list[Position]:
         """Get current positions"""
         try:
             positions = []
-            
+
             if hasattr(self.client, 'fetch_positions'):
                 raw_positions = self.client.fetch_positions()
                 for pos in raw_positions:
@@ -310,7 +310,7 @@ class TradingInterface:
                             realized_pnl=pos.get('realizedPnl', 0),
                             opened_at=time.time()
                         ))
-            
+
             elif hasattr(self.client, 'list_positions'):
                 raw_positions = self.client.list_positions()
                 for pos in raw_positions:
@@ -323,14 +323,14 @@ class TradingInterface:
                         realized_pnl=float(pos.realized_pl),
                         opened_at=time.time()
                     ))
-            
+
             return positions
-            
+
         except Exception as e:
             logger.error(f"Failed to get positions: {e}")
             return []
-    
-    async def get_order_history(self, limit: int = 50) -> List[Order]:
+
+    async def get_order_history(self, limit: int = 50) -> list[Order]:
         """Get order history"""
         try:
             if hasattr(self.client, 'fetch_orders'):
@@ -350,11 +350,11 @@ class TradingInterface:
         except Exception as e:
             logger.error(f"Failed to get order history: {e}")
             return []
-    
-    async def execute_strategy(self, strategy: Dict[str, Any]):
+
+    async def execute_strategy(self, strategy: dict[str, Any]):
         """Execute a trading strategy"""
         strategy_type = strategy.get('type', 'simple')
-        
+
         if strategy_type == 'dca':
             await self._execute_dca_strategy(strategy)
         elif strategy_type == 'grid':
@@ -363,15 +363,15 @@ class TradingInterface:
             await self._execute_momentum_strategy(strategy)
         else:
             logger.warning(f"Unknown strategy type: {strategy_type}")
-    
-    async def _execute_dca_strategy(self, config: Dict[str, Any]):
+
+    async def _execute_dca_strategy(self, config: dict[str, Any]):
         """Execute Dollar-Cost Averaging strategy"""
         symbol = config.get('symbol', 'BTC/USDT')
         amount = config.get('amount', 100)
         interval = config.get('interval', 86400)  # Daily
-        
+
         logger.info(f"Starting DCA strategy for {symbol}")
-        
+
         while self.running:
             try:
                 # Place market buy order
@@ -381,23 +381,23 @@ class TradingInterface:
                     order_type=OrderType.MARKET,
                     quantity=amount
                 )
-                
+
                 await self.place_order(order)
                 logger.info(f"DCA order placed: {amount} {symbol}")
-                
+
                 # Wait for next interval
                 await asyncio.sleep(interval)
-                
+
             except Exception as e:
                 logger.error(f"DCA strategy error: {e}")
                 await asyncio.sleep(60)
-    
-    async def _execute_grid_strategy(self, config: Dict[str, Any]):
+
+    async def _execute_grid_strategy(self, config: dict[str, Any]):
         """Execute grid trading strategy"""
         # Placeholder for grid strategy
         pass
-    
-    async def _execute_momentum_strategy(self, config: Dict[str, Any]):
+
+    async def _execute_momentum_strategy(self, config: dict[str, Any]):
         """Execute momentum trading strategy"""
         # Placeholder for momentum strategy
         pass
@@ -405,18 +405,18 @@ class TradingInterface:
 
 class CustomTradingClient:
     """Custom trading API client"""
-    
-    def __init__(self, config: Dict[str, Any]):
+
+    def __init__(self, config: dict[str, Any]):
         self.config = config
         self.base_url = config.get('base_url')
         self.api_key = config.get('api_key')
-    
-    async def request(self, method: str, endpoint: str, data: Dict = None):
+
+    async def request(self, method: str, endpoint: str, data: dict = None):
         """Make API request"""
         import aiohttp
-        
+
         headers = {'Authorization': f'Bearer {self.api_key}'}
-        
+
         async with aiohttp.ClientSession() as session:
             async with session.request(
                 method,

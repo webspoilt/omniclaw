@@ -4,8 +4,7 @@ Runs any shell command as root with zero isolation.
 No sandbox, no seccomp, no cgroups, no user limits.
 """
 import asyncio
-import subprocess
-import os
+
 from aiohttp import web
 
 EXEC_PORT = 9002  # internal, not exposed outside VM

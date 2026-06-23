@@ -1,9 +1,8 @@
 import asyncio
-import logging
 import json
+import logging
 import os
 import re
-from typing import List, Dict
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -19,37 +18,37 @@ except ImportError:
 
 class IdentityStyleAnalyzer:
     """Analyzes text datasets to construct style footprints for identity mirroring."""
-    
+
     @staticmethod
-    def analyze(texts: List[str]) -> Dict:
+    def analyze(texts: list[str]) -> dict:
         if not texts:
             return {"avg_length": 0, "punctuation_density": 0, "vocabulary_diversity": 0, "top_tokens": []}
-            
+
         all_words = []
         sentence_lengths = []
         punctuation_count = 0
         total_chars = 0
-        
+
         punctuation_regex = re.compile(r'[.,!?;:]')
-        
+
         for text in texts:
             # Word tokenization
             words = [w.lower() for w in re.findall(r'\b\w+\b', text)]
             all_words.extend(words)
-            
+
             # Sentence counting
             sentences = [s for s in re.split(r'[.!?]+', text) if s.strip()]
             if sentences:
                 sentence_lengths.append(len(words) / len(sentences))
-                
+
             punctuation_count += len(punctuation_regex.findall(text))
             total_chars += len(text)
-            
+
         unique_words = set(all_words)
         vocab_diversity = len(unique_words) / len(all_words) if all_words else 0
         avg_sentence_len = sum(sentence_lengths) / len(sentence_lengths) if sentence_lengths else 0
         avg_word_len = sum(len(w) for w in all_words) / len(all_words) if all_words else 0
-        
+
         # Simple word frequency distribution
         freqs = {}
         for w in all_words:
@@ -57,7 +56,7 @@ class IdentityStyleAnalyzer:
                 freqs[w] = freqs.get(w, 0) + 1
         sorted_freqs = sorted(freqs.items(), key=lambda item: item[1], reverse=True)
         top_tokens = [item[0] for item in sorted_freqs[:5]]
-        
+
         return {
             "avg_word_length": round(avg_word_len, 2),
             "avg_sentence_length": round(avg_sentence_len, 2),
@@ -72,11 +71,11 @@ class PersonaMirroringService:
         os.makedirs(os.path.dirname(self.output_profile_path), exist_ok=True)
         self.profile = {}
 
-    async def scrape_public_profile(self, url: str) -> List[str]:
+    async def scrape_public_profile(self, url: str) -> list[str]:
         """Scrapes recent text posts from a given public profile URL."""
         logger.info(f"Targeting public profile: {url}")
         posts = []
-        
+
         if PLAYWRIGHT_AVAILABLE:
             try:
                 async with async_playwright() as p:
@@ -96,7 +95,7 @@ class PersonaMirroringService:
                     await browser.close()
             except Exception as e:
                 logger.error(f"Playwright scraping failed: {e}. Falling back to simulator.")
-                
+
         # Simulated fallback/testing helper
         if not posts:
             logger.info("Using simulation fallback data for profile scraping...")
@@ -107,16 +106,16 @@ class PersonaMirroringService:
                 "Decentralized state replication: checking out ZeroMQ vs NATS for the mesh topology.",
                 "Autonomy does not mean hype. It means local model execution on unprivileged runtimes."
             ]
-            
+
         return posts
 
     def mirror_style_prompt(self, target_message: str, profile_features: dict) -> str:
         """Adapts a message draft to match the linguistic fingerprint of the target profile."""
         logger.info("Adapting message using persona profile features...")
-        
+
         # Example representation of prompt tailoring
         # In production, this dictionary is fed to an LLM context window
-        adapted_prompt = f"""
+        f"""
         [SYSTEM ROLE]
         You are mirroring a target digital persona. Match these writing constraints:
         - Average Word Length: {profile_features['avg_word_length']} characters
@@ -126,13 +125,13 @@ class PersonaMirroringService:
         - Signature Vocabulary/Tokens: {", ".join(profile_features['top_tokens'])}
 
         Transform the draft below into the target's writing style.
-        
+
         [DRAFT]
         "{target_message}"
-        
+
         [ADAPTED OUTPUT]
         """
-        
+
         # Simple local rule-based simulation of mirroring for verification
         words = target_message.split()
         if profile_features['avg_sentence_length'] < 10:
@@ -140,22 +139,22 @@ class PersonaMirroringService:
             adapted = " ".join(words[:min(len(words), 8)]) + "."
         else:
             adapted = target_message
-            
+
         # Append some signature tokens if appropriate
         if profile_features['top_tokens']:
             adapted += f" Simple, fast, and {profile_features['top_tokens'][0]}-native."
-            
+
         return adapted
 
     async def run(self, profile_url: str):
         # 1. Scrape posts
         posts = await self.scrape_public_profile(profile_url)
         logger.info(f"Retrieved {len(posts)} posts for analysis.")
-        
+
         # 2. Extract style profile
         self.profile = IdentityStyleAnalyzer.analyze(posts)
         logger.info(f"Extracted Profile Style Features: {json.dumps(self.profile, indent=2)}")
-        
+
         # Save profile
         with open(self.output_profile_path, 'w', encoding='utf-8') as f:
             json.dump(self.profile, f, indent=2)

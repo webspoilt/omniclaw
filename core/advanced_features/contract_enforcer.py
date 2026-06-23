@@ -7,11 +7,8 @@ Kills: Code review comments, Architecture drift, Convention violations
 Author: OmniClaw Advanced Features
 """
 
-import ast
 import re
-import json
 from dataclasses import dataclass, field
-from typing import Optional, Callable, List
 from enum import Enum
 from pathlib import Path
 
@@ -46,12 +43,12 @@ class ContractRule:
     description: str
     rule_type: RuleType
     severity: ViolationSeverity
-    
+
     # Rule configuration
     file_patterns: list[str] = field(default_factory=lambda: [".py"])
     code_patterns: list[str] = field(default_factory=list)
     exception_patterns: list[str] = field(default_factory=list)  # Allowed exceptions
-    
+
     # LLM-enhanced detection
     llm_required: bool = False
     llm_prompt: str = ""
@@ -74,15 +71,15 @@ class ContractEnforcer:
     Enforces architectural contracts through static analysis + LLM.
     Prevents architecture drift before code hits review.
     """
-    
+
     def __init__(self):
         self.rules: dict[str, ContractRule] = {}
         self.violations: list[Violation] = []
         self._load_default_rules()
-    
+
     def _load_default_rules(self):
         """Load default architectural rules"""
-        
+
         self.add_rule(ContractRule(
             id="no_direct_db",
             name="No Direct Database Calls",
@@ -99,7 +96,7 @@ class ContractEnforcer:
                 r"def.*_(?:get|set|fetch|query)",
             ]
         ))
-        
+
         self.add_rule(ContractRule(
             id="no_hardcoded_secrets",
             name="No Hardcoded Secrets",
@@ -112,7 +109,7 @@ class ContractEnforcer:
                 r'-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----'
             ]
         ))
-        
+
         self.add_rule(ContractRule(
             id="required_rate_limit",
             name="Rate Limiting Required",
@@ -130,7 +127,7 @@ class ContractEnforcer:
                 r"@.*throttle"
             ]
         ))
-        
+
         self.add_rule(ContractRule(
             id="no_sync_in_async",
             name="No Blocking Calls in Async",
@@ -141,7 +138,7 @@ class ContractEnforcer:
                 r"async\s+def\s+\w+\([^)]*\):[^}]*?(?:time\.sleep|requests\.|open\(|input\()"
             ]
         ))
-        
+
         self.add_rule(ContractRule(
             id="required_error_handling",
             name="Error Handling Required",
@@ -152,7 +149,7 @@ class ContractEnforcer:
                 r"def\s+\w+\([^)]*\):\s*(?:\n\s*(?!.*(?:try|raise|return\s+None|if\s+.*:.*return\s+None)))"
             ]
         ))
-        
+
         self.add_rule(ContractRule(
             id="no_print_in_prod",
             name="No Print Statements",
@@ -166,7 +163,7 @@ class ContractEnforcer:
                 r"if\s+debug|if\s+__name__.*print"
             ]
         ))
-        
+
         self.add_rule(ContractRule(
             id="type_hints_required",
             name="Type Hints Required",
@@ -178,7 +175,7 @@ class ContractEnforcer:
                 r"def\s+\w+\([^)]*\)\s*(?:->\s*\w+)?\s*:"
             ]
         ))
-        
+
         self.add_rule(ContractRule(
             id="required_docstring",
             name="Docstrings Required",
@@ -189,57 +186,57 @@ class ContractEnforcer:
                 r"def\s+(?!_|test_)\w+\([^)]*\).*:(?!\s*(?:\"\"\"|\'\'\'))"
             ]
         ))
-    
+
     def add_rule(self, rule: ContractRule):
         """Add a custom rule"""
         self.rules[rule.id] = rule
-    
+
     def remove_rule(self, rule_id: str):
         """Remove a rule"""
         self.rules.pop(rule_id, None)
-    
+
     def check_file(self, file_path: str, content: str) -> list[Violation]:
         """
         Check a file for contract violations.
-        
+
         Args:
             file_path: Path to file
             content: File content
-        
+
         Returns:
             List of violations found
         """
         violations = []
-        
+
         # Get applicable rules for this file
         applicable_rules = [
             rule for rule in self.rules.values()
-            if any(file_path.endswith(p) for p in rule.file_patterns) 
+            if any(file_path.endswith(p) for p in rule.file_patterns)
             or not rule.file_patterns
         ]
-        
+
         for rule in applicable_rules:
             rule_violations = self._check_rule(rule, file_path, content)
             violations.extend(rule_violations)
-        
+
         return violations
-    
+
     def _check_rule(
-        self, 
-        rule: ContractRule, 
-        file_path: str, 
+        self,
+        rule: ContractRule,
+        file_path: str,
         content: str
     ) -> list[Violation]:
         """Check a single rule against content"""
-        
+
         violations = []
         lines = content.split('\n')
-        
+
         for i, line in enumerate(lines, 1):
             # Skip comments
             if line.strip().startswith('#') or line.strip().startswith('//'):
                 continue
-            
+
             # Check if line matches rule pattern
             for pattern in rule.code_patterns:
                 try:
@@ -247,7 +244,7 @@ class ContractEnforcer:
                         # Check if it's an exception
                         if self._is_exception(line, rule.exception_patterns):
                             continue
-                        
+
                         violation = Violation(
                             rule=rule,
                             file_path=file_path,
@@ -260,12 +257,12 @@ class ContractEnforcer:
                         violations.append(violation)
                 except re.error:
                     pass
-        
+
         return violations
-    
+
     def _is_exception(self, line: str, exceptions: list[str]) -> bool:
         """Check if line matches an exception pattern"""
-        
+
         for exc in exceptions:
             try:
                 if re.search(exc, line):
@@ -273,10 +270,10 @@ class ContractEnforcer:
             except re.error:
                 pass
         return False
-    
+
     def _generate_message(self, rule: ContractRule, line: str) -> str:
         """Generate violation message"""
-        
+
         messages = {
             "no_direct_db": "Direct database call detected. Use DAL/Repository pattern.",
             "no_hardcoded_secrets": "Hardcoded secret detected. Use environment variables or secrets manager.",
@@ -287,12 +284,12 @@ class ContractEnforcer:
             "type_hints_required": "Function missing type hints.",
             "required_docstring": "Public function missing docstring."
         }
-        
+
         return messages.get(rule.id, f"Rule violated: {rule.name}")
-    
+
     def _generate_suggestion(self, rule: ContractRule) -> str:
         """Generate fix suggestion"""
-        
+
         suggestions = {
             "no_direct_db": "Move query to DAL class: class UserDAL: ...",
             "no_hardcoded_secrets": "Use: os.environ.get('SECRET_KEY') or secrets manager",
@@ -303,44 +300,44 @@ class ContractEnforcer:
             "type_hints_required": "Add type hints: def func(param: Type) -> ReturnType:",
             "required_docstring": "Add docstring: def func(): '''Description'''"
         }
-        
+
         return suggestions.get(rule.id, f"Fix: {rule.description}")
-    
+
     def check_project(self, project_path: str) -> dict:
         """
         Check entire project for violations.
-        
+
         Returns:
             Summary with violation counts and details
         """
         from pathlib import Path
-        
+
         violations = []
         files_checked = 0
-        
+
         for file_path in Path(project_path).rglob("*.py"):
             # Skip common non-source directories
             if any(x in str(file_path) for x in ['__pycache__', 'venv', '.venv', 'test', 'migrations']):
                 continue
-            
+
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, encoding='utf-8') as f:
                     content = f.read()
-                
+
                 file_violations = self.check_file(str(file_path), content)
                 violations.extend(file_violations)
                 files_checked += 1
             except:
                 pass
-        
+
         # Categorize violations
         by_severity = {s.value: 0 for s in ViolationSeverity}
         by_rule = {}
         blocked = []
-        
+
         for v in violations:
             by_severity[v.rule.severity.value] += 1
-            
+
             if v.rule.id not in by_rule:
                 by_rule[v.rule.id] = []
             by_rule[v.rule.id].append({
@@ -348,10 +345,10 @@ class ContractEnforcer:
                 "line": v.line_number,
                 "snippet": v.code_snippet[:50]
             })
-            
+
             if v.blocked:
                 blocked.append(v)
-        
+
         return {
             "files_checked": files_checked,
             "total_violations": len(violations),
@@ -371,10 +368,10 @@ class ContractEnforcer:
                 for v in violations[:50]  # Limit output
             ]
         }
-    
+
     def create_git_hook(self, project_path: str):
         """Generate pre-commit hook to enforce contracts"""
-        
+
         hook_content = '''#!/bin/bash
 # OmniClaw Contract Enforcer - Pre-commit Hook
 
@@ -402,22 +399,22 @@ if not result['can_merge']:
 print('\\n✅ All contracts satisfied')
 "
 '''
-        
+
         hook_path = Path(project_path) / ".git" / "hooks" / "pre-commit"
         hook_path.parent.mkdir(exist_ok=True)
-        
+
         with open(hook_path, 'w') as f:
             f.write(hook_content)
-        
+
         hook_path.chmod(0o755)
-        
+
         return str(hook_path)
 
 
 # Demo
 if __name__ == "__main__":
     enforcer = ContractEnforcer()
-    
+
     test_code = '''
 import requests
 import sqlite3
@@ -429,24 +426,24 @@ def get_user(user_id):
     db = sqlite3.connect("app.db")
     cursor = db.cursor()
     result = cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")
-    
+
     # Hardcoded secret - violation!
     api = requests.get(f"https://api.example.com?key={API_KEY}")
-    
+
     print("User fetched")  # Print in prod - violation!
-    
+
     return result
 
 def process():
     pass
 '''
-    
+
     violations = enforcer.check_file("test.py", test_code)
-    
+
     print("⚖️ CONTRACT ENFORCER")
     print("=" * 50)
     print(f"\nFound {len(violations)} violations:\n")
-    
+
     for v in violations:
         status = "🚫 BLOCKED" if v.blocked else "⚠️"
         print(f"{status} [{v.rule.severity.value}] {v.rule.name}")
@@ -454,7 +451,7 @@ def process():
         print(f"   Code: {v.code_snippet[:60]}...")
         print(f"   Fix: {v.suggestion}")
         print()
-    
+
     # Show project check
     print("\n📊 Project Check (dry run):")
     print(f"   Can merge: {len([v for v in violations if v.blocked]) == 0}")

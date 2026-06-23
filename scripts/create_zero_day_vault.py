@@ -4,17 +4,16 @@ create_zero_day_vault.py – Creates an encrypted zero‑day vault.
 Run after YubiKey setup.
 """
 
+import json
 import os
 import sys
-import json
-import base64
 from pathlib import Path
 
 # Add parent directory to path so we can import core modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from core.security.yubikey_manager import YubiKeyHandler
 from core.security.secure_config import OffensiveConfigLoader
+
 
 def main():
     # Paths
@@ -58,9 +57,8 @@ def main():
     vault_json = json.dumps(empty_vault, indent=2).encode('utf-8')
 
     # Encrypt using the vault key (AES-256-GCM)
-    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
     from cryptography.hazmat.backends import default_backend
-    import os
+    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
     iv = os.urandom(12)
     cipher = Cipher(algorithms.AES(loader.vault_key), modes.GCM(iv), backend=default_backend())

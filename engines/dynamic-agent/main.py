@@ -1,5 +1,7 @@
 import asyncio
+
 from playwright.async_api import async_playwright
+
 
 class DynamicAgent:
     async def run_exploit(self, target_url: str, payload: str):

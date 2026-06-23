@@ -12,14 +12,14 @@ Layers:
 6. IPSAgent       - Autonomous intrusion prevention (eBPF + LLM)
 """
 
-from core.security.file_guard import FileGuard
-from core.security.shell_sandbox import ShellSandbox, ShellResult
-from core.security.prompt_guard import PromptGuard
-from core.security.session_budget import SessionBudget, SessionTracker
-from core.security.ips_agent import IPSAgent, IPSConfig, get_ips_agent
-from core.security.risk_engine import RiskEngine
-
 import logging
+
+from core.security.file_guard import FileGuard
+from core.security.ips_agent import IPSAgent, IPSConfig, get_ips_agent
+from core.security.prompt_guard import PromptGuard
+from core.security.risk_engine import RiskEngine
+from core.security.session_budget import SessionBudget, SessionTracker
+from core.security.shell_sandbox import ShellResult, ShellSandbox
 
 logger = logging.getLogger("OmniClaw.Security")
 

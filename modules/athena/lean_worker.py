@@ -1,6 +1,7 @@
 import logging
-import subprocess
 import os
+import subprocess
+
 import pexpect
 
 logger = logging.getLogger("OmniClaw.Athena.Lean")
@@ -15,7 +16,7 @@ class LeanWorker:
         self.temp_dir = "/tmp/omniclaw_lean"
         os.makedirs(self.temp_dir, exist_ok=True)
         logger.info("Initialized Athena Lean 4 Worker")
-        
+
     def check_proof(self, lean_code: str) -> dict:
         """
         Writes Lean code to a temp file and runs the compiler/checker.
@@ -23,17 +24,17 @@ class LeanWorker:
         proof_path = os.path.join(self.temp_dir, "proof.lean")
         with open(proof_path, "w") as f:
             f.write(lean_code)
-            
-        logger.info(f"Checking Lean proof...")
+
+        logger.info("Checking Lean proof...")
         try:
             res = subprocess.run(["lean", proof_path], capture_output=True, text=True, timeout=15)
-            
+
             if "error:" in res.stderr or "error:" in res.stdout:
                 logger.warning("Lean check failed with errors.")
                 return {"status": "failed", "tactic_state": res.stderr + res.stdout}
-                
+
             return {"status": "success", "output": res.stdout}
-            
+
         except subprocess.TimeoutExpired:
             logger.error("Lean verification timed out.")
             return {"status": "timeout"}

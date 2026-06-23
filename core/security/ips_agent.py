@@ -18,16 +18,15 @@ import logging
 import os
 import platform
 import re
-import shutil
 import socket
 import struct
 import subprocess
 import threading
 import time
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timezone
+from collections.abc import Callable
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger("OmniClaw.Security.IPS")
 
@@ -96,7 +95,7 @@ class IPSConfig:
     """Runtime configuration for the IPS agent."""
     enabled: bool = True
     dry_run: bool = True          # SAFETY DEFAULT: never block for real
-    admin_whitelist: List[str] = field(default_factory=lambda: ["127.0.0.1"])
+    admin_whitelist: list[str] = field(default_factory=lambda: ["127.0.0.1"])
     fail_threshold: int = 5
     time_window_sec: int = 300
     block_tool: str = "iptables"  # "iptables" or "nftables"
@@ -106,7 +105,7 @@ class IPSConfig:
     poll_interval: float = 1.0    # Ring-buffer poll interval (seconds)
 
     @classmethod
-    def from_dict(cls, d: dict) -> "IPSConfig":
+    def from_dict(cls, d: dict) -> IPSConfig:
         """Create config from a dict (e.g. parsed YAML section)."""
         known = {f.name for f in cls.__dataclass_fields__.values()}
         return cls(**{k: v for k, v in d.items() if k in known})
@@ -136,7 +135,7 @@ class ThreatClassifier:
         "Reply with ONLY the classification word."
     )
 
-    def __init__(self, use_llm: bool = True, llm_caller: Optional[Callable] = None):
+    def __init__(self, use_llm: bool = True, llm_caller: Callable | None = None):
         self.use_llm = use_llm
         self._llm_caller = llm_caller
 
@@ -191,7 +190,7 @@ class IPBlocker:
     """Executes firewall rules to block malicious IPs."""
 
     def __init__(self, tool: str = "iptables", dry_run: bool = True,
-                 admin_whitelist: Optional[List[str]] = None):
+                 admin_whitelist: list[str] | None = None):
         self.tool = tool
         self.dry_run = dry_run
         self.whitelist = set(admin_whitelist or ["127.0.0.1"])
@@ -259,11 +258,11 @@ class ActionLogger:
             with open(self.path, "a", encoding="utf-8") as f:
                 f.write(action.to_json() + "\n")
 
-    def recent(self, count: int = 20) -> List[dict]:
+    def recent(self, count: int = 20) -> list[dict]:
         """Read the last N actions (for Manager review)."""
         if not self.path.exists():
             return []
-        with open(self.path, "r", encoding="utf-8") as f:
+        with open(self.path, encoding="utf-8") as f:
             lines = f.readlines()
         results = []
         for line in lines[-count:]:
@@ -294,17 +293,17 @@ class AuthLogParser:
     def __init__(self, log_path: str = "/var/log/auth.log"):
         self.log_path = Path(log_path)
         self._last_pos: int = 0
-        self._ip_counts: Dict[str, int] = {}  # ip → fail count
-        self._ip_first:  Dict[str, float] = {}
+        self._ip_counts: dict[str, int] = {}  # ip → fail count
+        self._ip_first:  dict[str, float] = {}
 
-    def poll(self) -> List[IPSEvent]:
+    def poll(self) -> list[IPSEvent]:
         """Read new lines from auth.log and return IPSEvents."""
-        events: List[IPSEvent] = []
+        events: list[IPSEvent] = []
         if not self.log_path.exists():
             return events
 
         try:
-            with open(self.log_path, "r", encoding="utf-8", errors="replace") as f:
+            with open(self.log_path, encoding="utf-8", errors="replace") as f:
                 f.seek(self._last_pos)
                 for line in f:
                     ev = self._parse_line(line)
@@ -318,7 +317,7 @@ class AuthLogParser:
 
         return events
 
-    def _parse_line(self, line: str) -> Optional[IPSEvent]:
+    def _parse_line(self, line: str) -> IPSEvent | None:
         m = self._FAIL_PATTERN.search(line)
         if m:
             ip = m.group(2)
@@ -364,7 +363,7 @@ class MockEventSource:
         self._rng = random
         self._cycle = 0
 
-    def poll(self) -> List[IPSEvent]:
+    def poll(self) -> list[IPSEvent]:
         import random
         self._cycle += 1
 
@@ -408,12 +407,12 @@ class IPSAgent:
         Actions are logged to ips_actions.jsonl for Manager review.
     """
 
-    def __init__(self, config: Optional[IPSConfig] = None,
-                 llm_caller: Optional[Callable] = None):
+    def __init__(self, config: IPSConfig | None = None,
+                 llm_caller: Callable | None = None):
         self.config = config or IPSConfig()
         self.running = False
-        self._thread: Optional[threading.Thread] = None
-        self._loop: Optional[asyncio.AbstractEventLoop] = None
+        self._thread: threading.Thread | None = None
+        self._loop: asyncio.AbstractEventLoop | None = None
 
         # Components
         self.blocker = IPBlocker(
@@ -469,7 +468,7 @@ class IPSAgent:
 
         # Try to load eBPF ring buffer via BCC
         try:
-            from bcc import BPF
+            from bcc import BPF  # noqa: F401
             # We need the compiled monitor.bpf.o; BCC can also inline-compile
             # but for CO-RE we use the pre-compiled object.
             # For simplicity, also support BCC inline mode:
@@ -557,7 +556,7 @@ class IPSAgent:
 
         self._loop.close()
 
-    def _poll_events(self) -> List[IPSEvent]:
+    def _poll_events(self) -> list[IPSEvent]:
         """Poll the active event source for new IPS alerts."""
         if self._ebpf_available and self._bpf:
             return self._poll_ebpf()
@@ -565,9 +564,9 @@ class IPSAgent:
             return self._event_source.poll()
         return []
 
-    def _poll_ebpf(self) -> List[IPSEvent]:
+    def _poll_ebpf(self) -> list[IPSEvent]:
         """Poll eBPF ring buffer and convert to IPSEvent objects."""
-        events: List[IPSEvent] = []
+        events: list[IPSEvent] = []
         try:
             self._bpf.ring_buffer_poll(timeout=100)
             # Events are delivered via callback; this is a simplified path.
@@ -576,7 +575,7 @@ class IPSAgent:
             logger.debug(f"eBPF poll error: {e}")
         return events
 
-    async def _process_events(self, events: List[IPSEvent]) -> None:
+    async def _process_events(self, events: list[IPSEvent]) -> None:
         """Process a batch of IPS events: classify and act."""
         for event in events:
             self.stats["events_processed"] += 1
@@ -605,7 +604,7 @@ class IPSAgent:
 
             # Log structured action
             action = IPSAction(
-                timestamp=datetime.now(timezone.utc).isoformat(),
+                timestamp=datetime.now(UTC).isoformat(),
                 event=event.to_dict(),
                 analysis=classification,
                 verdict=verdict,
@@ -655,7 +654,7 @@ class IPSAgent:
             "stats": dict(self.stats),
         }
 
-    def get_recent_actions(self, count: int = 20) -> List[dict]:
+    def get_recent_actions(self, count: int = 20) -> list[dict]:
         """Return recent IPS actions for Manager review."""
         return self.action_logger.recent(count)
 
@@ -676,11 +675,11 @@ class IPSAgent:
 # Module-level convenience — singleton pattern
 # ═══════════════════════════════════════════════════════════════
 
-_ips_agent: Optional[IPSAgent] = None
+_ips_agent: IPSAgent | None = None
 
 
-def get_ips_agent(config: Optional[dict] = None,
-                  llm_caller: Optional[Callable] = None) -> IPSAgent:
+def get_ips_agent(config: dict | None = None,
+                  llm_caller: Callable | None = None) -> IPSAgent:
     """Get or create the singleton IPS agent."""
     global _ips_agent
     if _ips_agent is None:

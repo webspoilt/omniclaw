@@ -4,11 +4,11 @@ polymorphic_shellcode.py – Generates mutating shellcode using a local LLM.
 Part of the SOS (Sovereign Offensive & Stealth) suite.
 """
 
-import requests
-import time
 import logging
 import re
-from typing import Optional
+import time
+
+import requests
 
 logger = logging.getLogger("PolymorphicShellcode")
 
@@ -24,7 +24,7 @@ class PolymorphicGenerator:
         self.llm_url = llm_url
         self.model = model
         self.mutate_interval = mutate_interval
-        self.last_shellcode: Optional[bytes] = None
+        self.last_shellcode: bytes | None = None
         self.last_task: str = ""
 
     def _call_llm(self, prompt: str) -> str:
@@ -47,7 +47,7 @@ class PolymorphicGenerator:
             logger.error(f"LLM call failed: {e}")
             return ""
 
-    def generate_shellcode(self, task_description: str) -> Optional[bytes]:
+    def generate_shellcode(self, task_description: str) -> bytes | None:
         """
         Generate new shellcode for the given task.
         The LLM is instructed to output only hex bytes (e.g., \\x31\\xc0...).

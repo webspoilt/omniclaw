@@ -1,9 +1,10 @@
-import time
 import logging
+import time
+
 import requests
+from requests.adapters import HTTPAdapter
 from stem import Signal
 from stem.control import Controller
-from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)

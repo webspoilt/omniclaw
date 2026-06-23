@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import subprocess
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
 
@@ -138,7 +138,7 @@ async def get_memory_info() -> dict[str, Any]:
     },
     required=[],
 )
-async def list_available_syscalls(search: Optional[str] = None) -> list[str]:
+async def list_available_syscalls(search: str | None = None) -> list[str]:
     try:
         proc = subprocess.run(["ausyscall", "--dump"], capture_output=True, text=True, timeout=10)
         if proc.returncode == 0:

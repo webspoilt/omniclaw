@@ -7,7 +7,7 @@ Used by the knowledge graph and P2P knowledge queries.
 
 import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -42,7 +42,7 @@ class VectorStore:
                 logger.error(f"LanceDB init failed: {e}")
         else:
             logger.warning("lancedb not installed — using in-memory fallback")
-            self._fallback: List[dict] = []
+            self._fallback: list[dict] = []
 
     def create_table(self, name: str = "embeddings",
                      dim: int = 384) -> bool:
@@ -67,7 +67,7 @@ class VectorStore:
             logger.error(f"Table creation: {e}")
             return False
 
-    def add(self, id: str, text: str, vector: List[float],
+    def add(self, id: str, text: str, vector: list[float],
             metadata: str = ""):
         """Insert a vector with metadata."""
         entry = {"id": id, "text": text, "vector": vector,
@@ -80,8 +80,8 @@ class VectorStore:
         else:
             self._fallback.append(entry)
 
-    def search(self, query_vector: List[float],
-               top_k: int = 5) -> List[Dict[str, Any]]:
+    def search(self, query_vector: list[float],
+               top_k: int = 5) -> list[dict[str, Any]]:
         """Similarity search."""
         if self.table:
             try:

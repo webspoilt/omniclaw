@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
 OmniClaw Echo Chambers
-Spawns lightweight shadow agents to explore alternative solutions 
+Spawns lightweight shadow agents to explore alternative solutions
 in parallel. Returns the best path, not just the first one.
 """
 
-import logging
 import asyncio
+import logging
 import time
-from typing import Dict, List, Optional, Any, Callable
+from collections.abc import Callable
 from dataclasses import dataclass, field
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.EchoChambers")
 
@@ -79,24 +80,24 @@ class ShadowSolution:
 class ExplorationResult:
     """Complete result of an exploration session"""
     task: str
-    solutions: List[ShadowSolution] = field(default_factory=list)
-    best_solution: Optional[ShadowSolution] = None
+    solutions: list[ShadowSolution] = field(default_factory=list)
+    best_solution: ShadowSolution | None = None
     judge_reasoning: str = ""
     total_time: float = 0.0
-    strategies_used: List[str] = field(default_factory=list)
+    strategies_used: list[str] = field(default_factory=list)
 
 
 class EchoChamber:
     """
     Spawns shadow agents to explore alternative solutions in parallel.
-    
+
     Each shadow agent approaches the same task with a different bias
     (speed, readability, security, etc.), and a judge evaluates all
     solutions to select the best one.
     """
-    
-    def __init__(self, llm_call: Optional[Callable] = None,
-                 default_strategies: List[str] = None):
+
+    def __init__(self, llm_call: Callable | None = None,
+                 default_strategies: list[str] = None):
         """
         Args:
             llm_call: Async function that takes (prompt, temperature) and returns response
@@ -104,40 +105,40 @@ class EchoChamber:
         """
         self.llm_call = llm_call
         self.default_strategies = default_strategies or ["speed", "readability", "robust"]
-        self.exploration_history: List[ExplorationResult] = []
-        
+        self.exploration_history: list[ExplorationResult] = []
+
         logger.info(f"EchoChamber initialized with strategies: {self.default_strategies}")
-    
-    async def explore_alternatives(self, task: str, 
-                                     strategies: List[str] = None,
+
+    async def explore_alternatives(self, task: str,
+                                     strategies: list[str] = None,
                                      context: str = "",
                                      parallel: bool = True) -> ExplorationResult:
         """
         Explore alternative solutions using shadow agents.
-        
+
         Args:
             task: The task/problem to solve
             strategies: Which strategies to use (defaults to self.default_strategies)
             context: Additional context for the task
             parallel: Whether to run shadow agents in parallel
-            
+
         Returns:
             ExplorationResult with all solutions and the best one
         """
         strategies = strategies or self.default_strategies
         start_time = time.time()
-        
+
         logger.info(f"Exploring {len(strategies)} alternative solutions for: {task[:100]}...")
-        
+
         result = ExplorationResult(
             task=task,
             strategies_used=strategies,
         )
-        
+
         if not self.llm_call:
             logger.warning("No LLM configured for Echo Chambers")
             return result
-        
+
         # Spawn shadow agents
         if parallel:
             tasks = [
@@ -153,7 +154,7 @@ class EchoChamber:
                     solution = await self._run_shadow_agent(task, strategy, context)
                     if solution:
                         result.solutions.append(solution)
-        
+
         # Judge the solutions
         if len(result.solutions) > 1:
             result.best_solution, result.judge_reasoning = await self._judge_solutions(
@@ -163,26 +164,26 @@ class EchoChamber:
             result.best_solution = result.solutions[0]
             result.best_solution.rank = 1
             result.judge_reasoning = "Only one solution was generated."
-        
+
         result.total_time = time.time() - start_time
         self.exploration_history.append(result)
-        
+
         logger.info(
             f"Exploration complete in {result.total_time:.1f}s — "
             f"Best: {result.best_solution.strategy_name if result.best_solution else 'none'}"
         )
-        
+
         return result
-    
+
     async def _run_shadow_agent(self, task: str, strategy: str,
-                                  context: str) -> Optional[ShadowSolution]:
+                                  context: str) -> ShadowSolution | None:
         """Run a single shadow agent with a specific strategy"""
         strat = EXPLORATION_STRATEGIES.get(strategy)
         if not strat:
             return None
-        
+
         start = time.time()
-        
+
         prompt = f"""You are the "{strat['name']}" agent.
 
 YOUR BIAS: {strat['bias']}
@@ -206,13 +207,13 @@ CONFIDENCE: [0-100]%"""
 
         try:
             response = await self.llm_call(prompt)
-            
+
             # Parse the response
             solution_text = self._extract_section(response, "SOLUTION:")
             reasoning = self._extract_section(response, "REASONING:")
             trade_offs = self._extract_section(response, "TRADE_OFFS:")
             confidence = self._extract_confidence(response)
-            
+
             return ShadowSolution(
                 strategy=strategy,
                 strategy_name=strat["name"],
@@ -225,12 +226,12 @@ CONFIDENCE: [0-100]%"""
         except Exception as e:
             logger.error(f"Shadow agent '{strategy}' failed: {e}")
             return None
-    
+
     async def _judge_solutions(self, task: str,
-                                 solutions: List[ShadowSolution]) -> tuple:
+                                 solutions: list[ShadowSolution]) -> tuple:
         """
         Judge and rank all solutions.
-        
+
         Returns:
             Tuple of (best_solution, judge_reasoning)
         """
@@ -244,7 +245,7 @@ Reasoning: {s.reasoning[:500]}
 Trade-offs: {s.trade_offs[:500]}
 Self-confidence: {s.confidence:.0%}
 """
-        
+
         judge_prompt = f"""You are an impartial judge evaluating multiple solutions to the same problem.
 
 ORIGINAL TASK: {task}
@@ -269,68 +270,68 @@ REASONING: [Why this solution is the best overall choice]"""
 
         try:
             response = await self.llm_call(judge_prompt)
-            
+
             # Parse rankings
             best_idx = self._extract_best_solution_index(response, len(solutions))
             reasoning = self._extract_section(response, "REASONING:")
-            
+
             # Assign ranks and scores
             for i, sol in enumerate(solutions):
                 sol.rank = i + 1  # Default rank
-            
+
             if 0 <= best_idx < len(solutions):
                 solutions[best_idx].rank = 1
                 solutions[best_idx].score = 1.0
                 return solutions[best_idx], reasoning or "Selected by judge."
-            
+
             # Fallback: return highest self-confidence
             best = max(solutions, key=lambda s: s.confidence)
             best.rank = 1
             return best, reasoning or "Selected by highest confidence."
-            
+
         except Exception as e:
             logger.error(f"Judging failed: {e}")
             best = max(solutions, key=lambda s: s.confidence)
             best.rank = 1
             return best, f"Judging failed ({e}), selected by confidence."
-    
-    def get_available_strategies(self) -> Dict[str, str]:
+
+    def get_available_strategies(self) -> dict[str, str]:
         """Get all available exploration strategies"""
         return {k: v["name"] for k, v in EXPLORATION_STRATEGIES.items()}
-    
+
     def format_result(self, result: ExplorationResult) -> str:
         """Format an exploration result for display"""
         lines = []
-        lines.append(f"═══ Echo Chamber Results ═══")
+        lines.append("═══ Echo Chamber Results ═══")
         lines.append(f"Task: {result.task[:100]}")
         lines.append(f"Strategies: {', '.join(result.strategies_used)}")
         lines.append(f"Time: {result.total_time:.1f}s")
         lines.append("")
-        
+
         for sol in sorted(result.solutions, key=lambda s: s.rank):
             marker = "★" if sol == result.best_solution else " "
             lines.append(f"{marker} [{sol.rank}] {sol.strategy_name} "
                         f"(confidence: {sol.confidence:.0%})")
             if sol == result.best_solution:
                 lines.append(f"   Solution: {sol.solution[:200]}...")
-        
+
         if result.judge_reasoning:
             lines.append(f"\nJudge: {result.judge_reasoning}")
-        
+
         return "\n".join(lines)
-    
+
     # --- Parsing helpers ---
-    
+
     @staticmethod
-    def _extract_section(text: str, header: str) -> Optional[str]:
+    def _extract_section(text: str, header: str) -> str | None:
         """Extract a section from formatted text"""
         if header not in text:
             return None
-        
+
         start = text.index(header) + len(header)
-        
+
         # Find the next section header or end of text
-        next_headers = ["SOLUTION:", "REASONING:", "TRADE_OFFS:", "CONFIDENCE:", 
+        next_headers = ["SOLUTION:", "REASONING:", "TRADE_OFFS:", "CONFIDENCE:",
                        "RANKING:", "BEST_SOLUTION:"]
         end = len(text)
         for h in next_headers:
@@ -338,9 +339,9 @@ REASONING: [Why this solution is the best overall choice]"""
                 pos = text.index(h, start)
                 if pos < end:
                     end = pos
-        
+
         return text[start:end].strip()
-    
+
     @staticmethod
     def _extract_confidence(text: str) -> float:
         """Extract confidence from text"""
@@ -349,7 +350,7 @@ REASONING: [Why this solution is the best overall choice]"""
         if match:
             return int(match.group(1)) / 100.0
         return 0.5
-    
+
     @staticmethod
     def _extract_best_solution_index(text: str, count: int) -> int:
         """Extract the best solution index from judge response"""
@@ -360,8 +361,8 @@ REASONING: [Why this solution is the best overall choice]"""
             if 0 <= idx < count:
                 return idx
         return 0
-    
-    def get_stats(self) -> Dict[str, Any]:
+
+    def get_stats(self) -> dict[str, Any]:
         """Get echo chamber statistics"""
         return {
             "total_explorations": len(self.exploration_history),

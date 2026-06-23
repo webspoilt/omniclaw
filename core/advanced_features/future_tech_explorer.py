@@ -6,7 +6,7 @@ Advanced research module for cutting-edge technology domains
 
 import asyncio
 import logging
-from typing import Dict, Any
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.FutureTech")
 
@@ -14,7 +14,7 @@ class FutureTechExplorer:
     """
     Simulates and formats research for advanced future technologies.
     """
-    
+
     DOMAINS = [
         "quantum computing",
         "quantum engineering",
@@ -24,17 +24,17 @@ class FutureTechExplorer:
         "gpu manufacturing",
         "lithography-free fabrication"
     ]
-    
+
     @classmethod
-    async def explore(cls, domain: str, focus: str = "general") -> Dict[str, Any]:
+    async def explore(cls, domain: str, focus: str = "general") -> dict[str, Any]:
         """
         Conduct simulated research or formatting for the specified future tech domain.
         """
         domain_lower = domain.lower()
-        
+
         if not any(d in domain_lower for d in cls.DOMAINS):
             logger.warning(f"Domain {domain} might be outside core future tech focus areas. Proceeding anyway.")
-            
+
         research_data = {
             "domain": domain,
             "focus": focus,
@@ -45,8 +45,8 @@ class FutureTechExplorer:
             ],
             "status": "research_complete"
         }
-        
+
         # Simulate research delay
         await asyncio.sleep(0.5)
-        
+
         return research_data

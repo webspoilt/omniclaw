@@ -7,7 +7,6 @@ from typing import Any
 
 from core.skills.registry import tool
 
-
 _CHARSET = string.ascii_letters + string.digits + string.punctuation + " \t\n\r"
 
 

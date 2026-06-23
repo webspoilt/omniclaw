@@ -1,6 +1,4 @@
 import datetime
-import os
-from typing import Dict, List, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,10 +10,10 @@ class ReportSynthesizer:
 
     REPORT_TEMPLATE = """# Security Disclosure Report
 
-**Title:** {title}  
-**Date:** {date}  
-**Researcher:** {researcher}  
-**Affected Component:** {component}  
+**Title:** {title}
+**Date:** {date}
+**Researcher:** {researcher}
+**Affected Component:** {component}
 **CVSS Severity:** {severity} (CVSS:{cvss_vector})
 
 ---
@@ -59,7 +57,7 @@ class ReportSynthesizer:
 
     def generate(self, title: str, component: str, severity: str, cvss_vector: str,
                  executive_summary: str, technical_breakdown: str, impact: str,
-                 remediation: str, poc_files: List[str]) -> str:
+                 remediation: str, poc_files: list[str]) -> str:
         """
         Generate the full Markdown report.
         """

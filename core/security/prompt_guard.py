@@ -9,10 +9,9 @@ Uses Unicode NFKC normalization to defeat homoglyph bypasses.
 
 from __future__ import annotations
 
-import re
 import logging
+import re
 import unicodedata
-from typing import Optional
 
 logger = logging.getLogger("OmniClaw.Security.PromptGuard")
 
@@ -60,7 +59,7 @@ class PromptGuard:
         """Normalize Unicode to NFKC to defeat homoglyph attacks."""
         return unicodedata.normalize("NFKC", text)
 
-    def check_injection(self, text: str) -> tuple[bool, Optional[str]]:
+    def check_injection(self, text: str) -> tuple[bool, str | None]:
         """
         Check text for prompt injection patterns.
 

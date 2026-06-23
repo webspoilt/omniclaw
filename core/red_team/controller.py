@@ -1,6 +1,7 @@
 import redis
 from rq import Queue
 
+
 def dispatch_recon_task(target):
     redis_conn = redis.Redis()
     q = Queue('recon', connection=redis_conn)

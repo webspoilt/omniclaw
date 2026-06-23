@@ -1,5 +1,6 @@
 import asyncio
 
+
 async def main():
     print("Telemetry Service: OpenTelemetry Aggregator Initialized.")
     # TODO: Connect to Jaeger/Prometheus

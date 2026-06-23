@@ -7,28 +7,28 @@ __version__ = "3.2.0"
 __author__ = "Me"
 __license__ = "MIT"
 
-from .orchestrator import HybridHiveOrchestrator
-from .worker import WorkerAgent
-from .manager import ManagerAgent
-from .memory import VectorMemory
 from .api_pool import APIPool
-
-# Advanced Features
-from .reasoning_config import ReasoningLock, ReasoningConfig, ThinkingLevel
-from .context_mapper import ContextMapper
-from .autonomous_fix import AutonomousFix, ErrorParser
 from .audit_diff import AuditDiff
-from .temporal_memory import TemporalContext
+from .autonomous_fix import AutonomousFix, ErrorParser
+from .context_mapper import ContextMapper
 from .decision_archaeology import DecisionArchaeologist
-from .pattern_sentinel import PatternSentinel
 from .echo_chambers import EchoChamber
 from .living_docs import LivingDocumentation
+from .manager import ManagerAgent
+from .memory import VectorMemory
+from .orchestrator import HybridHiveOrchestrator
+from .pattern_sentinel import PatternSentinel
+
+# Advanced Features
+from .reasoning_config import ReasoningConfig, ReasoningLock, ThinkingLevel
 from .semantic_diff import SemanticDiff
+from .temporal_memory import TemporalContext
+from .worker import WorkerAgent
 
 __all__ = [
     # Core
     "HybridHiveOrchestrator",
-    "WorkerAgent", 
+    "WorkerAgent",
     "ManagerAgent",
     "VectorMemory",
     "APIPool",
@@ -65,19 +65,19 @@ __all__ = [
 # Advanced Features Package
 try:
     from .advanced_features import (
-        ConsciousnessCollision,
-        CodeDNAInterpreter,
-        TimeMachineDebugger,
-        MemoryGraphNetwork,
-        PredictorEngine,
-        ContractEnforcer,
-        ParadigmTranslator,
-        NaturalLanguageInfra,
-        LivingArchitectureDiagram,
         AutonomousProductManager,
-        SelfEvolvingIntelligenceCore,
-        SecurityResearchHub,
+        CodeDNAInterpreter,
+        ConsciousnessCollision,
+        ContractEnforcer,
+        LivingArchitectureDiagram,
+        MemoryGraphNetwork,
+        NaturalLanguageInfra,
         OmniClawLauncher,
+        ParadigmTranslator,
+        PredictorEngine,
+        SecurityResearchHub,
+        SelfEvolvingIntelligenceCore,
+        TimeMachineDebugger,
     )
 except ImportError:
     pass  # Advanced features are optional

@@ -20,11 +20,11 @@ Conditional startup based on node type (desktop vs mobile).
 """
 
 import asyncio
+import logging
 import os
 import sys
-import time
 import threading
-import logging
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -37,9 +37,9 @@ except ImportError:
 # Ensure project root is importable
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from core.resource_utils import resource_check
 from core.kill_switch import check_kill_switch
 from core.knowledge_graph import KnowledgeGraph
+from core.resource_utils import resource_check
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -110,6 +110,7 @@ class OmniClawDaemon:
     def _start_mesh(self):
         try:
             import base64
+
             from modules.p2p.mesh import NeuralMeshNode
             key = base64.b64decode(os.getenv("AES_KEY", ""))
             if len(key) != 32:

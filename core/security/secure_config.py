@@ -3,13 +3,13 @@
 secure_config.py - Loads encrypted configs using YubiKey.
 """
 
-import os
-import yaml
 import json
 import logging
-from pathlib import Path
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
+import yaml
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
 from .yubikey_manager import YubiKeyHandler
 
 logger = logging.getLogger("SecureConfig")
@@ -33,17 +33,17 @@ class SecureConfigLoader:
         logger.error("Failed to unlock vault - YubiKey may be missing or incorrect")
         return False
 
-    def decrypt_file(self, encrypted_file: str) -> Optional[bytes]:
+    def decrypt_file(self, encrypted_file: str) -> bytes | None:
         """Decrypt a file using the vault key (AES-256-GCM)."""
         if not self.vault_key:
             raise RuntimeError("Vault not unlocked. Call unlock_vault() first.")
-        
+
         try:
             with open(encrypted_file, 'rb') as f:
                 iv = f.read(12)
                 tag = f.read(16)
                 ciphertext = f.read()
-            
+
             cipher = Cipher(algorithms.AES(self.vault_key), modes.GCM(iv, tag), backend=default_backend())
             decryptor = cipher.decryptor()
             plaintext = decryptor.update(ciphertext) + decryptor.finalize()

@@ -1,5 +1,6 @@
 from .base import BaseAgent
 
+
 class CoderAgent(BaseAgent):
     def __init__(self):
         system_prompt = """You are the Coder agent. You implement the specifications provided by the Architect.

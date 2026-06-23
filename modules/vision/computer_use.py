@@ -6,15 +6,14 @@ Captures screenshots on X11, Wayland, or Android (Termux)
 and sends them to a multimodal LLM for UI understanding.
 """
 
-import subprocess
 import base64
-import logging
-import time
-import platform
-from pathlib import Path
-
-from pathlib import Path
 import io
+import logging
+import os
+import platform
+import subprocess
+import time
+from pathlib import Path
 
 try:
     import requests
@@ -29,6 +28,7 @@ except ImportError:
     HAS_PIL = False
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
     from core.kill_switch import check_kill_switch
@@ -111,7 +111,7 @@ class ComputerUse:
                 # Resize to 1024px width while maintaining aspect ratio
                 base_width = 1024
                 w_percent = (base_width / float(img.size[0]))
-                h_size = int((float(img.size[1]) * float(w_percent)))
+                h_size = int(float(img.size[1]) * float(w_percent))
                 img = img.resize((base_width, h_size), Image.Resampling.LANCZOS)
 
                 # Convert to RGB (required for JPEG)
@@ -130,7 +130,7 @@ class ComputerUse:
         """Send optimized screenshot to multimodal LLM."""
         if not HAS_REQUESTS or not img_path.exists():
             return None
-        
+
         b64 = self.optimize_image(img_path)
         if not b64:
             return None

@@ -6,7 +6,7 @@ for the OmniClaw Scout agent to read protected targets.
 """
 
 import logging
-from typing import Dict, Any
+from typing import Any
 
 try:
     from scrapling.fetchers import StealthyFetcher
@@ -21,7 +21,7 @@ class StealthScraper:
         if not SCRAPLING_AVAILABLE:
             logger.warning("Scrapling is not installed. Please run `pip install scrapling[all]`.")
 
-    def scrape(self, url: str, css_selector: str = "body", solve_cloudflare: bool = True) -> Dict[str, Any]:
+    def scrape(self, url: str, css_selector: str = "body", solve_cloudflare: bool = True) -> dict[str, Any]:
         """
         Perform a stealth fetch on the URL and return adaptive CSS selection content.
         Uses Scrapling to bypass protections and impersonate real browsers.
@@ -35,7 +35,7 @@ class StealthScraper:
             # adaptive=True allows for finding slightly changed classes when crawling
             page = StealthyFetcher.fetch(url, headless=True, solve_cloudflare=solve_cloudflare)
             results = page.css(css_selector, adaptive=True).getall()
-            
+
             # Additional cleanup
             if results:
                 content = "\n".join([str(res) for res in results])

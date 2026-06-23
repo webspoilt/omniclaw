@@ -10,7 +10,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -42,18 +42,18 @@ class PathResult:
     finding_id: str
     is_reachable: bool
     reachability_type: ReachabilityType
-    
+
     # Path from entrypoint to sink
     path: list[PathNode] = field(default_factory=list)
-    
+
     # Conditions that must be met for exploitability
     conditions: list[str] = field(default_factory=list)
-    
+
     # Analysis metadata
     path_length: int = 0
     analysis_time_ms: int = 0
     confidence: float = 0.0     # 0.0-1.0 confidence in reachability
-    
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "finding_id": self.finding_id,
@@ -79,17 +79,17 @@ class PathResult:
 class ReachabilityAnalyzer:
     """
     Determines if a static finding is reachable from an HTTP entrypoint.
-    
+
     Analysis approach:
     1. Find HTTP handlers/controllers (Spring, Express, Flask, etc.)
     2. Trace call graph from handlers to the method containing the sink
     3. Identify authentication/authorization guards along the path
     4. Assess conditional reachability
-    
+
     This is critical for prioritization — unreachable findings cannot be
     dynamically exploited and should be deprioritized.
     """
-    
+
     # HTTP entrypoint patterns by framework
     ENTRYPOINT_PATTERNS = {
         "spring": [
@@ -116,38 +116,38 @@ class ReachabilityAnalyzer:
             "r.GET", "r.POST", "r.PUT", "r.DELETE",
         ],
     }
-    
+
     def __init__(self, cpg_generator=None):
         """
         Initialize reachability analyzer.
-        
+
         Args:
             cpg_generator: Optional CPG generator for live graph queries.
                           If None, uses heuristic analysis from precomputed data.
         """
         self.cpg_generator = cpg_generator
-    
+
     async def analyze(
         self,
         finding: dict[str, Any],
     ) -> PathResult:
         """
         Analyze reachability of a finding from HTTP entrypoints.
-        
+
         Args:
             finding: Static finding dictionary from PostgreSQL
-            
+
         Returns:
             PathResult with reachability determination
         """
         import time
         start_time = time.time()
-        
+
         finding_id = finding["finding_id"]
         file_path = finding["file_path"]
         method_name = finding["method_name"]
         cpg_context = finding.get("cpg_context", {})
-        
+
         # Strategy 1: Check if finding is already in an HTTP handler
         if self._is_http_handler(file_path, method_name):
             result = PathResult(
@@ -168,22 +168,22 @@ class ReachabilityAnalyzer:
             )
             result.analysis_time_ms = int((time.time() - start_time) * 1000)
             return result
-        
+
         # Strategy 2: CPG-based call graph traversal
         if self.cpg_generator and cpg_context:
             path_result = await self._cpg_traversal(finding)
             path_result.analysis_time_ms = int((time.time() - start_time) * 1000)
             return path_result
-        
+
         # Strategy 3: Heuristic analysis from precomputed data
         heuristic_result = self._heuristic_analysis(finding)
         heuristic_result.analysis_time_ms = int((time.time() - start_time) * 1000)
         return heuristic_result
-    
+
     def _is_http_handler(self, file_path: str, method_name: str) -> bool:
         """
         Check if a method is directly an HTTP handler.
-        
+
         Uses file path and naming conventions as heuristics.
         """
         # Controller file patterns
@@ -191,47 +191,31 @@ class ReachabilityAnalyzer:
             "controller", "resource", "handler", "servlet",
             "router", "view", "endpoint",
         ]
-        
+
         file_lower = file_path.lower()
         if any(p in file_lower for p in controller_patterns):
             return True
-        
+
         # HTTP method name patterns
         http_methods = ["get", "post", "put", "delete", "patch", "handle"]
         if any(method_name.lower().startswith(h) for h in http_methods):
             return True
-        
+
         return False
-    
+
     async def _cpg_traversal(self, finding: dict[str, Any]) -> PathResult:
         """
         Perform CPG-based call graph traversal.
-        
+
         Queries the CPG to find paths from HTTP entrypoints to the sink method.
         """
         finding_id = finding["finding_id"]
-        method_name = finding["method_name"]
-        cypher_query = finding.get("cypher_query", "")
-        
+        finding["method_name"]
+        finding.get("cypher_query", "")
+
         try:
             # Find HTTP entrypoints that can reach this method
-            entrypoint_query = f"""
-            MATCH (entrypoint:METHOD)
-            WHERE entrypoint.NAME =~ '.*(handle|doGet|doPost|processRequest).*'
-               OR entrypoint.FULL_NAME =~ '.*(Controller|Resource|Servlet).*'
-            MATCH (sink:METHOD)
-            WHERE sink.NAME = '{method_name}'
-            MATCH path = shortestPath((entrypoint)-[:CALL|AST*]->(sink))
-            RETURN 
-                entrypoint.NAME as entry_method,
-                entrypoint.FILENAME as entry_file,
-                sink.NAME as sink_method,
-                sink.FILENAME as sink_file,
-                length(path) as hop_count,
-                [n in nodes(path) | {{name: n.NAME, file: n.FILENAME}}] as path_nodes
-            LIMIT 5
-            """
-            
+
             # In production, this would query the CPG
             # For architecture demo, return unknown with moderate confidence
             return PathResult(
@@ -243,7 +227,7 @@ class ReachabilityAnalyzer:
                 path_length=-1,
                 confidence=0.5,
             )
-            
+
         except Exception as e:
             logger.error(f"CPG traversal failed for {finding_id}: {e}")
             return PathResult(
@@ -254,43 +238,43 @@ class ReachabilityAnalyzer:
                 conditions=[f"CPG analysis error: {str(e)}"],
                 confidence=0.0,
             )
-    
+
     def _heuristic_analysis(self, finding: dict[str, Any]) -> PathResult:
         """
         Perform heuristic reachability analysis without CPG.
-        
+
         Uses file structure and naming conventions to estimate reachability.
         """
         finding_id = finding["finding_id"]
         file_path = finding["file_path"]
         method_name = finding["method_name"]
-        vuln_category = finding.get("vuln_category", "")
+        finding.get("vuln_category", "")
         source_node = finding.get("source_node", "")
-        
+
         # High confidence if source is HTTP-related
         http_sources = [
             "request", "param", "query", "body", "header",
             "getparameter", "getattribute", "input",
         ]
-        
+
         has_http_source = any(s in source_node.lower() for s in http_sources)
-        
+
         # Check if in web-accessible layer
         web_layers = [
             "controller", "resource", "servlet", "handler",
             "web", "api", "rest", "endpoint",
         ]
-        
-        in_web_layer = any(l in file_path.lower() for l in web_layers)
-        
+
+        in_web_layer = any(layer in file_path.lower() for layer in web_layers)
+
         # Check if in service layer (one hop from web)
         service_layers = [
             "service", "manager", "usecase", "interactor",
             "business", "logic",
         ]
-        
-        in_service_layer = any(l in file_path.lower() for l in service_layers)
-        
+
+        in_service_layer = any(layer in file_path.lower() for layer in service_layers)
+
         # Determine reachability
         if has_http_source and in_web_layer:
             return PathResult(
@@ -354,34 +338,34 @@ class ReachabilityAnalyzer:
                 path_length=-1,
                 confidence=0.3,
             )
-    
+
     async def analyze_batch(
         self,
         findings: list[dict[str, Any]],
     ) -> list[PathResult]:
         """
         Analyze reachability for multiple findings.
-        
+
         Args:
             findings: List of static finding dictionaries
-            
+
         Returns:
             List of PathResults in same order
         """
         import asyncio
-        
+
         # Limit concurrency to avoid overwhelming CPG
         semaphore = asyncio.Semaphore(10)
-        
+
         async def analyze_with_limit(finding: dict) -> PathResult:
             async with semaphore:
                 return await self.analyze(finding)
-        
+
         results = await asyncio.gather(
             *[analyze_with_limit(f) for f in findings],
             return_exceptions=True,
         )
-        
+
         processed = []
         for i, result in enumerate(results):
             if isinstance(result, Exception):
@@ -396,5 +380,5 @@ class ReachabilityAnalyzer:
                 ))
             else:
                 processed.append(result)
-        
+
         return processed

@@ -1,5 +1,5 @@
-import os
 from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
     OLLAMA_BASE_URL: str = "http://localhost:11434"

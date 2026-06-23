@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 
 
 @dataclass
@@ -8,7 +7,7 @@ class Persona:
     description: str
 
 
-PERSONAS: List[Persona] = [
+PERSONAS: list[Persona] = [
     Persona("Whale", "large investor with significant holdings, concerned about manipulation and liquidity"),
     Persona("Retailer", "small retail investor, emotional, follows trends and news"),
     Persona("Analyst", "technical analyst, focuses on charts, patterns, and indicators"),

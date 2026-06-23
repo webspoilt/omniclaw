@@ -1,6 +1,5 @@
-import os
 import logging
-import json
+import os
 
 logger = logging.getLogger("OmniClaw.QuantumGateway")
 
@@ -22,8 +21,8 @@ class QuantumGateway:
             return
 
         try:
-            import qiskit
-            import qiskit_ibm_runtime
+            import qiskit  # noqa: F401
+            import qiskit_ibm_runtime  # noqa: F401
             QISKIT_AVAILABLE = True
         except ImportError:
             QISKIT_AVAILABLE = False
@@ -36,7 +35,7 @@ class QuantumGateway:
             logger.warning("IBM_QUANTUM_TOKEN not found. QuantumGateway will not be able to execute circuits.")
             self.initialized = True
             return
-            
+
         try:
             from qiskit_ibm_runtime import QiskitRuntimeService
             self.service = QiskitRuntimeService(channel="ibm_quantum", token=token)
@@ -53,27 +52,27 @@ class QuantumGateway:
         Executes an OpenQASM 3 script and returns the result probabilities/counts.
         """
         self._lazy_init()
-        
+
         if not QISKIT_AVAILABLE or not self.service:
             return {"error": "Quantum backend unavailable. Please check Qiskit installation and API tokens.", "qasm_received": qasm_string}
 
         try:
             from qiskit import QuantumCircuit
-            from qiskit_ibm_runtime import Session, SamplerV2
-            
+            from qiskit_ibm_runtime import SamplerV2, Session
+
             # Build circuit from QASM
             circuit = QuantumCircuit.from_qasm_str(qasm_string)
-            
+
             # Use Sampler to get quasi-probabilities
             with Session(service=self.service, backend=self.backend) as session:
                 sampler = SamplerV2(session=session)
                 job = sampler.run([circuit])
                 result = job.result()
-                
+
                 # Format output
                 pub_result = result[0]
                 counts = pub_result.data.meas.get_counts()
-                
+
             return {"status": "success", "counts": counts}
         except Exception as e:
             logger.error(f"Quantum execution failed: {e}")

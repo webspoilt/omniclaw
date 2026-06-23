@@ -8,11 +8,12 @@ Jobs survive restarts. Supports cron expressions and simple interval-based sched
 from __future__ import annotations
 
 import asyncio
-import sqlite3
 import logging
+import sqlite3
+from collections.abc import Callable, Coroutine
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Callable, Coroutine, Any, Optional
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.Scheduler.Cron")
 
@@ -23,8 +24,8 @@ class CronScheduler:
     def __init__(
         self,
         db_path: str | Path = "./data/omniclaw.db",
-        on_execute: Optional[Callable[[str], Coroutine[Any, Any, str]]] = None,
-        on_notify: Optional[Callable[[str, str], Coroutine[Any, Any, None]]] = None,
+        on_execute: Callable[[str], Coroutine[Any, Any, str]] | None = None,
+        on_notify: Callable[[str, str], Coroutine[Any, Any, None]] | None = None,
     ):
         """
         Initialize CronScheduler.
@@ -39,7 +40,7 @@ class CronScheduler:
         self.on_execute = on_execute
         self.on_notify = on_notify
         self.running = False
-        self._task: Optional[asyncio.Task] = None
+        self._task: asyncio.Task | None = None
         self._init_db()
 
     def _init_db(self):
@@ -166,8 +167,8 @@ class CronScheduler:
         self,
         name: str,
         message: str,
-        cron_expr: Optional[str] = None,
-        interval_seconds: Optional[int] = None,
+        cron_expr: str | None = None,
+        interval_seconds: int | None = None,
         channel: str = "telegram",
     ) -> int:
         """

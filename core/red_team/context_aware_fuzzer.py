@@ -1,8 +1,8 @@
-import requests
-import json
 import concurrent.futures
-from typing import List, Dict, Optional, Tuple
+import json
 import logging
+
+import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,8 +12,8 @@ class IDORFuzzer:
     Compares responses between two user sessions to find IDOR vulnerabilities.
     """
 
-    def __init__(self, base_url: str, session_a_headers: Dict, session_b_headers: Dict,
-                 endpoints: List[str], num_threads: int = 5):
+    def __init__(self, base_url: str, session_a_headers: dict, session_b_headers: dict,
+                 endpoints: list[str], num_threads: int = 5):
         self.base_url = base_url.rstrip('/')
         self.session_a_headers = session_a_headers
         self.session_b_headers = session_b_headers
@@ -22,21 +22,21 @@ class IDORFuzzer:
         self.session = requests.Session()
 
     @staticmethod
-    def discover_endpoints(openapi_spec: str = None, crawl_url: str = None) -> List[str]:
+    def discover_endpoints(openapi_spec: str = None, crawl_url: str = None) -> list[str]:
         """
         Stub: In production, parse OpenAPI or crawl to generate endpoint list.
         """
         # Example: return ["/api/users/{}", "/api/posts/{}"]
         return []
 
-    def _fetch(self, url: str, headers: Dict) -> Tuple[int, str, Dict]:
+    def _fetch(self, url: str, headers: dict) -> tuple[int, str, dict]:
         try:
             resp = self.session.get(url, headers=headers, timeout=5)
             return resp.status_code, resp.text, dict(resp.headers)
         except Exception as e:
             return 0, str(e), {}
 
-    def _compare_responses(self, url_a: str, url_b: str) -> Dict:
+    def _compare_responses(self, url_a: str, url_b: str) -> dict:
         """Fetch and compare responses from both sessions."""
         status_a, body_a, headers_a = self._fetch(url_a, self.session_a_headers)
         status_b, body_b, headers_b = self._fetch(url_b, self.session_b_headers)
@@ -68,7 +68,7 @@ class IDORFuzzer:
             result["reason"] = "Unprivileged session accessed resource that privileged cannot"
         return result
 
-    def run(self) -> List[Dict]:
+    def run(self) -> list[dict]:
         """Test all endpoints with object ID range."""
         all_findings = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.num_threads) as executor:

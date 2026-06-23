@@ -8,7 +8,6 @@ from typing import Any
 
 from core.skills.registry import tool
 
-
 _CALIB_DIR = Path(__file__).resolve().parent.parent / "data" / "calibration"
 
 

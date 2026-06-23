@@ -1,3 +1,6 @@
+import logging
+import subprocess
+
 from core.skills.registry import tool
 
 logger = logging.getLogger("OmniClaw.Skills.WiFiRecon")
@@ -36,21 +39,22 @@ class WiFiRecon:
     WiFi Reconnaissance Skill (Inspired by Wifi-Deauthentication-Tool)
     Enables scanning and vulnerability assessment of wireless networks.
     """
-    
+
     def __init__(self, interface: str = "wlan0"):
         self.interface = interface
 
-    def scan_networks(self) -> List[Dict]:
+    def scan_networks(self) -> list[dict]:
         """Scan for nearby WiFi networks."""
         try:
             # Note: Requires root/sudo in real environments
             # Using nmcli or iwlist as a cross-platform fallback logic
             cmd = ["nmcli", "-t", "-f", "SSID,BSSID,SIGNAL,BARS,SECURITY", "dev", "wifi"]
             result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            
+
             networks = []
             for line in result.stdout.strip().split("\n"):
-                if not line: continue
+                if not line:
+                    continue
                 parts = line.split(":")
                 if len(parts) >= 5:
                     networks.append({
@@ -65,7 +69,7 @@ class WiFiRecon:
             logger.error(f"WiFi scan failed: {e}")
             return []
 
-    def check_deauth_vulnerability(self, bssid: str) -> Dict:
+    def check_deauth_vulnerability(self, bssid: str) -> dict:
         """
         Assess if a network is potentially vulnerable to deauthentication.
         (Simplified logic: WEP/WPA without PMF is more vulnerable)

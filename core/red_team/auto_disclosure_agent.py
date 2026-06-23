@@ -1,11 +1,10 @@
-import smtplib
 import logging
+import os
+import smtplib
+from email import encoders
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
-import os
-from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ IMPORTANT: This email and any attachments are confidential and intended solely f
         self.from_addr = from_addr or username
 
     def send_report(self, to_addr: str, subject: str, body: str,
-                    attachments: Optional[List[str]] = None) -> bool:
+                    attachments: list[str] | None = None) -> bool:
         """
         Send the report email with attachments.
         """

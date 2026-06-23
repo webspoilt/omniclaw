@@ -1,3 +1,7 @@
+import logging
+
+import aiohttp
+
 from core.skills.registry import tool
 
 logger = logging.getLogger("OmniClaw.Skills.OSINTReputation")
@@ -33,11 +37,11 @@ class OSINTReputation:
     OSINT Reputation Skill (Inspired by abusebox)
     Checks IPs and Domains against public threat intelligence databases.
     """
-    
-    def __init__(self, abuseipdb_key: Optional[str] = None):
+
+    def __init__(self, abuseipdb_key: str | None = None):
         self.abuseipdb_key = abuseipdb_key
 
-    async def check_ip_reputation(self, ip: str) -> Dict:
+    async def check_ip_reputation(self, ip: str) -> dict:
         """Check IP reputation via AbuseIPDB and public DNSBL."""
         results = {
             "ip": ip,
@@ -45,7 +49,7 @@ class OSINTReputation:
             "score": 0,
             "reports": []
         }
-        
+
         if not self.abuseipdb_key:
             return {"error": "AbuseIPDB API key missing. Using public DNSBL only.", "status": "limited"}
 
@@ -72,10 +76,10 @@ class OSINTReputation:
         except Exception as e:
             logger.error(f"Reputation check failed for {ip}: {e}")
             results["error"] = str(e)
-            
+
         return results
 
-    async def check_ssl_expiry(self, domain: str) -> Dict:
+    async def check_ssl_expiry(self, domain: str) -> dict:
         """Check SSL certificate expiry and details."""
         # Simplified logic for domain health
         return {

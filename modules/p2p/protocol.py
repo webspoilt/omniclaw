@@ -5,12 +5,12 @@ All mesh communication follows this schema. Messages are JSON-serialized,
 then AES-256-GCM encrypted before transmission over ZeroMQ.
 """
 
-import time
 import json
 import os
+import time
+from dataclasses import asdict, dataclass, field
 from enum import Enum
-from dataclasses import dataclass, field, asdict
-from typing import Any, Dict
+from typing import Any
 
 
 class MsgType(Enum):
@@ -31,7 +31,7 @@ class Message:
     id: str
     sender: str
     recipient: str = ""
-    payload: Dict[str, Any] = field(default_factory=dict)
+    payload: dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
     def to_json(self) -> bytes:

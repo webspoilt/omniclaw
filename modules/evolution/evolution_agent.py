@@ -6,15 +6,13 @@ Monitors logs for ERROR/CRITICAL tracebacks, uses an LLM to propose fixes,
 tests them in an isolated sandbox, and commits to a fix/ Git branch.
 """
 
-import os
-import re
-import time
 import hashlib
-import subprocess
 import logging
+import re
 import shutil
+import subprocess
+import time
 from pathlib import Path
-from typing import Optional, List, Tuple
 
 try:
     import yaml
@@ -29,14 +27,15 @@ except ImportError:
     HAS_REQUESTS = False
 
 try:
-    from watchdog.observers import Observer
     from watchdog.events import FileSystemEventHandler
+    from watchdog.observers import Observer
     HAS_WATCHDOG = True
 except ImportError:
     HAS_WATCHDOG = False
 
 # Import resource check
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
     from core.resource_utils import resource_check
@@ -95,8 +94,8 @@ def _estimate_confidence(original_code: str, fixed_code: str) -> float:
     Returns:
         float in [0.0, 1.0]
     """
-    orig_lines = [l.strip() for l in original_code.splitlines() if l.strip()]
-    fixed_lines = [l.strip() for l in fixed_code.splitlines() if l.strip()]
+    orig_lines = [line.strip() for line in original_code.splitlines() if line.strip()]
+    fixed_lines = [line.strip() for line in fixed_code.splitlines() if line.strip()]
     if not orig_lines or not fixed_lines:
         return 0.1  # empty = very low confidence
     # How similar in length are they?
@@ -117,7 +116,7 @@ logger = logging.getLogger("EvolutionAgent")
 
 
 # ---------- LLM ----------
-def query_llm(prompt: str) -> Optional[str]:
+def query_llm(prompt: str) -> str | None:
     if not HAS_REQUESTS:
         return None
     try:
@@ -137,8 +136,8 @@ def _extract_code(response: str) -> str:
 
 
 # ---------- Traceback Helpers ----------
-def extract_traceback(lines: List[str]) -> Optional[str]:
-    tb: List[str] = []
+def extract_traceback(lines: list[str]) -> str | None:
+    tb: list[str] = []
     in_tb = False
     for line in lines:
         if line.startswith("Traceback (most recent call last):"):
@@ -151,7 +150,7 @@ def extract_traceback(lines: List[str]) -> Optional[str]:
     return "\n".join(tb) if tb else None
 
 
-def find_source_file(traceback: str) -> Optional[Path]:
+def find_source_file(traceback: str) -> Path | None:
     for m in re.finditer(r'File "([^"]+)"', traceback):
         p = Path(m.group(1))
         for src in SOURCE_DIRS:
@@ -185,7 +184,7 @@ def write_safe(path: Path, content: str) -> bool:
 
 # ---------- Sandbox Runner ----------
 def run_test_in_sandbox(original: Path, fixed_code: str,
-                        test_code: str) -> Tuple[bool, str]:
+                        test_code: str) -> tuple[bool, str]:
     sandbox = SANDBOX_DIR / f"test_{int(time.time())}"
     sandbox.mkdir(parents=True, exist_ok=True)
     try:

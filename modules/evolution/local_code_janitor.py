@@ -4,20 +4,20 @@ local_code_janitor.py - Self-healing agent that runs locally on Asus TUF.
 Monitors logs, applies LLM-generated patches, and validates in sandbox.
 """
 
-import os
-import sys
-import time
-import logging
-import subprocess
-import tempfile
-import shutil
-from pathlib import Path
-import watchdog
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-import yaml
 import hashlib
+import logging
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+from pathlib import Path
+
 import requests
+import yaml
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 # Force local-only check (Update to match actual host)
 ASUS_TUF_ONLY = os.environ.get('OMNICLAW_NODE') == 'desktop' or Path('/proc/device-tree/model').read_text().find('TUF') != -1
@@ -40,48 +40,48 @@ class LocalJanitorHandler(FileSystemEventHandler):
         self.ollama_url = self.config.get('ollama_url', 'http://localhost:11434')
         self.llm_model = self.config.get('llm_model', 'codellama:latest')
         self.processed_errors = set()
-        
+
     def on_modified(self, event):
         if not event.src_path.endswith('.log'):
             return
         time.sleep(1)  # Let file write complete
         self._process_log(Path(event.src_path))
-    
+
     def _process_log(self, log_path):
         """Extract traceback and trigger fix if new."""
         try:
-            with open(log_path, 'r') as f:
+            with open(log_path) as f:
                 lines = f.readlines()
         except FileNotFoundError:
             return
-        
+
         traceback = self._extract_traceback(lines)
         if not traceback:
             return
-        
+
         error_hash = hashlib.sha256(traceback.encode()).hexdigest()
         if error_hash in self.processed_errors:
             return
         self.processed_errors.add(error_hash)
-        
+
         # Find source file
         source_file = self._find_source_file(traceback)
         if not source_file:
             logger.warning("Could not locate source file in traceback")
             return
-        
+
         # Read current code
         original_code = source_file.read_text(encoding="utf-8")
-        
+
         # Ask local LLM for fix
         fixed_code = self._ask_llm_for_fix(traceback, original_code)
         if not fixed_code:
             return
-        
+
         # Validate in sandbox
         if self._validate_fix(source_file, original_code, fixed_code):
             self._apply_fix(source_file, fixed_code, error_hash)
-    
+
     def _extract_traceback(self, lines):
         """Extract full traceback from log lines."""
         tb = []
@@ -95,7 +95,7 @@ class LocalJanitorHandler(FileSystemEventHandler):
                 if not line.startswith(' ') and not line.startswith('  File'):
                     in_tb = False
         return '\n'.join(tb) if tb else None
-    
+
     def _find_source_file(self, traceback):
         """Extract first source file from traceback that's in source_dirs."""
         import re
@@ -109,7 +109,7 @@ class LocalJanitorHandler(FileSystemEventHandler):
                 except Exception:
                     continue
         return None
-    
+
     def _ask_llm_for_fix(self, traceback, code):
         """Query local Ollama for a fix."""
         prompt = f"""You are an expert Python developer. Fix the following error.
@@ -130,7 +130,7 @@ Provide the full corrected code in a single Python code block.
                 "prompt": prompt,
                 "stream": False
             }, timeout=120)
-            
+
             result = response.json().get("response", "")
             # Extract code block
             if "```python" in result:
@@ -149,14 +149,14 @@ Provide the full corrected code in a single Python code block.
             with tempfile.TemporaryDirectory() as tmpdir:
                 tmp_path = Path(tmpdir) / source_file.name
                 tmp_path.write_text(fixed_code, encoding="utf-8")
-                
+
                 # Basic execution check to ensure no syntax/import errors
-                res = subprocess.run([sys.executable, "-m", "py_compile", str(tmp_path)], 
+                res = subprocess.run([sys.executable, "-m", "py_compile", str(tmp_path)],
                                      capture_output=True, text=True)
                 if res.returncode != 0:
                     logger.error(f"Sandbox compilation failed: {res.stderr}")
                     return False
-                    
+
                 logger.info("Fix compiled successfully.")
                 return True
         except Exception as e:
@@ -166,7 +166,7 @@ Provide the full corrected code in a single Python code block.
     def _apply_fix(self, source_file, fixed_code, error_hash):
         """Apply the validated fix and create a .bak."""
         logger.info(f"Applying fix to {source_file}")
-        
+
         bak_path = source_file.with_suffix(source_file.suffix + '.bak')
         try:
             shutil.copy2(source_file, bak_path)
@@ -179,14 +179,14 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python local_code_janitor.py <config.yaml>")
         sys.exit(1)
-        
+
     config = sys.argv[1]
     handler = LocalJanitorHandler(config)
-    
+
     observer = Observer()
     observer.schedule(handler, str(handler.log_dir), recursive=True)
     observer.start()
-    
+
     logger.info(f"Local Code Janitor active. Monitoring {handler.log_dir} for errors.")
     try:
         while True:

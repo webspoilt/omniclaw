@@ -1,10 +1,11 @@
+import json
+import logging
+import os
+import threading
+import time
+
 import faiss
 import numpy as np
-import time
-import logging
-import threading
-import os
-import json
 from sentence_transformers import SentenceTransformer
 
 logger = logging.getLogger("OmniClaw.TemporalMemoryV2")
@@ -25,17 +26,17 @@ class TemporalMemoryV2:
         self.persist_dir = persist_dir
         self.index_path = os.path.join(persist_dir, "temporal.index")
         self.meta_path = os.path.join(persist_dir, "temporal_meta.json")
-        
+
         self.memories = []          # list of (text, timestamp, embedding)
         self.decay_rate = decay_rate
         self.lock = threading.Lock()
-        
+
         if not os.path.exists(self.persist_dir):
             os.makedirs(self.persist_dir, exist_ok=True)
-            
+
         if not self.load_from_disk():
             self.index = faiss.IndexFlatL2(dim)
-        
+
         # Start decay thread
         self.running = True
         self.decay_thread = threading.Thread(target=self._auto_decay_loop, daemon=True)
@@ -46,14 +47,14 @@ class TemporalMemoryV2:
         if os.path.exists(self.index_path) and os.path.exists(self.meta_path):
             try:
                 self.index = faiss.read_index(self.index_path)
-                with open(self.meta_path, 'r', encoding='utf-8') as f:
+                with open(self.meta_path, encoding='utf-8') as f:
                     meta = json.load(f)
-                    
+
                 self.memories = []
                 for item in meta:
                     text, ts, emb_list = item
                     self.memories.append((text, ts, np.array(emb_list, dtype=np.float32)))
-                    
+
                 logger.info(f"Loaded Temporal Memory from disk ({len(self.memories)} memories).")
                 return True
             except Exception as e:
@@ -80,7 +81,7 @@ class TemporalMemoryV2:
         if not model:
             logger.error("SentenceTransformer model not loaded. Cannot add to temporal memory.")
             return
-            
+
         try:
             emb = model.encode([text])[0]
             with self.lock:
@@ -94,11 +95,11 @@ class TemporalMemoryV2:
     def query(self, query: str, top_k=5) -> list:
         if not model:
             return []
-            
+
         with self.lock:
             if not self.memories:
                 return []
-                
+
         try:
             q_emb = model.encode([query])[0]
             with self.lock:
@@ -106,9 +107,9 @@ class TemporalMemoryV2:
                 k = min(top_k, len(self.memories))
                 if k == 0:
                     return []
-                    
+
                 distances, indices = self.index.search(np.array([q_emb], dtype=np.float32), k)
-                
+
                 # Filter out -1 indices which FAISS returns if not enough elements
                 valid_indices = [i for i in indices[0] if i >= 0]
                 return [self.memories[i][0] for i in valid_indices]
@@ -124,26 +125,26 @@ class TemporalMemoryV2:
         with self.lock:
             if not self.memories:
                 return
-                
+
             now = time.time()
             new_memories = []
             new_embs = []
             pruned_count = 0
-            
+
             for text, ts, emb in self.memories:
                 age = now - ts
                 # score: 1 at t=0, decays to 0 based on decay_rate * age
-                score = np.exp(-self.decay_rate * age)   
-                
+                score = np.exp(-self.decay_rate * age)
+
                 if score > threshold:
                     new_memories.append((text, ts, emb))
                     new_embs.append(emb)
                 else:
                     pruned_count += 1
-                    
+
             if pruned_count > 0:
                 logger.info(f"Temporal Memory Pruned {pruned_count} old memories.")
-                
+
                 # Rebuild FAISS index
                 self.memories = new_memories
                 if new_embs:
@@ -151,7 +152,7 @@ class TemporalMemoryV2:
                     self.index.add(np.array(new_embs, dtype=np.float32))
                 else:
                     self.index = faiss.IndexFlatL2(self.dim)  # empty
-                
+
                 self.save_to_disk()
 
     def _auto_decay_loop(self):

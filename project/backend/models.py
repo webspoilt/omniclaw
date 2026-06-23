@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any
+
+from pydantic import BaseModel
+
 
 class Message(BaseModel):
     role: str
@@ -8,12 +10,12 @@ class Message(BaseModel):
 
 class AgentTaskRequest(BaseModel):
     prompt: str
-    conversation_id: Optional[str] = None
+    conversation_id: str | None = None
 
 class AgentTaskResponse(BaseModel):
     conversation_id: str
-    messages: List[Message]
-    final_output: Optional[str] = None
+    messages: list[Message]
+    final_output: str | None = None
 
 class CostRecord(BaseModel):
     id: int
@@ -26,8 +28,8 @@ class CostRecord(BaseModel):
 
 class ToolExecutionRequest(BaseModel):
     tool_name: str
-    parameters: Dict[str, Any]
+    parameters: dict[str, Any]
 
 class ToolExecutionResponse(BaseModel):
     result: str
-    error: Optional[str] = None
+    error: str | None = None

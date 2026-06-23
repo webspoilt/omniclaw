@@ -1,3 +1,4 @@
+# ruff: noqa: S108, UP031
 import os
 
 from core.skills.registry import tool

@@ -1,12 +1,12 @@
-import random
-import time
-import threading
+import logging
 import queue
+import random
+import threading
+import time
+
 import requests
 from stem import Signal
 from stem.control import Controller
-from typing import Optional, Dict
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ class TorHive:
             control_port = self.control_port_base + i
             socks_port = self.socks_port_base + i
             data_dir = f"{self.tor_data_dir}/tor_{i}"
-            config = {
+            {
                 "SocksPort": str(socks_port),
                 "ControlPort": str(control_port),
                 "DataDirectory": data_dir,

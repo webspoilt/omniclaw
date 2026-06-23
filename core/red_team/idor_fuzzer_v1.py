@@ -1,7 +1,7 @@
 import concurrent.futures
-import requests
-from typing import List, Dict, Optional, Tuple
 import logging
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -11,8 +11,8 @@ class IDORFuzzer:
     Compares responses from privileged and unprivileged tokens.
     """
 
-    def __init__(self, base_url: str, privileged_headers: Dict, unprivileged_headers: Dict,
-                 endpoints: List[str], num_threads: int = 5):
+    def __init__(self, base_url: str, privileged_headers: dict, unprivileged_headers: dict,
+                 endpoints: list[str], num_threads: int = 5):
         self.base_url = base_url.rstrip('/')
         self.privileged_headers = privileged_headers
         self.unprivileged_headers = unprivileged_headers
@@ -20,7 +20,7 @@ class IDORFuzzer:
         self.num_threads = num_threads
         self.session = requests.Session()
 
-    def _fetch(self, url: str, headers: Dict) -> Tuple[int, str, Dict]:
+    def _fetch(self, url: str, headers: dict) -> tuple[int, str, dict]:
         """Perform GET request and return status, text, headers."""
         try:
             resp = self.session.get(url, headers=headers, timeout=5)
@@ -28,7 +28,7 @@ class IDORFuzzer:
         except Exception as e:
             return 0, str(e), {}
 
-    def _test_single_endpoint(self, endpoint: str) -> Dict:
+    def _test_single_endpoint(self, endpoint: str) -> dict:
         """Test an endpoint (may contain {} for object ID substitution)."""
         # Example: endpoint = "/api/user/{}", we test a range of IDs
         results = []
@@ -69,7 +69,7 @@ class IDORFuzzer:
                 })
         return {"endpoint": endpoint, "results": results}
 
-    def run(self) -> List[Dict]:
+    def run(self) -> list[dict]:
         """Run tests on all endpoints using thread pool."""
         all_results = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.num_threads) as executor:

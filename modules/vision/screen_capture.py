@@ -19,11 +19,9 @@ Backends (in priority order):
 import base64
 import logging
 import subprocess
-import tempfile
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger("OmniClaw.Vision.ScreenCapture")
 
@@ -94,7 +92,7 @@ class ScreenCapture:
     #  Core capture                                                     #
     # ---------------------------------------------------------------- #
 
-    def capture(self, monitor: int = 1) -> Optional[Path]:
+    def capture(self, monitor: int = 1) -> Path | None:
         """Capture a screenshot.
 
         Args:
@@ -116,7 +114,7 @@ class ScreenCapture:
         else:
             return self._capture_cli(fp)
 
-    def _capture_mss(self, fp: Path, monitor: int) -> Optional[Path]:
+    def _capture_mss(self, fp: Path, monitor: int) -> Path | None:
         try:
             with mss.mss() as sct:
                 monitors = sct.monitors
@@ -129,7 +127,7 @@ class ScreenCapture:
             logger.error(f"mss capture failed: {e}")
             return None
 
-    def _capture_pil(self, fp: Path) -> Optional[Path]:
+    def _capture_pil(self, fp: Path) -> Path | None:
         try:
             img = ImageGrab.grab()
             img.save(str(fp))
@@ -139,7 +137,7 @@ class ScreenCapture:
             logger.error(f"PIL capture failed: {e}")
             return None
 
-    def _capture_cli(self, fp: Path) -> Optional[Path]:
+    def _capture_cli(self, fp: Path) -> Path | None:
         """Try CLI tools: scrot (Linux), gnome-screenshot, etc."""
         cmds = [
             ["scrot", str(fp)],
@@ -163,13 +161,13 @@ class ScreenCapture:
     #  Base64 & LLM analysis                                           #
     # ---------------------------------------------------------------- #
 
-    def to_base64(self, img: Path) -> Optional[str]:
+    def to_base64(self, img: Path) -> str | None:
         """Encode captured image to base64 string."""
         if not img or not img.exists():
             return None
         return base64.b64encode(img.read_bytes()).decode()
 
-    def analyze(self, img: Path, prompt: str = "") -> Optional[str]:
+    def analyze(self, img: Path, prompt: str = "") -> str | None:
         """Send image to local LLM (Ollama llava) for analysis."""
         if not HAS_REQUESTS:
             logger.warning("requests not installed — cannot call Ollama")

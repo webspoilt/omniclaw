@@ -1,3 +1,7 @@
+import json
+import logging
+from pathlib import Path
+
 from core.skills.registry import tool
 
 logger = logging.getLogger("OmniClaw.Skills.InjectionAuditor")
@@ -34,24 +38,24 @@ class InjectionAuditor:
     Injection Auditor Skill (Inspired by CyberInject)
     Provides agents with payloads and testing logic for web injections.
     """
-    
+
     def __init__(self):
         self.payload_file = Path(__file__).parent / "payloads.json"
         self.payloads = self._load_payloads()
 
-    def _load_payloads(self) -> Dict[str, List[str]]:
+    def _load_payloads(self) -> dict[str, list[str]]:
         try:
-            with open(self.payload_file, "r") as f:
+            with open(self.payload_file) as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Failed to load payloads: {e}")
             return {}
 
-    def get_payloads(self, category: str) -> List[str]:
+    def get_payloads(self, category: str) -> list[str]:
         """Retrieve payloads for a specific vulnerability category."""
         return self.payloads.get(category.lower(), [])
 
-    def recommend_test_plan(self, target_url: str, params: List[str]) -> Dict:
+    def recommend_test_plan(self, target_url: str, params: list[str]) -> dict:
         """Generate a basic injection test plan for a target."""
         return {
             "target": target_url,

@@ -1,6 +1,5 @@
 import datetime
-import json
-from typing import Dict, List, Optional
+
 
 class RemediationPipeline:
     """
@@ -33,10 +32,10 @@ class RemediationPipeline:
 
     REPORT_TEMPLATE = """# Vulnerability Disclosure Report
 
-**Title:** {title}  
-**Date:** {date}  
-**Researcher:** {researcher}  
-**Affected Component:** {component}  
+**Title:** {title}
+**Date:** {date}
+**Researcher:** {researcher}
+**Affected Component:** {component}
 **CVSS Score:** {cvss} (if available)
 
 ---

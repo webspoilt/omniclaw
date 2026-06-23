@@ -4,7 +4,6 @@ Knowledge Graph interface using ChromaDB for vector storage of past simulations.
 
 import hashlib
 import logging
-from typing import List, Optional
 
 import chromadb
 from chromadb.config import Settings
@@ -45,7 +44,7 @@ class KnowledgeGraph:
         )
         logger.info(f"Stored simulation {doc_id}")
 
-    def query_similar(self, context: str, top_k: int = 5) -> List[str]:
+    def query_similar(self, context: str, top_k: int = 5) -> list[str]:
         """Return similar past simulation texts."""
         results = self.collection.query(query_texts=[context], n_results=top_k)
         if results["documents"] and len(results["documents"]) > 0:

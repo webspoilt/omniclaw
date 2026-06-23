@@ -3,8 +3,9 @@
 OmniClaw Setup Script
 """
 
-from setuptools import setup, find_packages
 from pathlib import Path
+
+from setuptools import find_packages, setup
 
 # Read README
 readme_path = Path(__file__).parent / "README.md"

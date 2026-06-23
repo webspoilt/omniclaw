@@ -1,5 +1,6 @@
-import psutil
 import logging
+
+import psutil
 
 logger = logging.getLogger("OmniClaw.HardwareMonitor")
 
@@ -18,7 +19,7 @@ class HardwareMonitor:
             # interval=0.1 to get a quick but somewhat accurate reading
             cpu = psutil.cpu_percent(interval=0.1)
             ram = psutil.virtual_memory().percent
-            
+
             return {
                 "cpu_percent": cpu,
                 "ram_percent": ram,

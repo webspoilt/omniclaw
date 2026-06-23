@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+
 class ReconEngine:
     def __init__(self):
         self.logger = logging.getLogger("Recon")

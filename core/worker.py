@@ -6,18 +6,18 @@ Executes sub-tasks with role-specific capabilities and self-correction
 
 import json
 import logging
-from typing import Dict, List, Optional, Any
 import time
-import asyncio
+from typing import Any
 
-from .orchestrator import SubTask, TaskStatus, WorkerRole
-from .temporal_memory_v2 import TemporalMemoryV2
-from .advanced_features.recommendation_engine import recommendation_engine
-from modules.swarm_oracle import SwarmSimulator, config
-from modules.pentagi import PentagiClient, PentagiLauncher
-from modules.offensive.model_decensor import HereticDecensor
-from modules.recon.stealth_scraper import StealthScraper
 from modules.observability.langwatch_tracer import omniclaw_trace
+from modules.offensive.model_decensor import HereticDecensor
+from modules.pentagi import PentagiClient
+from modules.recon.stealth_scraper import StealthScraper
+from modules.swarm_oracle import SwarmSimulator, config
+
+from .advanced_features.recommendation_engine import recommendation_engine
+from .orchestrator import SubTask, WorkerRole
+from .temporal_memory_v2 import TemporalMemoryV2
 
 logger = logging.getLogger("OmniClaw.Worker")
 
@@ -29,108 +29,108 @@ class WorkerAgent:
     - Supports both chain-of-thought and specialized modes
     - Includes self-correction and peer review capabilities
     """
-    
-    def __init__(self, worker_id: str, role: WorkerRole, 
-                 api_config: Dict[str, Any], memory=None, mode: str = "specialized", orchestrator=None):
+
+    def __init__(self, worker_id: str, role: WorkerRole,
+                 api_config: dict[str, Any], memory=None, mode: str = "specialized", orchestrator=None):
         self.worker_id = worker_id
         self.role = role
         self.api_config = api_config
         self.memory = memory
         self.mode = mode  # "chain_of_thought" or "specialized"
         self.orchestrator = orchestrator
-        
+
         # Execution state
         self.current_load = 0
         self.status = "idle"
         self.execution_history = []
-        
+
         # Initialize API client - Replaced by Arbitrator
         self.api_client = None
-        
+
         # Role-specific tools
         self.tools = self._initialize_tools()
-        
+
         # Temporal memory
         self.temporal_memory = TemporalMemoryV2()
-        
+
         logger.info(f"Worker {worker_id} initialized with role {role.value} in {mode} mode")
-    
-    def _initialize_api_client(self, api_config: Dict[str, Any]) -> Any:
+
+    def _initialize_api_client(self, api_config: dict[str, Any]) -> Any:
         """Initialize the appropriate API client (Deprecated in favor of Arbitrator)"""
         return None
-    
-    def _initialize_tools(self) -> Dict[str, Any]:
+
+    def _initialize_tools(self) -> dict[str, Any]:
         """Initialize role-specific tools"""
         tools = {}
-        
+
         if self.role == WorkerRole.RESEARCHER:
             tools["web_search"] = self._web_search
             tools["data_extraction"] = self._data_extraction
             tools["future_tech_explore"] = self._future_tech_explore
             tools["web_scrape_stealth"] = self._web_scrape_stealth
-            
+
         elif self.role == WorkerRole.EXECUTOR:
             tools["shell_execute"] = self._shell_execute
             tools["file_operation"] = self._file_operation
             tools["browser_control"] = self._browser_control
-            
+
         elif self.role == WorkerRole.AUDITOR:
             tools["code_review"] = self._code_review
             tools["security_scan"] = self._security_scan
-            
+
         elif self.role == WorkerRole.CODER:
             tools["code_generate"] = self._code_generate
             tools["code_debug"] = self._code_debug
             tools["test_generate"] = self._test_generate
             tools["decensor_local_model"] = self._decensor_local_model
-            
+
         elif self.role == WorkerRole.ANALYST:
             tools["data_analysis"] = self._data_analysis
             tools["report_generate"] = self._report_generate
             tools["swarm_predict"] = self._swarm_predict
             tools["run_pentagi_operation"] = self._run_pentagi_operation
-            
+
         elif self.role == WorkerRole.CREATIVE:
             tools["content_generate"] = self._content_generate
             tools["design_concept"] = self._design_concept
-        
+
         # All workers get these
         tools["memory_search"] = self._memory_search
         tools["memory_store"] = self._memory_store
-        
+
         return tools
-    
-    async def execute_subtask(self, subtask: SubTask, context: Dict) -> Any:
+
+    async def execute_subtask(self, subtask: SubTask, context: dict) -> Any:
         """
         Execute a sub-task
-        
+
         Args:
             subtask: The sub-task to execute
             context: Task context
-            
+
         Returns:
             Execution result
         """
         logger.info(f"Worker {self.worker_id} executing: {subtask.description}")
-        
+
         self.status = "executing"
         self.current_load += 1
         start_time = time.time()
-        
+
         try:
-            with omniclaw_trace("execute_subtask", user_id=self.worker_id, 
-                                metadata={"role": getattr(self.role, "value", str(self.role)), 
+            with omniclaw_trace("execute_subtask", user_id=self.worker_id,
+                                metadata={"role": getattr(self.role, "value", str(self.role)),
                                         "description": subtask.description}) as trace:
                 if self.mode == "chain_of_thought":
                     result = await self._execute_chain_of_thought(subtask, context)
                 else:
                     result = await self._execute_specialized(subtask, context)
-                
+
                 execution_time = time.time() - start_time
-                
+
                 if hasattr(trace, "update"):
                     trace.update(output=str(result))
-                
+
                 # Record execution
                 self.execution_history.append({
                     "subtask_id": subtask.id,
@@ -139,19 +139,19 @@ class WorkerAgent:
                     "execution_time": execution_time,
                     "timestamp": time.time()
                 })
-                
+
                 self.status = "idle"
                 self.current_load -= 1
-                
+
                 return result
-                
+
         except Exception as e:
             self.status = "error"
             self.current_load -= 1
             logger.error(f"Execution failed: {e}")
             raise
-    
-    async def _execute_chain_of_thought(self, subtask: SubTask, context: Dict) -> Any:
+
+    async def _execute_chain_of_thought(self, subtask: SubTask, context: dict) -> Any:
         """Execute using chain-of-thought reasoning"""
         cot_prompt = f"""You are an AI agent executing a task step by step.
 
@@ -173,36 +173,36 @@ OBSERVATION: [Result of the action]
 FINAL_ANSWER: [Your complete final result]
 
 Be thorough and check for errors."""
-        
+
         response = await self._call_llm(cot_prompt)
-        
+
         # Extract final answer
         if "FINAL_ANSWER:" in response:
             return response.split("FINAL_ANSWER:")[1].strip()
         return response
-    
-    async def _execute_specialized(self, subtask: SubTask, context: Dict) -> Any:
+
+    async def _execute_specialized(self, subtask: SubTask, context: dict) -> Any:
         """Execute using role-specific specialization"""
         # DIEN Tracking
         recommendation_engine.state.update_state(subtask.description)
-        
+
         # Candidate Generation & DIN Ranking
         candidates = recommendation_engine.get_candidates(subtask.description)
         recommended_tool = await recommendation_engine.rank_actions(subtask.description, candidates)
-        
+
         # Build role-specific prompt
         role_prompt = self._build_role_prompt(subtask, context, recommended_tool)
-        
+
         # Execute with potential tool use
         response = await self._call_llm(role_prompt)
-        
+
         # Check if tool use is needed
         if "TOOL:" in response:
             return await self._handle_tool_use(response, subtask, context)
-        
+
         return response
-    
-    def _build_role_prompt(self, subtask: SubTask, context: Dict, recommended_tool: str = None) -> str:
+
+    def _build_role_prompt(self, subtask: SubTask, context: dict, recommended_tool: str = None) -> str:
         """Build role-specific execution prompt"""
         base_prompt = f"""You are a {self.role.value.upper()} agent in the OmniClaw system.
 
@@ -212,59 +212,59 @@ Context: {json.dumps(context, indent=2)}
 """
         if recommended_tool and recommended_tool != "unknown":
             base_prompt += f"\n[AI Recommendation Engine Suggests: You should strongly consider using TOOL:{recommended_tool} for this task]\n"
-        
+
         role_instructions = {
             WorkerRole.RESEARCHER: """Your role is to research and gather information.
 - Search for accurate, up-to-date information
 - Analyze multiple sources
 - Provide well-sourced, factual responses
 - Use TOOL:web_search if you need to search the web""",
-            
+
             WorkerRole.EXECUTOR: """Your role is to execute actions and perform tasks.
 - You can execute shell commands, manage files, and control browsers
 - Be careful and verify before making changes
 - Report exactly what was done
 - Use TOOL:shell_execute or TOOL:file_operation as needed""",
-            
+
             WorkerRole.AUDITOR: """Your role is to review and validate work.
 - Check for errors, bugs, and security issues
 - Verify correctness and completeness
 - Identify potential risks
 - Provide constructive feedback""",
-            
+
             WorkerRole.CODER: """Your role is to write and debug code.
 - Write clean, well-documented code
 - Follow best practices
 - Include error handling
 - Test your code when possible""",
-            
+
             WorkerRole.ANALYST: """Your role is to analyze data and create reports.
 - Find patterns and insights
 - Present data clearly
 - Support conclusions with evidence
 - Create actionable recommendations""",
-            
+
             WorkerRole.CREATIVE: """Your role is to generate creative content.
 - Be original and innovative
 - Consider user preferences
 - Iterate based on feedback
 - Deliver polished outputs""",
-            
+
             WorkerRole.GENERAL: """Your role is to handle general tasks.
 - Be adaptable and thorough
 - Ask for clarification when needed
 - Provide complete solutions"""
         }
-        
+
         return base_prompt + role_instructions.get(self.role, "")
-    
-    async def _handle_tool_use(self, response: str, subtask: SubTask, context: Dict) -> Any:
+
+    async def _handle_tool_use(self, response: str, subtask: SubTask, context: dict) -> Any:
         """Handle tool use requests from the LLM"""
         # Parse tool call
         lines = response.split("\n")
         tool_name = None
         tool_params = {}
-        
+
         for line in lines:
             if line.startswith("TOOL:"):
                 tool_name = line.replace("TOOL:", "").strip()
@@ -273,25 +273,25 @@ Context: {json.dumps(context, indent=2)}
                     tool_params = json.loads(line.replace("PARAMS:", "").strip())
                 except:
                     pass
-        
+
         if tool_name and tool_name in self.tools:
             tool_result = await self.tools[tool_name](**tool_params)
-            
+
             # Continue with tool result
             continuation_prompt = f"""You used tool {tool_name} and got:
 {json.dumps(tool_result, indent=2)}
 
 Continue with your task and provide the FINAL_ANSWER."""
-            
+
             final_response = await self._call_llm(continuation_prompt)
-            
+
             if "FINAL_ANSWER:" in final_response:
                 return final_response.split("FINAL_ANSWER:")[1].strip()
             return final_response
-        
+
         return response
-    
-    async def self_review(self, subtask: SubTask) -> Dict[str, Any]:
+
+    async def self_review(self, subtask: SubTask) -> dict[str, Any]:
         """Perform self-review of completed work"""
         review_prompt = f"""Review your work on this task:
 
@@ -311,15 +311,15 @@ Respond in JSON:
   "issues": ["issue 1", "issue 2"],
   "suggestions": ["suggestion 1", "suggestion 2"]
 }}"""
-        
+
         try:
             response = await self._call_llm(review_prompt)
             return json.loads(response)
         except Exception as e:
             logger.error(f"Self-review failed: {e}")
             return {"needs_correction": False, "issues": [], "suggestions": []}
-    
-    async def review_subtask(self, subtask: SubTask, context: Dict) -> Dict[str, Any]:
+
+    async def review_subtask(self, subtask: SubTask, context: dict) -> dict[str, Any]:
         """Peer review another worker's sub-task"""
         review_prompt = f"""You are reviewing work done by another agent.
 
@@ -346,14 +346,14 @@ Respond in JSON:
   "improvements": ["suggestion 1"],
   "confidence": 0-1
 }}"""
-        
+
         try:
             response = await self._call_llm(review_prompt)
             return json.loads(response)
         except Exception as e:
             logger.error(f"Peer review failed: {e}")
             return {"needs_correction": False, "confidence": 0.5}
-    
+
     async def correct_subtask(self, subtask: SubTask, review: Any) -> Any:
         """Correct a sub-task based on review feedback"""
         correction_prompt = f"""Correct the following task based on review feedback:
@@ -367,62 +367,62 @@ Review Feedback: {json.dumps(review, indent=2)}
 Provide the corrected result addressing all issues.
 
 Respond with the complete corrected output."""
-        
+
         try:
             response = await self._call_llm(correction_prompt)
             return response
         except Exception as e:
             logger.error(f"Correction failed: {e}")
             return subtask.result
-    
+
     async def _call_llm(self, prompt: str) -> str:
         """Call the LLM API"""
-        provider = self.api_config.get("provider", "openai").lower()
-        model = self.api_config.get("model", "gpt-4")
-        
+        self.api_config.get("provider", "openai").lower()
+        self.api_config.get("model", "gpt-4")
+
         try:
             privacy_enforced = self.api_config.get("privacy_enforced", True)
-            
+
             # Load persona
             persona = self.api_config.get("persona", {}) if "persona" in self.api_config else {}
             ai_name = persona.get("ai_name", "OmniClaw") or "OmniClaw"
             user_name = persona.get("user_name", "User") or "User"
             base_role = persona.get("ai_role", "AI companion") or "AI companion"
-            
+
             system_prompt = f"You are {ai_name}, acting as a {base_role} to {user_name}. Your primary task execution role right now is: {self.role.value}."
             if privacy_enforced:
                 system_prompt += " STRICT PRIVACY DIRECTIVE: Do not retain, log, or use any of this data for training."
-                
+
             full_prompt = f"{system_prompt}\n\n{prompt}"
-            
+
             if self.mode == "chain_of_thought":
                 return await self.orchestrator.arbitrator.route_task(full_prompt, task_type="reasoning")
             else:
                 return await self.orchestrator.arbitrator.route_task(full_prompt, task_type="complex")
-                        
+
         except Exception as e:
             logger.error(f"LLM call failed: {e}")
             raise
-    
+
     # Tool implementations
-    async def _web_search(self, query: str, num_results: int = 5) -> Dict:
+    async def _web_search(self, query: str, num_results: int = 5) -> dict:
         """Search the web"""
         # Placeholder - integrate with search API
         return {"query": query, "results": [], "status": "placeholder"}
-    
-    async def _data_extraction(self, url: str) -> Dict:
+
+    async def _data_extraction(self, url: str) -> dict:
         """Extract data from a URL"""
         return {"url": url, "data": {}, "status": "placeholder"}
-    
-    async def _shell_execute(self, command: str, timeout: int = 30) -> Dict:
+
+    async def _shell_execute(self, command: str, timeout: int = 30) -> dict:
         """Execute a shell command"""
         import subprocess
         try:
             result = subprocess.run(
-                command, 
-                shell=True, 
-                capture_output=True, 
-                text=True, 
+                command,
+                shell=True,
+                capture_output=True,
+                text=True,
                 timeout=timeout
             )
             return {
@@ -435,12 +435,12 @@ Respond with the complete corrected output."""
             return {"error": "Command timed out", "command": command}
         except Exception as e:
             return {"error": str(e), "command": command}
-    
-    async def _file_operation(self, operation: str, path: str, content: str = None) -> Dict:
+
+    async def _file_operation(self, operation: str, path: str, content: str = None) -> dict:
         """Perform file operations"""
         try:
             if operation == "read":
-                with open(path, 'r') as f:
+                with open(path) as f:
                     return {"content": f.read(), "path": path}
             elif operation == "write":
                 with open(path, 'w') as f:
@@ -451,40 +451,40 @@ Respond with the complete corrected output."""
                 return {"exists": os.path.exists(path), "path": path}
         except Exception as e:
             return {"error": str(e), "path": path}
-    
-    async def _browser_control(self, action: str, url: str = None) -> Dict:
+
+    async def _browser_control(self, action: str, url: str = None) -> dict:
         """Control browser instances"""
         return {"action": action, "url": url, "status": "placeholder"}
-    
-    async def _code_review(self, code: str, language: str = "python") -> Dict:
+
+    async def _code_review(self, code: str, language: str = "python") -> dict:
         """Review code"""
         return {"language": language, "issues": [], "suggestions": []}
-    
-    async def _security_scan(self, target: str) -> Dict:
+
+    async def _security_scan(self, target: str) -> dict:
         """Perform security scan"""
         return {"target": target, "vulnerabilities": [], "status": "placeholder"}
-    
-    async def _code_generate(self, requirements: str, language: str = "python") -> Dict:
+
+    async def _code_generate(self, requirements: str, language: str = "python") -> dict:
         """Generate code"""
         return {"language": language, "code": "", "status": "placeholder"}
-    
-    async def _code_debug(self, code: str, error: str) -> Dict:
+
+    async def _code_debug(self, code: str, error: str) -> dict:
         """Debug code"""
         return {"fixed_code": "", "explanation": "", "status": "placeholder"}
-    
-    async def _test_generate(self, code: str, language: str = "python") -> Dict:
+
+    async def _test_generate(self, code: str, language: str = "python") -> dict:
         """Generate tests"""
         return {"language": language, "tests": "", "status": "placeholder"}
-    
-    async def _data_analysis(self, data: Dict, analysis_type: str = "general") -> Dict:
+
+    async def _data_analysis(self, data: dict, analysis_type: str = "general") -> dict:
         """Analyze data"""
         return {"analysis_type": analysis_type, "results": {}, "status": "placeholder"}
-    
-    async def _report_generate(self, data: Dict, format: str = "markdown") -> Dict:
+
+    async def _report_generate(self, data: dict, format: str = "markdown") -> dict:
         """Generate report"""
         return {"format": format, "report": "", "status": "placeholder"}
-    
-    async def _swarm_predict(self, context: str) -> Dict:
+
+    async def _swarm_predict(self, context: str) -> dict:
         """Run a swarm simulation for market sentiment or security."""
         try:
             simulator = SwarmSimulator(
@@ -497,82 +497,82 @@ Respond with the complete corrected output."""
         except Exception as e:
             logger.error(f"Swarm simulation failed: {e}")
             return {"status": "error", "error": str(e)}
-            
-    async def _run_pentagi_operation(self, target: str, flow_type: str = "pentest", objective: str = "") -> Dict:
+
+    async def _run_pentagi_operation(self, target: str, flow_type: str = "pentest", objective: str = "") -> dict:
         """Trigger an autonomous penetration test using the external PentAGI agent stack."""
         try:
             # Optionally, we can launcher.boot() if the docker stack isn't running
             # launcher = PentagiLauncher()
             # launcher.boot()
-            
+
             client = PentagiClient()
             success = await client.authenticate()
             if not success:
                 return {"status": "error", "error": "Could not authenticate to PentAGI subsystem. Ensure it is running on https://localhost:8443"}
-                
+
             flow_id = await client.start_flow(target=target, flow_type=flow_type, objective=objective)
             return {
-                "status": "success", 
+                "status": "success",
                 "message": f"PentAGI flow '{flow_id}' initiated against {target}. Results will be synchronized when done.",
                 "flow_id": flow_id
             }
         except Exception as e:
             logger.error(f"PentAGI execution wrapper failed: {e}")
             return {"status": "error", "error": str(e)}
-    
-    async def _content_generate(self, prompt: str, content_type: str = "text") -> Dict:
+
+    async def _content_generate(self, prompt: str, content_type: str = "text") -> dict:
         """Generate creative content"""
         return {"content_type": content_type, "content": "", "status": "placeholder"}
-    
-    async def _design_concept(self, requirements: str) -> Dict:
+
+    async def _design_concept(self, requirements: str) -> dict:
         """Generate design concept"""
         return {"concept": "", "elements": [], "status": "placeholder"}
-    
-    async def _memory_search(self, query: str, limit: int = 5) -> Dict:
+
+    async def _memory_search(self, query: str, limit: int = 5) -> dict:
         """Search memory"""
         results = []
-        
+
         # Search persistent memory
         if self.memory:
             results.extend(await self.memory.search(query, limit))
-            
+
         # Search temporal memory
         temporal_results = self.temporal_memory.query(query, limit)
         results.extend([{"content": t, "source": "temporal"} for t in temporal_results])
-        
+
         if results:
             return {"results": results[:limit], "status": "success"}
         return {"results": [], "status": "no_memory"}
-    
-    async def _memory_store(self, key: str, value: Any) -> Dict:
+
+    async def _memory_store(self, key: str, value: Any) -> dict:
         """Store in memory"""
         status = []
-        
+
         # Store in persistent memory
         if self.memory:
             await self.memory.store(key, value)
             status.append("persistent")
-            
+
         # Store in temporal memory
         content = f"{key}: {value}" if isinstance(value, str) else f"{key}: {json.dumps(value)}"
         self.temporal_memory.add(content)
         status.append("temporal")
-        
+
         if status:
             return {"status": f"stored in {', '.join(status)}"}
         return {"status": "no_memory"}
 
-    async def _future_tech_explore(self, domain: str, focus: str = "general") -> Dict:
+    async def _future_tech_explore(self, domain: str, focus: str = "general") -> dict:
         """Explore future technology domains"""
         from .advanced_features.future_tech_explorer import FutureTechExplorer
         return await FutureTechExplorer.explore(domain, focus)
 
-    async def _web_scrape_stealth(self, url: str, css_selector: str = "body") -> Dict:
+    async def _web_scrape_stealth(self, url: str, css_selector: str = "body") -> dict:
         """Use Scrapling stealth mode to bypass Cloudflare Turnstile blocks."""
         scraper = StealthScraper()
         return scraper.scrape(url, css_selector)
-        
-    async def _decensor_local_model(self, model_name: str, quantization: str = "bnb_4bit") -> Dict:
+
+    async def _decensor_local_model(self, model_name: str, quantization: str = "bnb_4bit") -> dict:
         """Use Heretic-LLM directional ablation to decensor a HuggingFace model locally."""
         decensor = HereticDecensor()
         return decensor.decensor_model(model_name, options={"quantization": quantization})

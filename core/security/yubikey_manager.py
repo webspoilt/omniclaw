@@ -4,15 +4,14 @@ yubikey_manager.py - Handles YubiKey HMAC-SHA1 challenge-response for key deriva
 Requires: pip install yubikey-manager cryptography
 """
 
-import os
 import hashlib
 import logging
-from typing import Optional
-import ykman
+import os
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from ykman.device import connect_to_device
 from ykman.driver import CCIDDriver
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
 
 logger = logging.getLogger("YubiKeyManager")
 
@@ -43,7 +42,7 @@ class YubiKeyHandler:
         """Generate a random challenge."""
         return os.urandom(size)
 
-    def hmac_sha1_response(self, challenge: bytes) -> Optional[bytes]:
+    def hmac_sha1_response(self, challenge: bytes) -> bytes | None:
         """
         Send challenge to YubiKey's HMAC-SHA1 slot and get response.
         Returns 20-byte HMAC-SHA1 digest.
@@ -51,36 +50,36 @@ class YubiKeyHandler:
         try:
             if not self.device:
                 self._connect()
-            
+
             # Use the CCID interface for HMAC-SHA1
             driver = CCIDDriver(self.device)
             driver.open()
-            
+
             # Select the application
             driver.select_hmac_slot(self.slot_id)
-            
+
             # Send challenge and get response
             response = driver.send_hmac(challenge)
             driver.close()
-            
+
             logger.debug("HMAC-SHA1 challenge-response successful")
             return response
         except Exception as e:
             logger.error(f"HMAC-SHA1 failed: {e}")
             return None
 
-    def derive_key(self, challenge: Optional[bytes] = None) -> bytes:
+    def derive_key(self, challenge: bytes | None = None) -> bytes:
         """
         Derive a 32-byte AES-256 key using YubiKey HMAC.
         Uses HKDF to expand the 20-byte HMAC output to 32 bytes.
         """
         if challenge is None:
             challenge = self.generate_challenge()
-        
+
         hmac_result = self.hmac_sha1_response(challenge)
         if not hmac_result:
             raise RuntimeError("Failed to get HMAC from YubiKey")
-        
+
         # Expand 20 bytes to 32 bytes via SHA256 of challenge + response
         combined = challenge + hmac_result
         key = hashlib.sha256(combined).digest()
@@ -93,13 +92,13 @@ class YubiKeyHandler:
         """
         challenge = self.generate_challenge()
         kek = self.derive_key(challenge)
-        
+
         # Encrypt vault_key with KEK using AES-256-GCM
         iv = os.urandom(12)
         cipher = Cipher(algorithms.AES(kek), modes.GCM(iv), backend=default_backend())
         encryptor = cipher.encryptor()
         ciphertext = encryptor.update(vault_key) + encryptor.finalize()
-        
+
         # Store challenge + iv + tag + ciphertext
         with open(output_file, 'wb') as f:
             f.write(challenge)
@@ -108,7 +107,7 @@ class YubiKeyHandler:
             f.write(ciphertext)
         logger.info(f"Vault key encrypted and saved to {output_file}")
 
-    def decrypt_vault_key(self, input_file: str) -> Optional[bytes]:
+    def decrypt_vault_key(self, input_file: str) -> bytes | None:
         """
         Decrypt the vault's master key using YubiKey.
         Returns the master key or None if YubiKey is missing/wrong.
@@ -119,7 +118,7 @@ class YubiKeyHandler:
                 iv = f.read(12)
                 tag = f.read(16)
                 ciphertext = f.read()
-            
+
             kek = self.derive_key(challenge)
             cipher = Cipher(algorithms.AES(kek), modes.GCM(iv, tag), backend=default_backend())
             decryptor = cipher.decryptor()

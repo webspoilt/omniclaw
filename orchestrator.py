@@ -1,12 +1,13 @@
 import asyncio
 import logging
 import os
+import re
+from typing import Any
+
 import yaml
-from typing import Dict, List, Any
 import zmq.asyncio
 from lancedb import connect
 
-import re
 
 # 🛡️ Layer 1 & 2: FileGuard & ShellSandbox (Stabilized v4.5.0)
 class SecurityLayer:
@@ -45,9 +46,9 @@ class SovereignOrchestrator:
         # Vector Memory (LanceDB)
         os.makedirs("./memory", exist_ok=True)
         self.db = connect("./memory/sovereign_vector")
-        
-    def _load_config(self, path: str) -> Dict:
-        with open(path, 'r') as f:
+
+    def _load_config(self, path: str) -> dict:
+        with open(path) as f:
             return yaml.safe_load(f)
 
     async def start_p2p_mesh(self):
@@ -62,7 +63,7 @@ class SovereignOrchestrator:
                 # Syncing vector memory or offloading Static Analysis
                 logger.info(f"P2P Mesh: Received task from node {msg.get('node_id')}")
                 await socket.send_json({"status": "synced", "ack": True})
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 continue
 
     async def cve_to_poc_factory(self, cve_id: str):
@@ -73,7 +74,7 @@ class SovereignOrchestrator:
         3. specialized Worker synthesizes Python exploit
         """
         logger.info(f"🚀 Initializing CVE-to-PoC Factory for {cve_id}")
-        
+
         # Step 1: Reachability Analysis
         reachable = await self.dispatch_task("static-analyst", {"action": "slice", "cve": cve_id})
         if not reachable:
@@ -83,18 +84,18 @@ class SovereignOrchestrator:
         # Step 2: Exploit Synthesis
         logger.info(f"CVE {cve_id} is REACHABLE. Dispatching Exploit Synthesis...")
         exploit = await self.dispatch_task("dynamic-exploiter", {"action": "synthesize", "cve": cve_id})
-        
+
         # Step 3: PoC Validation
         logger.info("Validating synthesized PoC via Playwright Dynamic Agent...")
         validation = await self.dispatch_task("dynamic-exploiter", {"action": "validate", "exploit": exploit})
-        
+
         if validation.get("success"):
             logger.info(f"✅ SUCCESS: Functional PoC generated for {cve_id}")
             self._save_evidence(cve_id, validation)
         else:
             logger.warning(f"❌ FAILED: PoC validation failed for {cve_id}")
 
-    async def dispatch_task(self, worker_id: str, payload: Dict) -> Dict:
+    async def dispatch_task(self, worker_id: str, payload: dict) -> dict:
         """Simulate dispatching to a specialized worker in the Hive"""
         logger.info(f"Hive: Dispatching to {worker_id}...")
         await asyncio.sleep(2) # Simulating heavy compute

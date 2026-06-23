@@ -5,13 +5,13 @@ Logs the reasoning behind significant decisions and enables
 future sessions to query: "Why did we choose this approach?"
 """
 
-import logging
-import json
-import time
 import hashlib
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, field, asdict
+import json
+import logging
+import time
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.DecisionArchaeology")
 
@@ -22,28 +22,28 @@ class Decision:
     decision_id: str
     decision: str                         # What was decided
     reasoning: str                        # Why this was chosen
-    alternatives: List[str] = field(default_factory=list)  # What else was considered
-    rejected_reasons: Dict[str, str] = field(default_factory=dict)  # alt -> why rejected
-    context: Dict[str, Any] = field(default_factory=dict)
+    alternatives: list[str] = field(default_factory=list)  # What else was considered
+    rejected_reasons: dict[str, str] = field(default_factory=dict)  # alt -> why rejected
+    context: dict[str, Any] = field(default_factory=dict)
     impact: str = "low"                   # "low", "medium", "high", "critical"
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     project: str = ""
-    files_affected: List[str] = field(default_factory=list)
+    files_affected: list[str] = field(default_factory=list)
     made_by: str = "agent"                # "agent", "user", "system"
     confidence: float = 0.8
     timestamp: float = field(default_factory=time.time)
-    superseded_by: Optional[str] = None   # ID of decision that overrides this one
+    superseded_by: str | None = None   # ID of decision that overrides this one
 
 
 class DecisionArchaeologist:
     """
     Records, indexes, and queries the reasoning behind project decisions.
-    
+
     Every significant decision is logged with its full reasoning chain,
-    alternatives considered, and context — so future sessions can 
+    alternatives considered, and context — so future sessions can
     understand WHY something was done.
     """
-    
+
     def __init__(self, storage_dir: str = "./memory_db/decisions",
                  memory=None):
         """
@@ -54,26 +54,26 @@ class DecisionArchaeologist:
         self.storage_dir = Path(storage_dir)
         self.storage_dir.mkdir(parents=True, exist_ok=True)
         self.memory = memory
-        
+
         # In-memory index for fast access
-        self.decisions: Dict[str, Decision] = {}
+        self.decisions: dict[str, Decision] = {}
         self._load_all()
-        
+
         logger.info(f"DecisionArchaeologist initialized: {len(self.decisions)} decisions loaded")
-    
+
     def record_decision(self, decision: str, reasoning: str,
-                         alternatives: List[str] = None,
-                         rejected_reasons: Dict[str, str] = None,
-                         context: Dict[str, Any] = None,
+                         alternatives: list[str] = None,
+                         rejected_reasons: dict[str, str] = None,
+                         context: dict[str, Any] = None,
                          impact: str = "medium",
-                         tags: List[str] = None,
+                         tags: list[str] = None,
                          project: str = "",
-                         files_affected: List[str] = None,
+                         files_affected: list[str] = None,
                          made_by: str = "agent",
                          confidence: float = 0.8) -> str:
         """
         Record a significant decision with full reasoning.
-        
+
         Args:
             decision: What was decided
             reasoning: Why this approach was chosen
@@ -86,12 +86,12 @@ class DecisionArchaeologist:
             files_affected: Files impacted by this decision
             made_by: Who made the decision
             confidence: How confident we are (0-1)
-            
+
         Returns:
             Decision ID
         """
         decision_id = self._generate_id(decision)
-        
+
         record = Decision(
             decision_id=decision_id,
             decision=decision,
@@ -106,13 +106,13 @@ class DecisionArchaeologist:
             made_by=made_by,
             confidence=confidence,
         )
-        
+
         # Store in memory
         self.decisions[decision_id] = record
-        
+
         # Persist to disk
         self._save_decision(record)
-        
+
         # Store in vector memory for semantic search
         if self.memory:
             try:
@@ -129,18 +129,18 @@ class DecisionArchaeologist:
                     )
             except Exception as e:
                 logger.debug(f"Could not store decision in vector memory: {e}")
-        
+
         logger.info(f"Decision recorded [{impact.upper()}]: {decision}")
         return decision_id
-    
-    async def query_decisions(self, question: str, limit: int = 5) -> List[Dict[str, Any]]:
+
+    async def query_decisions(self, question: str, limit: int = 5) -> list[dict[str, Any]]:
         """
         Query past decisions using natural language.
-        
+
         Args:
             question: Natural language question about past decisions
             limit: Max results
-            
+
         Returns:
             List of relevant decisions with their reasoning
         """
@@ -156,38 +156,38 @@ class DecisionArchaeologist:
                 ]
             except Exception:
                 pass
-        
+
         # Fallback: keyword search
         question_lower = question.lower()
         scored = []
-        
+
         for did, d in self.decisions.items():
             score = 0
             searchable = f"{d.decision} {d.reasoning} {' '.join(d.tags)}".lower()
-            
+
             for word in question_lower.split():
                 if word in searchable:
                     score += 1
-            
+
             if score > 0:
                 scored.append((score, d))
-        
+
         scored.sort(key=lambda x: x[0], reverse=True)
         return [self._format_decision(d) for _, d in scored[:limit]]
-    
-    def get_reasoning_chain(self, decision_id: str) -> Optional[Dict[str, Any]]:
+
+    def get_reasoning_chain(self, decision_id: str) -> dict[str, Any] | None:
         """
         Get the full reasoning chain for a specific decision.
-        
+
         Args:
             decision_id: The decision ID
-            
+
         Returns:
             Complete reasoning chain including superseding decisions
         """
         if decision_id not in self.decisions:
             return None
-        
+
         d = self.decisions[decision_id]
         chain = {
             "decision": d.decision,
@@ -206,7 +206,7 @@ class DecisionArchaeologist:
             "made_by": d.made_by,
             "files_affected": d.files_affected,
         }
-        
+
         # Check if superseded
         if d.superseded_by and d.superseded_by in self.decisions:
             successor = self.decisions[d.superseded_by]
@@ -218,19 +218,19 @@ class DecisionArchaeologist:
             chain["status"] = "superseded"
         else:
             chain["status"] = "active"
-        
+
         return chain
-    
+
     def supersede_decision(self, old_id: str, new_decision: str,
                             new_reasoning: str, **kwargs) -> str:
         """
         Record a new decision that supersedes an old one.
-        
+
         Args:
             old_id: ID of the decision being superseded
             new_decision: The new decision
             new_reasoning: Why the old decision was overridden
-            
+
         Returns:
             New decision ID
         """
@@ -240,82 +240,82 @@ class DecisionArchaeologist:
             context={"supersedes": old_id},
             **kwargs
         )
-        
+
         if old_id in self.decisions:
             self.decisions[old_id].superseded_by = new_id
             self._save_decision(self.decisions[old_id])
-        
+
         logger.info(f"Decision {old_id} superseded by {new_id}")
         return new_id
-    
-    def get_recent(self, limit: int = 10, project: Optional[str] = None) -> List[Dict]:
+
+    def get_recent(self, limit: int = 10, project: str | None = None) -> list[dict]:
         """
         Get the most recent decisions.
-        
+
         Args:
             limit: Max results
             project: Optional project filter
-            
+
         Returns:
             List of recent decisions
         """
         decisions = list(self.decisions.values())
-        
+
         if project:
             decisions = [d for d in decisions if d.project == project]
-        
+
         decisions.sort(key=lambda d: d.timestamp, reverse=True)
         return [self._format_decision(d) for d in decisions[:limit]]
-    
-    def export_decisions(self, project: Optional[str] = None) -> str:
+
+    def export_decisions(self, project: str | None = None) -> str:
         """
         Export all decisions as a readable markdown timeline.
-        
+
         Args:
             project: Optional project filter
-            
+
         Returns:
             Markdown string
         """
         decisions = list(self.decisions.values())
         if project:
             decisions = [d for d in decisions if d.project == project]
-        
+
         decisions.sort(key=lambda d: d.timestamp)
-        
+
         lines = [f"# Decision Log{f' — {project}' if project else ''}\n"]
         lines.append(f"*{len(decisions)} decisions recorded*\n")
-        
+
         for d in decisions:
             date = time.strftime('%Y-%m-%d %H:%M', time.localtime(d.timestamp))
             status = "~~superseded~~" if d.superseded_by else "**active**"
-            
+
             lines.append(f"## [{d.impact.upper()}] {d.decision}")
             lines.append(f"*{date} — {status}*\n")
             lines.append(f"**Reasoning:** {d.reasoning}\n")
-            
+
             if d.alternatives:
                 lines.append("**Alternatives considered:**")
                 for alt in d.alternatives:
                     reason = d.rejected_reasons.get(alt, "—")
                     lines.append(f"- ~~{alt}~~ — {reason}")
                 lines.append("")
-            
+
             if d.files_affected:
                 lines.append(f"**Files:** {', '.join(f'`{f}`' for f in d.files_affected)}\n")
-            
+
             lines.append("---\n")
-        
+
         return "\n".join(lines)
-    
+
     # --- Private helpers ---
-    
+
     def _generate_id(self, decision: str) -> str:
         """Generate a unique decision ID"""
         hash_val = hashlib.md5(f"{decision}:{time.time()}".encode()).hexdigest()[:12]
         return f"dec_{hash_val}"
-    
-    def _format_decision(self, d: Decision) -> Dict[str, Any]:
+
+    def _format_decision(self, d: Decision) -> dict[str, Any]:
         """Format a decision for display"""
         return {
             "decision_id": d.decision_id,
@@ -328,25 +328,25 @@ class DecisionArchaeologist:
             "project": d.project,
             "active": d.superseded_by is None,
         }
-    
+
     def _save_decision(self, d: Decision):
         """Persist a decision to disk"""
         path = self.storage_dir / f"{d.decision_id}.json"
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(asdict(d), f, indent=2, default=str)
-    
+
     def _load_all(self):
         """Load all decisions from disk"""
         for path in self.storage_dir.glob("dec_*.json"):
             try:
-                with open(path, 'r', encoding='utf-8') as f:
+                with open(path, encoding='utf-8') as f:
                     data = json.load(f)
                 d = Decision(**data)
                 self.decisions[d.decision_id] = d
             except Exception as e:
                 logger.warning(f"Could not load decision {path}: {e}")
-    
-    def get_stats(self) -> Dict[str, Any]:
+
+    def get_stats(self) -> dict[str, Any]:
         """Get decision archaeology statistics"""
         decisions = list(self.decisions.values())
         return {

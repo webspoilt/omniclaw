@@ -1,6 +1,7 @@
+import logging
+
 from base_worker import BaseRedTeamWorker
 from stealth_orchestrator import tor_session
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class ReconWorker(BaseRedTeamWorker):
         logger.info(f"ReconWorker scanning target: {target}")
 
         # Use Tor for all requests
-        session = tor_session()
+        tor_session()
         # Perform OSINT tasks (example: fetch robots.txt, search for subdomains, etc.)
         # ...
 

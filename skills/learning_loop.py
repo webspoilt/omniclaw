@@ -4,10 +4,9 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
-
 
 LEARN_DIR = Path(__file__).resolve().parent.parent / "data" / "learning"
 
@@ -28,7 +27,7 @@ def _ensure_store():
     },
     required=["strategy", "outcome"],
 )
-async def log_experiment(strategy: str, outcome: str, metrics_json: Optional[str] = None, notes: Optional[str] = None) -> str:
+async def log_experiment(strategy: str, outcome: str, metrics_json: str | None = None, notes: str | None = None) -> str:
     path = _ensure_store()
     metrics = {}
     if metrics_json:

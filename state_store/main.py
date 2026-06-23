@@ -4,9 +4,7 @@ Provides a simple SQLite-backed store for agent tasks, logs, and memory.
 No authentication, no network dependency, full root access.
 """
 import asyncio
-import os
 import sqlite3
-from datetime import datetime
 from pathlib import Path
 
 DB_PATH = Path("/root/agent_state.db")

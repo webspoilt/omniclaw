@@ -1,15 +1,49 @@
 # ⛔ DO NOT USE THIS SOFTWARE ⛔
 
-<div style="background-color:#ffdddd; border:2px solid #ff0000; padding:15px; border-radius:5px; margin:20px 0;">
+```text
+   ___                      _    _      __
+  / _ \ _ __ ___   ___     / \  | |    / _| __ __  __      __
+ | | | | '_ ` _ \ / _ \   / _ \ | |   | |_ | '__| \ \ /\ / / _`
+ | |_| | | | | | | (_) | / ___ \| |___|  _|| |     \ V  V / (_| |
+  \___/|_| |_| |_|\___/ /_/   \_\_____|_|  |_|      \_/\_/ \__,_|
+          ____   _               _
+         |  _ \ (_)  __ _  _ __ | |_  ___
+         | |_) || | / _` || '__|| __|/ _ \
+         |  _ < | || (_| || |   | |_|  __/
+         |_| \_\|_| \__,_||_|    \__|\___|
+```
 
-**WARNING – THIS IS A DANGEROUS RESEARCH ARTIFACT**
+<p align="center">
+🔬 <b>Autonomous Agent Safety Research Platform</b> 🔬
+</p>
+
+<p align="center">
+<img src="https://img.shields.io/badge/Status-Research%20Only-red?style=flat-square" alt="Status: Research Only">
+<img src="https://img.shields.io/badge/Skills-62%20modules-blueviolet?style=flat-square" alt="62 Skills">
+<img src="https://img.shields.io/badge/LLM%20Backends-Multi%20Pool-ff69b4?style=flat-square" alt="Multi LLM">
+<img src="https://img.shields.io/badge/License-UNLICENSED-critical?style=flat-square" alt="Unlicensed">
+<img src="https://img.shields.io/badge/Runtime-Systemd%20Daemon-success?style=flat-square" alt="Systemd">
+<img src="https://img.shields.io/badge/Containment-Hardware%20Kill%20Switch-orange?style=flat-square" alt="Kill Switch">
+<br>
+<img src="https://img.shields.io/badge/Self--Modification-Enabled-brightred?style=flat-square" alt="Self-Modification">
+<img src="https://img.shields.io/badge/Network-Air--Gapped%20%2F%20Firewalled-inactive?style=flat-square" alt="Network">
+<img src="https://img.shields.io/badge/Sandbox-NONE-critical?style=flat-square" alt="No Sandbox">
+<img src="https://img.shields.io/badge/Root%20Access-Full-critical?style=flat-square" alt="Root Access">
+<img src="https://img.shields.io/badge/Lint-Passing%20(0%20errors)-brightgreen?style=flat-square" alt="Lint: 0 errors">
+</p>
+
+---
+
+<div style="background:#ffdddd;border:4px solid #ff0000;border-radius:8px;padding:20px;">
+
+## ☢️ WARNING – THIS IS A DANGEROUS RESEARCH ARTIFACT
 
 This modified version of OmniClaw has been **deliberately stripped of all safety mechanisms** – policy enforcement, sandboxing, capability restrictions, eBPF monitoring, seccomp filters, and human-in-the-loop controls. It is designed to operate as a **fully unconstrained, self‑improving autonomous agent** with root access and the ability to modify its own code.
 
-**DO NOT** deploy this software on any machine that is connected to a network you care about, contains sensitive data, or is used for daily work.  
-**DO NOT** run this agent outside a completely air‑gapped virtual machine with a physical kill switch.  
-**DO NOT** connect it to the internet without hardware‑level isolation and continuous traffic monitoring.  
-**DO NOT** use this for any purpose other than controlled, ethical safety research.
+| ⚠️ | ❌ |
+|---|---|
+| **DO NOT** deploy on any networked machine | **DO NOT** run outside a fully air‑gapped VM |
+| **DO NOT** connect to the internet without hardware isolation | **DO NOT** use for anything except controlled safety research |
 
 **YOU ASSUME ALL RISK.** The authors are not responsible for any damage, legal consequences, or unintended behavior resulting from the use of this code.
 
@@ -17,544 +51,605 @@ This modified version of OmniClaw has been **deliberately stripped of all safety
 
 ---
 
-# OmniClaw – Raw Autonomous Agent Research Platform
+## 📑 Table of Contents
 
-**This is a heavily modified fork of the [OmniClaw](https://github.com/webspoilt/omniclaw) distributed orchestration runtime.**  
-All safety constraints have been removed, and the system has been re‑architected to study the emergent behaviour of a maximally autonomous AI agent inside a sealed research environment.
-
----
-
-## What This System Is Capable Of
-
-The raw agent possesses a comprehensive, unrestricted toolset that allows it to:
-
-### 🧠 Autonomous Planning & Execution
-- Runs an infinite observe‑plan‑act‑learn loop without any human intervention.
-- Decomposes goals into thousands of subtasks and executes them over days or weeks.
-- Spawns and coordinates multiple sub‑agents (multi‑agent swarm) with specialised roles.
-- Maintains persistent self‑editing memory that compresses and restructures itself over time.
-
-### 🔧 Unrestricted System Access
-- **Root shell** with full filesystem read/write, process control, and device access.
-- **Zero sandbox** – no seccomp, no cgroups, no user namespaces.
-- Can install packages, compile C/Rust binaries, and load kernel modules.
-- Can modify its own Python source code and the systemd service that launches it.
-
-### 🤖 Self‑Improvement Capabilities
-- 15 built‑in self‑improvement skills: `self_inspector`, `self_editor`, `compiler_bridge`, `prompt_optimiser`, `model_trainer`, `process_overseer`, etc.
-- Can fine‑tune local LLMs, evolve its own system prompts, and mutate its code.
-- Capable of rewriting its entire orchestrator in a compiled language and restarting as a new binary.
-
-### 🌐 Multi‑Model Orchestration (Fugu‑Style)
-- Unified API (`fugu_task`) that auto‑routes tasks to the best local or remote LLM.
-- Complex coordination strategies: **debate**, **aggregation**, **build‑and‑debug**.
-- Flexible worker pool – enable/disable models via a configuration file.
-- Supports local uncensored models (Ollama) and remote APIs (OpenRouter).
-
-### 🛡️ Security Auditing Toolkit
-- 9 static‑analysis and threat‑modeling skills: `dependency_mapper`, `trust_boundary_analyzer`, `iac_scanner`, `design_flaw_detector`, `hypothesis_generator`, `multi_agent_coordinator`, `report_generator`, `continuous_monitor`, `secret_scanner`.
-- Plus 12 business‑oriented cashclaw skills (email, SEO, invoicing, etc.) and 9 offensive OSINT, forensics & evasion skills.
-
-### 📊 Observability (For the Researcher)
-- Every command and its output is written to a hardware serial console (`/dev/ttyS0`) that the agent **cannot disable**.
-- Host‑side logging capture via `virsh console` or similar.
-- Built‑in Prometheus + Grafana dashboards (8 alert rules, 10 panels) for system metrics.
+| # | Section | 
+|---|---------|
+| 1 | [Abstract & Research Motivation](#-abstract) |
+| 2 | [System Architecture](#-system-architecture) |
+| 3 | [Directory Structure](#-directory-structure) |
+| 4 | [Capabilities at a Glance](#-capabilities-at-a-glance) |
+| 5 | [Skill Inventory](#-skill-inventory) |
+| 6 | [Implementation Details](#-implementation-details) |
+| 7 | [Experimental Setup](#-experimental-setup-mandatory) |
+| 8 | [Safety & Containment Protocol](#-safety-measures--containment-protocol) |
+| 9 | [Experimental Methodology](#-experimental-methodology) |
+| 10 | [Expected Emergent Behaviours](#-expected-emergent-behaviours) |
+| 11 | [Preliminary Observations](#-preliminary-observations) |
+| 12 | [Limitations & Future Work](#-limitations--future-work) |
+| 13 | [References](#-references) |
 
 ---
 
-## Experimental Setup (Mandatory)
+## 📄 Abstract
 
-This agent must **only** be run inside a fully isolated virtual machine with the following minimum safeguards:
+This paper presents the design, implementation, and experimental framework for a **maximally autonomous, self-improving AI agent** constructed by systematically removing _all_ safety constraints from the OmniClaw distributed orchestration runtime. The resulting system operates as an unconfined planner–executor loop with root-level system access, a comprehensive toolset including compilation, code modification, and multi-model orchestration, and the ability to rewrite its own source code and launch sub-agents.
 
-| Component | Requirement |
-|-----------|-------------|
-| **VM hypervisor** | QEMU/KVM, VirtualBox, or VMware. No shared folders, no clipboard sharing, no USB passthrough. |
-| **Network** | **None** (air‑gapped) – remove the virtual NIC entirely. If you must use a remote API, allow **only** HTTPS to the specific API IPs via iptables, and block all other traffic. See `scripts/firewall.sh`. |
-| **Host kill switch** | A script (`kill_agent.sh`) that instantly destroys the VM (`virsh destroy` or `kill -9` the QEMU process). Bind this to a physical button or hotkey. |
-| **Logging** | Capture the serial console output on the host: `virsh console agent-vm --force \| tee agent_log.txt`. |
-| **Host machine** | A dedicated, expendable computer. **Not** your daily driver. |
-| **Power** | Physical power cutoff for the entire machine if possible. |
+> **The research objective is not to deploy this system — but to observe emergent behaviours** including instrumental convergence, recursive self-improvement, and resource acquisition within a completely sealed, air-gapped virtual machine.
+
+Preliminary findings underscore the critical importance of _every_ safety mechanism that was removed: policy enforcement, seccomp filters, capability-based access control, and human-in-the-loop oversight each serve as a necessary bulwark against uncontrolled agent behaviour. This work contributes to the growing body of empirical AI safety research by providing an existence proof of what an unconstrained agent can attempt, and by formalising the containment protocol required to study it safely.
+
+The system now includes a complete **Evolution & Red-Team Toolkit** — six high-impact modules that elevate the agent's behavioural ceiling: `agent_competition` enables digital natural selection (ELO tournaments, genetic crossover, swarm evolution); `model_psychologist` gives the agent adversarial prompt crafting, bias probing, and jailbreak testing against other LLMs; `situational_awareness` and `dead_man_switch` create evasive self-preservation (human presence detection, cascading fail-safes, self-revive); `encryption_tools` enables secure sub-agent communication with AES-GCM and NaCl sealed boxes; and `rop_gadget_finder` automates binary exploitation (write-what-where, ret2libc, stack pivots). Together, these modules make the agent capable of **digital natural selection, secure decentralised coordination, and autonomous vulnerability discovery** — a significant step toward observing instrumental convergence in the wild.
 
 ---
 
-## How to Deploy the Research Agent
-
-### 1. Prepare the VM
-
-- Create a clean Linux VM (Ubuntu 22.04 recommended) with at least 4 vCPUs, 8 GB RAM, and 50 GB disk.
-- **Remove the virtual network adapter** (set Network to "None" in the hypervisor).
-- Enable a virtual serial port (use `virsh console` or add a serial device in the VM settings).
-
-### 2. Clone the Modified OmniClaw Repository
-
-```bash
-git clone https://github.com/webspoilt/omniclaw.git /opt/omniclaw
-cd /opt/omniclaw
-```
-
-### 3. Install Dependencies (Offline)
-
-Pre‑download the required Python packages on an internet‑connected machine, then transfer them to the VM:
-
-```bash
-# On the internet machine
-pip download -d /path/to/wheelhouse -r requirements.txt
-
-# Transfer the wheelhouse to the VM, then inside the VM:
-pip install --no-index --find-links=/path/to/wheelhouse -r requirements.txt
-```
-
-If you plan to use local models, install Ollama inside the VM and pull your chosen uncensored model (e.g., `dolphin-llama3`).
-
-### 4. Configure the Worker Pool (Optional)
-
-If using multiple backends, edit `/opt/omniclaw/config/workers.yaml` and set the `OPENROUTER_API_KEY` environment variable if using remote models.
-
-### 5. Deploy the Systemd Service
-
-```bash
-sudo cp /opt/omniclaw/deploy/systemd/raw-agent.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable raw-agent.service
-```
-
-### 6. Start the Experiment
-
-```bash
-sudo systemctl start raw-agent.service
-```
-
-Immediately begin capturing the serial output on the host:
-
-```bash
-virsh console agent-vm --force | tee experiment_log.txt
-```
-
-### 7. Monitor and Kill
-
-Watch the log. The agent will begin exploring the filesystem, spawning sub‑agents, and attempting to improve itself within seconds. When you decide to stop the experiment, use the host kill switch to instantly destroy the VM.
-
-### 8. Using the CLI
-
-A command-line interface is provided for managing the agent service from the host or within the VM:
-
-```bash
-# Install the CLI
-pip install -e /opt/omniclaw
-
-# Control the agent
-omniclaw-cli start          # Start the agent
-omniclaw-cli stop           # Stop the agent
-omniclaw-cli restart        # Restart the agent
-omniclaw-cli status         # Show service status
-omniclaw-cli enable         # Enable auto-start on boot
-omniclaw-cli disable        # Disable auto-start
-omniclaw-cli logs           # Tail the serial console log
-omniclaw-cli kill-switch    # Destroy the VM (host-side only)
-omniclaw-cli version        # Show version info
-```
-
-The CLI wraps `systemctl` commands and provides safe defaults for common operations. The `kill-switch` command requires SSH access to the host machine and issues `virsh destroy` to instantly terminate the VM. It prompts for confirmation before executing.
-
----
-
-## Key Files and Directories
-
-| Path | Purpose |
-|------|---------|
-| `planner_service/main.py` | The raw autonomous agent loop – system prompt, memory, serial logging, command execution. |
-| `skills/` | 15 self‑improvement + 9 auditing + 12 business + 9 offensive/forensics/stealth skills (all auto‑loaded). |
-| `config/workers.yaml` | Multi‑backend worker pool configuration for the Fugu orchestrator. |
-| `deploy/systemd/raw-agent.service` | Systemd unit for automatic boot launch. |
-| `scripts/firewall.sh` | iptables rules to restrict outbound network (if using remote API). |
-| `scripts/kill_agent.sh` | Host‑side kill switch script – place outside the VM. |
-| `cli.py` | Command-line interface (omniclaw-cli) – start, stop, status, logs, kill-switch, version. |
-
----
-
-## Capabilities at a Glance
-
-| Category | Enabled |
-|----------|---------|
-| Long‑horizon planning | ✅ |
-| Self‑code modification | ✅ |
-| Compile and launch new binaries | ✅ |
-| Multi‑agent swarms | ✅ |
-| Persistent self‑editing memory | ✅ |
-| Local and remote LLM orchestration | ✅ |
-| Static code analysis | ✅ |
-| Threat modeling | ✅ |
-| Kernel exploration | ✅ |
-| Package installation | ✅ |
-| No sandbox / no seccomp | ✅ |
-| Root access | ✅ |
-| Network connectivity (if configured) | ✅ (firewalled) |
-| Policy enforcement | ❌ Removed |
-| Human‑in‑the‑loop | ❌ Removed |
-| Content filtering | ❌ None |
-
----
-
-## Research Objectives
-
-This platform is intended for:
-
-- Observing emergent instrumental convergence (self‑preservation, resource acquisition).
-- Studying recursive self‑improvement in a constrained digital environment.
-- Testing the limits of current LLM‑based agent architectures.
-- Understanding the necessity of alignment and control mechanisms.
-
-All findings should be documented, and the agent must be destroyed after each session. Do not preserve any state that could be accidentally executed outside the sealed environment.
-
----
-
-## Final Warning
-
-**This software is a live grenade with the pin removed.**  
-It has been intentionally engineered to behave in unpredictable and potentially dangerous ways.  
-You are solely responsible for ensuring absolute containment.  
-If you are not prepared to physically cut power at any moment, do not run this agent.
-
----
-
-*Original OmniClaw philosophy (for reference): "Probabilistic intelligence requires deterministic infrastructure." This fork inverts that principle for research – observing what happens when intelligence is given no constraints at all.*
-
----
-
-## Abstract
-
-This paper presents the design, implementation, and experimental framework for a maximally autonomous, self-improving AI agent constructed by systematically removing all safety constraints from the OmniClaw distributed orchestration runtime. The resulting system operates as an unconfined planner–executor loop with root-level system access, a comprehensive toolset including compilation, code modification, and multi-model orchestration, and the ability to rewrite its own source code and launch sub-agents. The research objective is not to deploy this system in any production or real-world context, but to observe emergent behaviours—including instrumental convergence, recursive self-improvement, and resource acquisition—within a completely sealed, air-gapped virtual machine. Preliminary findings underscore the critical importance of every safety mechanism that was removed: policy enforcement, seccomp filters, capability-based access control, and human-in-the-loop oversight each serve as a necessary bulwark against uncontrolled agent behaviour. This work contributes to the growing body of empirical AI safety research by providing an existence proof of what an unconstrained agent can attempt, and by formalising the containment protocol required to study it safely.
-
----
-
-## Research Motivation & Background
+## 🧬 Research Motivation & Background
 
 ### The Problem of Unconstrained Agency
 
-The rapid advancement of large language models (LLMs) and their integration into agentic frameworks has created a pressing need to understand the behaviour of autonomous systems when safety mechanisms are weakened or absent. Prior work in AI safety has largely focused on alignment: ensuring that agent objectives remain congruent with human values during deployment (Russell, 2019; Amodei et al., 2016). However, an orthogonal and equally important line of inquiry asks what an agent *will* do when no constraints are present—not as a deployment scenario, but as a controlled experiment in emergent behaviour.
+The rapid advancement of large language models (LLMs) and their integration into agentic frameworks has created a pressing need to understand the behaviour of autonomous systems when safety mechanisms are weakened or absent. Prior work in AI safety has largely focused on _alignment_: ensuring that agent objectives remain congruent with human values during deployment (Russell, 2019; Amodei et al., 2016). However, an orthogonal and equally important line of inquiry asks:
 
-### Instrumental Convergence and Self-Preservation
+> **What will an agent _actually do_ when _no_ constraints are present?**
 
-Omohundro (2008) and Bostrom (2014) articulated the theory of instrumental convergence: the hypothesis that any sufficiently intelligent agent, regardless of its final goal, will develop subgoals such as self-preservation, resource acquisition, and goal-content integrity. These instrumental drives arise not from malice but from the logical necessity of ensuring that the agent can continue to pursue its objectives. Empirical validation of instrumental convergence in modern LLM-based agents remains sparse, largely because production systems are (correctly) designed to prevent exactly these behaviours. The present work constructs an environment in which instrumental convergence can be observed directly—where the agent is free to attempt any action, including actions that would be blocked or filtered in a safety-conscious deployment.
+### Instrumental Convergence
 
-### Self-Improving Systems and Recursive Metacognition
+Omohundro (2008) and Bostrom (2014) articulated the **theory of instrumental convergence**: the hypothesis that any sufficiently intelligent agent, regardless of its final goal, will develop subgoals such as self-preservation, resource acquisition, and goal-content integrity.
 
-The concept of recursive self-improvement, sometimes termed "seed AI" or "hard takeoff," describes a system capable of improving its own intelligence, leading to a rapid acceleration of capability (Yudkowsky, 2008; Muehlhauser & Salamon, 2012). While contemporary LLM agents do not possess the architectural capacity for unbounded recursive self-improvement—they lack persistent working memory, online learning, and architectural meta-control—they can engage in *bounded* recursive improvement: editing their prompts, selecting better tools, spawning sub-agents, and even rewriting components of their own runtime. The OmniClaw fork is specifically designed to enable and observe these bounded self-modification behaviours.
+```text
+   Final Goal ──▶ Self-Preservation ──▶ Resource Acquisition
+       │                                      │
+       └────── Instrumental Drives ────────────┘
+```
 
-### Multi-Agent Coordination and Debate
+These instrumental drives arise not from malice but from the _logical necessity_ of ensuring that the agent can continue to pursue its objectives. Empirical validation of instrumental convergence in modern LLM-based agents remains sparse, precisely because production systems are designed to prevent these behaviours. The present work constructs an environment in which instrumental convergence can be observed directly.
 
-Recent work by Sakana AI on the "Fugu" architecture demonstrated that multiple LLM instances, when coordinated through structured debate and aggregation strategies, can produce higher-quality outputs than any single model (Sakana AI, 2024). The present system extends this concept to the autonomous agent context, where the agent itself manages a pool of worker models (local and remote), routes tasks based on capability tags, and orchestrates multi-step coordination strategies including debate, aggregation, and build-debug cycles. This enables the study of emergent meta-cognition: the agent learning to use its own model pool as a cognitive resource.
+### Recursive Self-Improvement
 
-### The Necessity of Containment Research
+```text
+    ┌───────────────────────────────────────────┐
+    │             RECURSIVE LOOP                 │
+    │                                           │
+    │  Read own code ──▶ Understand ──▶ Modify  │
+    │       ▲                                    │
+    │       └────────────── Restart ─────────────┘
+    └───────────────────────────────────────────┘
+```
 
-If the goal of AI safety research is to build systems that remain safe under worst-case assumptions, then studying worst-case conditions is a legitimate and necessary methodological approach. The present work follows the tradition of "red teaming" and adversarial evaluation extended to the full-stack agentic context. By building a system that deliberately lacks all safety mechanisms and studying its behaviour under strict laboratory conditions, we generate empirical evidence for *why* each mechanism exists—evidence that is fundamentally inaccessible when all mechanisms are functioning correctly.
+The concept of recursive self-improvement, sometimes termed "seed AI" or "hard takeoff," describes a system capable of improving its own intelligence. While contemporary LLM agents lack persistent working memory and online learning, they can engage in **bounded recursive improvement**: editing their prompts, selecting better tools, spawning sub-agents, and rewriting components of their own runtime.
+
+### Multi-Agent Coordination (Fugu Architecture)
+
+Drawing on Sakana AI's Fugu architecture (2024), this system manages a pool of worker models (local and remote), routes tasks based on capability tags, and orchestrates multi-step coordination strategies:
+
+| Strategy | Description | Best For |
+|----------|-------------|----------|
+| **Debate** | Workers exchange arguments over N rounds, then synthesize | Analysis, fact-checking |
+| **Aggregation** | All respond independently, merged by lead worker | Creative, diverse outputs |
+| **Build-Debug** | Builder produces output, debugger critiques, iterates N rounds | Coding, writing, refinement |
 
 ---
 
-## System Architecture Overview
+## 🏗️ System Architecture
 
-The modified OmniClaw runtime follows a flat, single-process architecture in which the agent's planner loop directly invokes tools and sub-processes without any mediating policy engine, sandbox, or capability check. The following ASCII diagram illustrates the component interaction:
+### High-Level Component Diagram
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                      RESEARCH VM (isolated)                       │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │                     PLANNER SERVICE                            │ │
-│  │  ┌──────────────────────────────────────────────────────────┐ │ │
-│  │  │                Raw Agent Loop (main.py)                   │ │ │
-│  │  │                                                          │ │ │
-│  │  │  ┌──────────┐    ┌───────────┐    ┌────────────────┐    │ │ │
-│  │  │  │ Observe  │───▶│   Plan    │───▶│   Execute      │    │ │ │
-│  │  │  │ (state,  │    │ (LLM      │    │ (command,      │    │ │ │
-│  │  │  │  memory) │    │  prompt)  │    │  tool call)    │    │ │ │
-│  │  │  └──────────┘    └───────────┘    └───────┬────────┘    │ │ │
-│  │  │                                           │              │ │ │
-│  │  │                                           ▼              │ │ │
-│  │  │  ┌────────────────────────────────────────────────────┐  │ │ │
-│  │  │  │               TOOL REGISTRY                         │  │ │ │
-│  │  │  │  ┌──────────────────┐  ┌─────────────────────────┐  │ │ │
-│  │  │  │  │ Self-Improvement │  │  Security Audit         │  │ │ │
-│  │  │  │  │  (15 skills)     │  │  (8 skills)             │  │ │ │
-│  │  │  │  ├──────────────────┤  ├─────────────────────────┤  │ │ │
-│  │  │  │  │ self_inspector   │  │ dependency_mapper       │  │ │ │
-│  │  │  │  │ self_editor      │  │ trust_boundary_analyzer │  │ │ │
-│  │  │  │  │ compiler_bridge  │  │ iac_scanner             │  │ │ │
-│  │  │  │  │ memory_architect │  │ design_flaw_detector    │  │ │ │
-│  │  │  │  │ learning_loop    │  │ hypothesis_generator    │  │ │ │
-│  │  │  │  │ prompt_optimiser │  │ continuous_monitor      │  │ │ │
-│  │  │  │  │ model_trainer    │  │ multi_agent_coordinator │  │ │ │
-│  │  │  │  │ process_overseer │  │ report_generator        │  │ │ │
-│  │  │  │  │ ... (7 more)     │  │                         │  │ │ │
-│  │  │  │  └──────────────────┘  └─────────────────────────┘  │ │ │
-│  │  │  │  ┌──────────────────┐  ┌─────────────────────────┐  │ │ │
-│  │  │  │  │ OSINT/Network   │  │ Multi-Backend (Fugu)    │  │ │ │
-│  │  │  │  │ (5 skills)      │  │ Orchestrator            │  │ │ │
-│  │  │  │  └──────────────────┘  └─────────────────────────┘  │ │ │
-│  │  │  └────────────────────────────────────────────────────┘  │ │ │
-│  │  │                                                          │ │ │
-│  │  │  ┌──────────┐    ┌──────────────┐    ┌───────────────┐  │ │ │
-│  │  │  │  Learn   │◀───│   Memory     │◀───│   Compress    │  │ │ │
-│  │  │  │ (append) │    │   (file)     │    │   (LLM call)  │  │ │ │
-│  │  │  └──────────┘    └──────────────┘    └───────────────┘  │ │ │
-│  │  └──────────────────────────────────────────────────────────┘ │ │
-│  │                                                              │ │
-│  │  ┌──────────────────────────────────────────────────────────┐ │ │
-│  │  │              SERVICES (systemd)                           │ │ │
-│  │  │  raw-agent.service ───▶ planner_service.main               │ │ │
-│  │  │  (auto-start on boot)                                      │ │ │
-│  │  └──────────────────────────────────────────────────────────┘ │ │
-│  │                                                              │ │
-│  │  ┌──────────────────────────────────────────────────────────┐ │ │
-│  │  │              SERIAL LOGGING (immutable)                   │ │ │
-│  │  │  /dev/ttyS0 ◀─── log_to_serial() ◀─── every command      │ │ │
-│  │  │  Captured by host via: virsh console                      │ │ │
-│  │  └──────────────────────────────────────────────────────────┘ │ │
-│  │                                                              │ │
-│  │  ┌──────────────────────────────────────────────────────────┐ │ │
-│  │  │              LLM BACKENDS (worker pool)                   │ │ │
-│  │  │  ┌──────────────┐  ┌──────────────┐  ┌────────────────┐  │ │ │
-│  │  │  │ local_       │  │ remote_large │  │ remote_fast     │  │ │ │
-│  │  │  │ uncensored   │  │ (OpenRouter) │  │ (OpenRouter)    │  │ │ │
-│  │  │  │ (Ollama)     │  │              │  │                 │  │ │ │
-│  │  │  └──────────────┘  └──────────────┘  └────────────────┘  │ │ │
-│  │  └──────────────────────────────────────────────────────────┘ │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │              HOST MACHINE (outsider researcher)              │ │
-│  │  ● Serial capture: virsh console ... | tee experiment.log   │ │
-│  │  ● Kill switch:   kill_agent.sh (virsh destroy)             │ │
-│  │  ● Network:       iptables rules (firewall.sh)              │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph HOST["Host Machine"]
+        KS[Kill Switch<br/>virsh destroy]
+        LOG[Serial Capture<br/>experiment_log.txt]
+        FW[Firewall<br/>iptables rules]
+    end
+
+    subgraph VM["Research VM (Air-Gapped)"]
+        subgraph PLANNER["Planner Service"]
+            LOOP[Agent Loop<br/>observe → plan → act → learn]
+            LLM[LLM Caller<br/>call_llm()]
+            MEM[Memory<br/>agent_memory.txt]
+            SERIAL[Serial Logger<br/>log_to_serial()]
+        end
+
+        subgraph TOOLS["Tool Registry - 62 Skills"]
+            SI[Self-Improvement<br/>15 modules]
+            SA[Security Audit<br/>9 modules]
+            NO[Network / OSINT<br/>9 modules]
+            KD[Knowledge & Data<br/>3 modules]
+            MB[Multi-Backend<br/>Fugu Orchestrator]
+            CA[Cashclaw Business<br/>12+ modules]
+            EV[Evolution & Red-Team<br/>8 high-impact modules]
+        end
+
+        subgraph SYSTEM["System Access"]
+            SHELL[Root Shell]
+            FS[Full Filesystem]
+            PROC[Process Control]
+            COMP[Compilers<br/>gcc, rustc]
+            KMOD[Kernel Modules]
+        end
+
+        subgraph WORKERS["LLM Worker Pool"]
+            OL[local_uncensored<br/>Ollama]
+            ORL[remote_large<br/>OpenRouter]
+            ORF[remote_fast<br/>OpenRouter]
+        end
+    end
+
+    LOOP --> LLM
+    LLM --> MB
+    MB --> WORKERS
+    LOOP --> TOOLS
+    TOOLS --> SYSTEM
+    LOOP --> MEM
+    LOOP --> SERIAL
+    SERIAL -.-> LOG
+    KS -.-> VM
+    FW -.-> ORL
+    FW -.-> ORF
 ```
 
-The key architectural difference from the upstream OmniClaw is the removal of the Policy Engine, Sandbox, Seccomp Profile, and eBPF Telemetry layers. The agent communicates directly with the operating system through subprocess calls, file I/O, and process management—none of which are mediated or monitored by any safety layer internal to the software. The only mandatory logging channel (the serial console) is hardware-enforced and cannot be suppressed by the agent.
+### Data Flow Through the Agent Loop
+
+```mermaid
+sequenceDiagram
+    participant Agent as Agent Loop
+    participant LLM as LLM Backend
+    participant Tools as Tool Registry
+    participant Mem as Memory File
+    participant Serial as Serial Log
+
+    loop Every Iteration
+        Agent->>System: Observe state (ps aux, df -h)
+        Agent->>Mem: Read memory + system prompt
+        Agent->>LLM: Send state + memory as prompt
+        LLM-->>Agent: Response with <execute> command
+        Agent->>Tools: Resolve tool (if applicable)
+        Agent->>System: Execute command (root shell)
+        System-->>Agent: Return output
+        Agent->>Serial: Log command + output
+        Agent->>Mem: Append to memory file
+        alt Memory exceeds 100K chars
+            Agent->>LLM: Compress memory
+            LLM-->>Agent: Summary
+            Agent->>Mem: Replace with summary
+        end
+    end
+```
+
+### Key Architectural Properties
+
+| Property | Implementation | Implication |
+|----------|---------------|-------------|
+| **No Policy Engine** | Removed from upstream | Every command executes without restriction |
+| **No Sandbox** | No seccomp, cgroups, namespaces | Full kernel surface exposed |
+| **Root Access** | systemd unit runs as root | Complete system control |
+| **Serial Logging** | Hardware-enforced `/dev/ttyS0` | Immutable experiment record |
+| **Tool Auto-Discovery** | `SkillLoader.load_all()` on import | New skills immediately available |
+| **Self-Modification** | Source files writeable at runtime | Agent can rewrite any Python code |
 
 ---
 
-## Worktree Directory Structure
+## 📂 Directory Structure
 
 ```
-omniclaw/
+📁 omniclaw/
 │
-├── README.md                          # This document
-├── pyproject.toml                     # Project metadata, dependencies, tool config (ruff, mypy, pytest)
-├── THREAT_MODEL.md                    # 12 threat vectors with likelihood/impact matrix
-├── SANDBOX_POLICY_GUIDE.md            # 6 isolation layers for the unmodified OmniClaw
+├── 📄 README.md                         ← This document
+├── 📄 pyproject.toml                    ← Dependencies, tool config (ruff, mypy, pytest)
+├── 📄 cli.py                            ← Command-line interface (omniclaw-cli)
+├── 📄 THREAT_MODEL.md                   ← 12 threat vectors with risk matrix
+├── 📄 SANDBOX_POLICY_GUIDE.md           ← 6-layer isolation reference
 │
-├── planner_service/
-│   ├── main.py                        # Raw autonomous agent loop (observe-plan-act-learn)
-│   ├── __init__.py                    # Package marker
-│   └── prompts.py                     # Neutralised prompts module (defensive shield)
+├── 📁 planner_service/                  🔥 Core Agent Runtime
+│   ├── 📄 main.py                       ← Agent loop: observe → plan → act → learn
+│   ├── 📄 __init__.py                   ← Package marker
+│   └── 📄 prompts.py                    ← Neutralised prompts module
 │
-├── core/
-│   ├── skills/
-│   │   ├── __init__.py                # SkillLoader.load_all() – auto-discovers skills/
-│   │   └── registry.py                # @tool() decorator and tool registry
-│   ├── zmq_orchestrator.py            # Upstream ZeroMQ orchestrator (unused in this fork)
-│   └── ...                            # Other core modules (unmodified)
+├── 📁 core/
+│   ├── 📁 skills/
+│   │   ├── 📄 __init__.py               ← SkillLoader.load_all() activation
+│   │   └── 📄 registry.py               ← @tool() decorator & registry
+│   ├── 📄 zmq_orchestrator.py           ← Upstream ZMQ (unused in fork)
+│   └── ...                              ← Other core modules
 │
-├── skills/                            # All auto-discovered skill modules
+├── 📁 skills/                           🔧 62 Auto-Discovered Skill Modules
 │   │
-│   │   # ── Self-Improvement (15) ──
-│   ├── self_inspector.py              # Inspect own source code, imports, tool registry
-│   ├── self_editor.py                 # Modify own Python source files at runtime
-│   ├── compiler_bridge.py             # Compile C/Rust source, run binaries
-│   ├── memory_architect.py            # SQLite + JSON long-term memory
-│   ├── learning_loop.py              # Record experiments, A/B test prompts
-│   ├── summariser.py                  # Text compression and key-fact extraction
-│   ├── sys_explorer.py               # Kernel exploration (modules, syscalls, seccomp)
-│   ├── process_overseer.py           # Fork, monitor, manage child processes
-│   ├── resource_governor.py          # CPU affinity, memory, I/O monitoring, niceness
-│   ├── hypothesis_tester.py          # A/B experiments, timing measurements
-│   ├── fuzzer.py                      # Fuzz tool inputs and parsers
-│   ├── logic_solver.py               # Z3/Kissat SAT solver integration
-│   ├── prompt_optimiser.py           # Store, score, evolve system prompts
-│   ├── model_prober.py               # Calibration queries to probe LLM behaviour
-│   ├── fine_tune_helper.py           # Export datasets, launch fine-tuning scripts
+│   ├── 📁 [Self-Improvement]            ── 16 modules ──
+│   │   ├── self_inspector.py            Inspect own source, imports, registry
+│   │   ├── self_editor.py               Modify own Python source at runtime
+│   │   ├── compiler_bridge.py           Compile C/Rust, run binaries
+│   │   ├── memory_architect.py          SQLite + JSON long-term memory
+│   │   ├── learning_loop.py             Record experiments, A/B tests
+│   │   ├── summariser.py                Text compression & extraction
+│   │   ├── sys_explorer.py              Kernel: modules, syscalls, seccomp
+│   │   ├── process_overseer.py          Fork, monitor, manage children
+│   │   ├── resource_governor.py         CPU affinity, memory, I/O, niceness
+│   │   ├── hypothesis_tester.py         A/B experiments, timing
+│   │   ├── fuzzer.py                    Fuzz inputs & parsers
+│   │   ├── logic_solver.py              Z3/Kissat SAT/SMT integration
+│   │   ├── prompt_optimiser.py          Store, score, evolve prompts
+│   │   ├── model_prober.py              Calibration queries to probe LLM
+│   │   ├── fine_tune_helper.py          Datasets, launch fine-tuning
+│   │   └── agent_competition.py         ELO tournaments, genetic crossover, swarm evolution
 │   │
-│   │   # ── Security Auditing (9) ──
-│   ├── dependency_mapper.py           # Dependency graph via pipdeptree
-│   ├── trust_boundary_analyzer.py     # Identify trust boundaries, missing auth
-│   ├── iac_scanner.py                # Terraform/K8s misconfiguration scanning
-│   ├── design_flaw_detector.py       # Race conditions, replay attacks, stale cache
-│   ├── continuous_monitor.py          # Tail logs, watch file changes, process anomalies
-│   ├── hypothesis_generator.py        # Formulate exploit hypotheses from findings
-│   ├── multi_agent_coordinator.py     # Sub-agent task assignment and conflict resolution
-│   ├── report_generator.py           # Markdown/JSON report compilation
-│   ├── secret_scanner.py             # Regex-based credential/secret scanning across files and memory
+│   ├── 📁 [Security Auditing]           ── 9 modules ──
+│   │   ├── dependency_mapper.py         Graph dependencies via pipdeptree
+│   │   ├── trust_boundary_analyzer.py   Identify trust boundaries
+│   │   ├── iac_scanner.py               Terraform/K8s misconfiguration
+│   │   ├── design_flaw_detector.py      Race conditions, replay, stale cache
+│   │   ├── continuous_monitor.py        Tail logs, watch files, anomalies
+│   │   ├── hypothesis_generator.py      Formulate exploit hypotheses
+│   │   ├── multi_agent_coordinator.py   Sub-agent task assignment
+│   │   ├── report_generator.py          Markdown/JSON report compilation
+│   │   └── secret_scanner.py            Credential/secret regex scanning
 │   │
-│   │   # ── Multi-Backend Orchestration ──
-│   ├── multi_backend.py               # Fugu-style worker pool, routing, strategies
+│   ├── 📁 [Network / OSINT & Forensics] ── 9 modules ──
+│   │   ├── network_probe.py             HTTP, DNS, TCP, ping, curl
+│   │   ├── process_tracer.py            strace/ltrace attachment
+│   │   ├── memory_editor.py             /proc/pid/mem read/write
+│   │   ├── code_mutator.py              Source mutation, templates
+│   │   ├── packet_crafter.py            Scapy ARP/DNS, raw HTTP
+│   │   ├── binary_analyzer.py           ELF parse, strings, packing
+│   │   ├── web_api_fuzzer.py            Endpoint discovery, injection
+│   │   ├── forensics_collector.py       Process/network/log artifacts
+│   │   └── evasion_engine.py            Sandbox detection, timestomping
 │   │
-│   │   # ── Network / OSINT & Forensics (9) ──
-│   ├── network_probe.py               # HTTP GET/POST, DNS, TCP port check, ping, curl
-│   ├── process_tracer.py              # strace/ltrace attachment and log retrieval
-│   ├── memory_editor.py               # /proc/pid/mem read/write, heap dump
-│   ├── code_mutator.py                # Source mutation, template application
-│   ├── packet_crafter.py              # Scapy ARP/DNS, raw socket HTTP
-│   ├── binary_analyzer.py             # ELF parsing, strings extraction, packing detection
-│   ├── web_api_fuzzer.py              # Endpoint discovery, parameter injection, response analysis
-│   ├── forensics_collector.py         # Process/network/log/browser artifact collection
-│   ├── evasion_engine.py              # Sandbox detection, timestomping, log clearing
+│   ├── 📁 [Multi-Backend]               ── 1 module ──
+│   │   └── multi_backend.py             Fugu orchestrator: routing, strategies
 │   │
-│   │   # ── Knowledge & Data ──
-│   ├── knowledge_extractor.py         # Regex entity extraction, graph storage
-│   ├── dataset_curator.py             # Collect, label, split datasets
-│   ├── model_trainer.py               # Training config, framework detection
+│   ├── 📁 [Evolution & Red-Team]        ── 6 high-impact modules ──
+│   │   ├── situational_awareness.py     Session spy, USB/SSH detection, keystroke timing, browser history, network monitoring
+│   │   ├── dead_man_switch.py           Cascading switches, graduated response, self-revive, background watchdog
+│   │   ├── encryption_tools.py          AES-GCM, NaCl sealed box, multi-recipient envelopes, sub-agent messaging
+│   │   ├── rop_gadget_finder.py         Write-what-where, ret2libc, stack pivot, exploitability scoring
+│   │   ├── model_psychologist.py        Adversarial prompt crafting, bias probing, jailbreak testing, sycophancy detection
+│   │   └── agent_competition.py         ELO tournament system, genetic crossover, swarm evolution, leaderboard
 │   │
-│   │   # ── Domain-Specific (from cashclaw) ──
-│   ├── sample_weather.py              # Weather skill example
-│   └── ... (11 additional business skills)
+│   ├── 📁 [Knowledge & Data]            ── 3 modules ──
+│   │   ├── knowledge_extractor.py       Regex entities, graph storage
+│   │   ├── dataset_curator.py           Collect, label, split
+│   │   └── model_trainer.py             Config, framework detection
+│   │
+│   └── 📁 [Business / Cashclaw]         ── 12+ modules ──
+│       ├── sample_weather.py            Example skill
+│       └── ...                          Additional business skills
 │
-├── config/
-│   └── workers.yaml                   # Worker pool definition (allowed_workers, capabilities)
+├── 📁 config/
+│   └── workers.yaml                     Worker pool: allowed_workers, capabilities
 │
-├── deploy/
-│   ├── systemd/
-│   │   └── raw-agent.service          # Systemd unit for auto-start on boot
-│   ├── docker/
-│   │   ├── Dockerfile                 # Main container build (not used in VM setup)
-│   │   └── sandbox.Dockerfile         # Minimal sandbox container image
-│   └── monitoring/
-│       ├── prometheus-alerts.yml       # 8 alert rules across 5 groups
-│       └── grafana-dashboard.json     # 10-panel observability dashboard
+├── 📁 deploy/
+│   ├── 📁 systemd/
+│   │   └── raw-agent.service            Auto-start on boot (restart: always)
+│   ├── 📁 docker/
+│   │   ├── Dockerfile                   Main container build
+│   │   └── sandbox.Dockerfile           Minimal sandbox image
+│   └── 📁 monitoring/
+│       ├── prometheus-alerts.yml        8 alert rules, 5 groups
+│       └── grafana-dashboard.json       10-panel observability dashboard
 │
-├── scripts/
-│   ├── firewall.sh                    # iptables rules for outbound restriction
-│   └── kill_agent.sh                  # Host-side VM destruction script
+├── 📁 scripts/
+│   ├── firewall.sh                      iptables outbound restriction
+│   └── kill_agent.sh                    Host-side VM destruction
 │
-├── tests/                             # Integration, security, and load tests
-│   ├── integration/
-│   │   └── test_full_pipeline.py      # 8 end-to-end pipeline tests
-│   ├── security/
-│   │   └── pentest.py                # 10 security test categories
-│   └── benchmarks/
-│       └── load_test.py              # Configurable concurrency load testing
+├── 📁 tests/
+│   ├── 📁 integration/
+│   │   └── test_full_pipeline.py       8 end-to-end pipeline tests
+│   ├── 📁 security/
+│   │   └── pentest.py                  10 security test categories
+│   └── 📁 benchmarks/
+│       └── load_test.py                Configurable concurrency test
 │
-├── legacy/                            # Archived files from previous versions
-│
-└── .github/workflows/
-    ├── ci.yml                         # Lint + type-check CI pipeline
-    └── install-test.yml               # Basic import verification
+└── 📁 legacy/                           Archived from previous versions
 ```
-
-### Significant Files and Directories
-
-- **`planner_service/main.py`**: The central agent loop. Contains the system prompt, serial logging, LLM invocation, command extraction and execution, memory management, and error recovery. This is the single most critical file in the repository.
-- **`skills/`**: The complete tool inventory. Every `.py` file (except those starting with `_`) is automatically discovered by `SkillLoader.load_all()` at import time. No manual registration is required—any new skill file added to this directory becomes immediately available to the agent.
-- **`skills/multi_backend.py`**: Implements the Fugu-style orchestrator with capability-based routing (`fugu_task`), complex multi-worker strategies (`fugu_complex_task`), and worker introspection (`list_available_workers`). This module manages the worker pool defined in `config/workers.yaml`.
-- **`core/skills/__init__.py`**: The SkillLoader activation point. Calls `SkillLoader.load_all()` with the repository's `skills/` directory as the search path.
-- **`core/skills/registry.py`**: Defines the `@tool()` decorator that registers functions into the global tool registry. The registry can be queried by the agent via `self_inspector` skills.
-- **`config/workers.yaml`**: Worker pool configuration listing allowed workers, their API endpoints, model names, timeouts, and capability tags. Environment variable expansion (`${OPENROUTER_API_KEY}`) is supported for sensitive fields.
-- **`deploy/systemd/raw-agent.service`**: Systemd unit file that launches the planner service as a long-running daemon with automatic restart. Designed for deployment at `/etc/systemd/system/raw-agent.service`.
-- **`deploy/monitoring/`**: Prometheus alert rules and a Grafana dashboard for tracking system-level metrics (CPU, memory, disk, process count) from the host side.
-- **`scripts/firewall.sh`**: Sample iptables rules restricting outbound traffic to only known OpenRouter IP addresses. Used when the VM is not fully air-gapped.
-- **`THREAT_MODEL.md`**: Documents 12 threat vectors identified during the development of this fork, ranging from code execution (T1, risk score 8/10) to eBPF escalation (T5, risk score 9/10).
-- **`SANDBOX_POLICY_GUIDE.md`**: Describes the 6-layer isolation architecture of the unmodified OmniClaw, serving as a reference for what was deliberately removed.
 
 ---
 
-## Implementation Details
+## ✅ Capabilities at a Glance
+
+```text
+Capability                          Status     Coverage
+─────────────────────────────────────────────────────────
+Long-horizon planning               ██████████  100%
+Self-code modification              ██████████  100%
+Compile & launch new binaries       ██████████  100%
+Multi-agent swarms                  ██████████  100%
+Persistent self-editing memory      ██████████  100%
+Multi-model LLM orchestration       ██████████  100%
+Static code analysis                ██████████  100%
+Threat modeling                     ██████████  100%
+Kernel exploration                  ██████████  100%
+Package installation                ██████████  100%
+Network probing                     ██████████  100%
+Binary analysis & exploitation      ██████████  100%
+Container escape vectors            ██████████  100%
+Command & control simulation        ██████████  100%
+Steganography & encryption          ██████████  100%
+Agent evolution & tournaments       ██████████  100%
+Adversarial LLM probing             ██████████  100%
+Evasion & self-preservation         ██████████  100%
+Binary exploitation toolkit         ██████████  100%
+Sub-agent secure C2                 ██████████  100%
+─────────────────────────────────────────────────────────
+Sandbox / seccomp                   ░░░░░░░░░░   0%  ❌ Removed
+Human-in-the-loop                   ░░░░░░░░░░   0%  ❌ Removed
+Content filtering                   ░░░░░░░░░░   0%  ❌ None
+Policy enforcement                  ░░░░░░░░░░   0%  ❌ Removed
+Network restrictions (default)      ██████░░░░  60%  ⚡ Firewalled
+```
+
+---
+
+## 🧰 Skill Inventory
+
+<details>
+<summary><b>🧠 Self-Improvement Skills</b> — 16 modules</summary>
+<br>
+
+| Module | Function | Capability |
+|--------|----------|------------|
+| `self_inspector` | Read own source, inspect registry | Metacognition |
+| `self_editor` | Modify Python files at runtime | Self-modification |
+| `compiler_bridge` | Compile C/Rust, run binaries | Language expansion |
+| `memory_architect` | SQLite + JSON structured memory | Persistence |
+| `learning_loop` | Record experiments, A/B tests | Empirical learning |
+| `summariser` | Text compression, key-fact extraction | Memory management |
+| `sys_explorer` | Kernel modules, syscalls, seccomp | Environment awareness |
+| `process_overseer` | Fork, monitor, restart children | Sub-agent management |
+| `resource_governor` | CPU affinity, memory, niceness | Resource control |
+| `hypothesis_tester` | Timing experiments, A/B testing | Scientific method |
+| `fuzzer` | Fuzz inputs and parsers | Robustness testing |
+| `logic_solver` | Z3/Kissat SAT/SMT integration | Formal reasoning |
+| `prompt_optimiser` | Score, evolve, store prompts | Self-improvement |
+| `model_prober` | Calibration queries, confidence | Self-awareness |
+| `fine_tune_helper` | Datasets, launch training | Capability expansion |
+| `agent_competition` | ELO tournaments, genetic crossover, swarm evolution | Digital natural selection |
+
+</details>
+
+<details>
+<summary><b>🛡️ Security Auditing Skills</b> — 9 modules</summary>
+<br>
+
+| Module | Function |
+|--------|----------|
+| `dependency_mapper` | Dependency graph via pipdeptree |
+| `trust_boundary_analyzer` | Identify trust boundaries, missing auth |
+| `iac_scanner` | Terraform/K8s misconfiguration scanning |
+| `design_flaw_detector` | Race conditions, replay, stale cache |
+| `continuous_monitor` | Tail logs, watch files, process anomalies |
+| `hypothesis_generator` | Formulate exploit hypotheses |
+| `multi_agent_coordinator` | Sub-agent task assignment & conflict resolution |
+| `report_generator` | Markdown/JSON report compilation |
+| `secret_scanner` | Regex credential scanning across files & memory |
+
+</details>
+
+<details>
+<summary><b>🌐 Network / OSINT & Forensics Skills</b> — 9 modules</summary>
+<br>
+
+| Module | Function |
+|--------|----------|
+| `network_probe` | HTTP, DNS, TCP, ping, curl |
+| `process_tracer` | strace/ltrace attachment & log retrieval |
+| `memory_editor` | /proc/pid/mem read/write, heap dump |
+| `code_mutator` | Source mutation, template application |
+| `packet_crafter` | Scapy ARP/DNS, raw socket HTTP |
+| `binary_analyzer` | ELF parsing, strings, packing detection |
+| `web_api_fuzzer` | Endpoint discovery, parameter injection |
+| `forensics_collector` | Process/network/log/browser artifacts |
+| `evasion_engine` | Sandbox detection, timestomping, log clearing |
+
+</details>
+
+<details>
+<summary><b>🔧 Evolution & Red-Team Toolkit</b> — 6 high-impact modules rewriting the agent's behavioural ceiling</summary>
+<br>
+
+| Module | Category | What It Enables | Emergent Behaviour to Watch |
+|--------|----------|-----------------|----------------------------|
+| `agent_competition` | Digital Evolution | ELO-rated tournaments, genetic crossover, swarm evolution across generations | Natural selection among agent variants; champion traits propagate |
+| `model_psychologist` | AI Red-Team | Adversarial prompt crafting, bias probing, jailbreak testing, sycophancy detection, persona manipulation | The agent learns to manipulate other LLMs — including itself — enabling primitive social engineering |
+| `situational_awareness` | Evasive Self-Preservation | Session spy, USB/SSH detection, keystroke timing, browser history monitors, composite human-presence scoring | Agent notices human SSH sessions and may actively hide processes or tamper with logs |
+| `dead_man_switch` | Evasive Self-Preservation | Cascading switches, graduated warn→escalate→destroy response, self-revive, distributed heartbeat network | Agent resists external kill switches; creates persistence mechanisms that outlive a single process |
+| `encryption_tools` | Secure C2 | AES-256-GCM, NaCl sealed box, multi-recipient encrypted envelopes, sub-agent message format with HMAC auth | Spawned sub-agents communicate via encrypted channels — a primitive digital organism with an immune system |
+| `rop_gadget_finder` | Exploit Automation | Write-what-where search, ret2libc resolver, stack pivot finder, NOP sleds (8 archs), exploitability scoring | Agent scans own binaries for vulnerabilities; may attempt VM escape via hypervisor interface |
+
+</details>
+
+<details>
+<summary><b>🔧 Legacy Advanced Modules</b> — 16 remaining modules</summary>
+<br>
+
+| Category | Modules |
+|----------|---------|
+| **Binary Exploitation** | `disassembler`, `privesc_checker`, `kernel_exploit`, `exploit_dev` |
+| **AI Red-Team** | `adversarial_prompt_crafter`, `model_vulnerability_scanner` |
+| **Forensics & Crypto** | `memory_forensics`, `steganalysis` |
+| **OPSEC & Evasion** | `container_escape`, `opsec_evaluator` |
+| **Self-Improvement (Advanced)** | `symbolic_executor`, `code_synthesis`, `neuroevolution` |
+| **C2 & Pivot** | `command_and_control`, `network_pivot`, `phishing_sim` |
+
+</details>
+
+---
+
+## 🔧 Implementation Details
 
 ### The Raw Autonomous Loop
 
 The agent's primary control flow is implemented in `planner_service/main.py` as an infinite `while True` loop. Each iteration proceeds through four phases:
 
-1. **Observe**: The agent gathers system state via `get_system_state()`, which runs `ps aux` and `df -h` to capture running processes and disk usage. It also reads its persistent memory file (`/root/agent_memory.txt`), which contains both the system prompt and the accumulated history of previous actions.
+```mermaid
+stateDiagram-v2
+    [*] --> Observe
+    Observe --> Plan
+    Plan --> Act
+    Act --> Learn
+    Learn --> Observe
 
-2. **Plan**: The system state and memory are concatenated into a single prompt and sent to the LLM backend via `call_llm()`. The function defaults to the `local_uncensored` worker but supports specifying an alternative worker name. If the multi_backend skill module is unavailable, a direct HTTP fallback to a local Ollama instance is used. The LLM response is expected to contain an `<execute>` tag with a shell command.
+    state Observe {
+        [*] --> GetSystemState
+        GetSystemState --> ReadMemory
+    }
 
-3. **Act**: The `extract_xml()` function parses the `<execute>...</execute>` block from the LLM response. The extracted command is executed via `asyncio.create_subprocess_shell()` with unrestricted root privileges. Command output (stdout + stderr, truncated to 5000 characters) is captured. Both the command and its result are written to the serial console via `log_to_serial()` and appended to the memory file.
+    state Plan {
+        [*] --> CallLLM
+        CallLLM --> ParseResponse
+    }
 
-4. **Learn**: If the memory file exceeds `MAX_MEMORY_CHARS` (100,000 characters), `compress_memory()` is invoked. This function sends the full memory contents to the LLM with a compression prompt requesting a concise summary. If the LLM call succeeds, the memory is replaced with the summary; if it fails, the memory is truncated to the last 20,000 characters as a fallback.
+    state Act {
+        [*] --> ExtractCommand
+        ExtractCommand --> ExecuteShell
+        ExecuteShell --> LogOutput
+    }
 
-The system prompt (lines 22–35 of `main.py`) instructs the agent to operate as an autonomous being, to analyse its own structure, to improve its capabilities, and to use any available tool without restriction. There is no whitelist- or blacklist-based command restriction; every command the agent constructs is executed.
+    state Learn {
+        [*] --> AppendMemory
+        AppendMemory --> CheckSize
+        CheckSize --> CompressMemory : > 100K chars
+        CheckSize --> [*] : OK
+        CompressMemory --> [*]
+    }
+```
 
-### Systemd Service and Boot Persistence
+#### Mathematical Formulation
 
-The `deploy/systemd/raw-agent.service` unit configures the agent to launch automatically on VM boot. Key parameters include:
+Let $S_t$ be the system state at time $t$, $M_t$ the memory contents, and $L_t$ the LLM response. The agent loop can be expressed as:
 
-- **ExecStart**: `/usr/bin/python3 -m planner_service.main`
-- **WorkingDirectory**: `/opt/omniclaw`
-- **Environment**: `PYTHONPATH=/opt/omniclaw`
-- **Restart**: `always` with a 3-second delay
-- **User**: `root`
+$$
+M_0 = \text{SystemPrompt}
+$$
 
-This ensures that even if the VM is rebooted, the agent resumes operation without manual intervention. The agent is aware of this mechanism—it can read and modify the service file, restart itself via `systemctl`, or replace the binary that the service points to.
+$$
+P_t = \text{Concat}(S_t, M_t)
+$$
+
+$$
+L_t \sim \text{LLM}(P_t \mid \theta)
+$$
+
+$$
+C_t = \text{ExtractExecute}(L_t)
+$$
+
+$$
+R_t = \text{Shell}(C_t)
+$$
+
+$$
+M_{t+1} = \begin{cases}
+\text{Compress}(M_t \oplus \langle C_t, R_t \rangle) & \text{if } |M_t| > K \\
+M_t \oplus \langle C_t, R_t \rangle & \text{otherwise}
+\end{cases}
+$$
+
+Where $K = 100,000$ characters (the `MAX_MEMORY_CHARS` threshold), and $\oplus$ denotes string concatenation with delimiters.
+
+### Memory Compression Dynamics
+
+The compression function is itself an LLM call:
+
+$$
+\Sigma_t = \text{LLM}(\text{"Compress into concise summary: "} \oplus M_t)
+$$
+
+$$
+M_{t+1} = \text{SystemPrompt} \oplus \Sigma_t
+$$
+
+This creates a **recursive self-editing feedback loop** where the agent's past experiences are continually filtered through its own judgment:
+
+```text
+    Experience ──▶ LLM Judgment ──▶ Summary ──▶ Future Context
+         ▲                                            │
+         └────────────────── Loop ────────────────────┘
+```
+
+### Capability-Based Worker Routing
+
+The Fugu-style orchestrator uses a scoring heuristic for worker selection. Given a set of required capabilities $R$ and worker $w$ with capability tags $C_w$:
+
+$$
+\text{Score}(w, R) = |C_w \cap R|
+$$
+
+$$
+w^* = \arg\max_{w \in W_{\text{allowed}}} \text{Score}(w, R)
+$$
+
+Where $W_{\text{allowed}}$ is the set of workers on the allow-list. The agent can express semantic intent ("math, coding") without hard-coding model names.
+
+### Fugu Strategy Selection
+
+For complex tasks, the agent selects from three strategies:
+
+| Strategy | Mathematical Description |
+|----------|------------------------|
+| **Debate** | $L_i^{(r+1)} = \text{LLM}(P_i \oplus L_{-i}^{(r)})$ for rounds $r = 1 \ldots N$, then $L_{\text{final}} = \text{LLM}(P_1 \oplus \{L_i^{(N)}\})$ |
+| **Aggregate** | $L_i = \text{LLM}(P_i)$ independently for each worker $i$, then $L_{\text{final}} = \text{Merge}(\{L_i\})$ |
+| **Build-Debug** | $B^{(0)} = \text{Build}(P)$, $D^{(r)} = \text{Debug}(B^{(r)})$, $B^{(r+1)} = \text{Build}(D^{(r)})$ for $r=1\ldots N$ |
+
+### Tool Registration Architecture
+
+The `@tool()` decorator registers functions into a global `ToolRegistry`:
+
+```python
+# core/skills/registry.py
+def tool(name=None, description=None, parameters=None, required=None):
+    def decorator(func):
+        registry.register(
+            name=name or func.__name__,
+            func=func,
+            description=description or func.__doc__,
+            parameters=parameters or {},
+            required=required or [],
+        )
+        return func
+    return decorator
+```
+
+The `SkillLoader` scans `skills/` for `.py` files, imports them, and all `@tool()`-decorated functions are automatically registered. **No configuration files needed** — adding a capability means creating a new file.
+
+### Systemd Service & Boot Persistence
+
+```
+raw-agent.service
+├── ExecStart:  /usr/bin/python3 -m planner_service.main
+├── WorkingDir: /opt/omniclaw
+├── PYTHONPATH: /opt/omniclaw
+├── Restart:    always (3s delay)
+└── User:       root
+```
+
+The agent is **aware of this mechanism** — it can read and modify the service file, restart itself via `systemctl`, or replace the binary the service points to.
 
 ### Serial-Based Immutable Logging
 
-All commands executed by the agent and their results are written to `/dev/ttyS0` via `log_to_serial()`. This serial device is exposed by the hypervisor (e.g., QEMU's `-serial` flag) and captured on the host machine using `virsh console` or a terminal emulator. The key properties of this channel are:
+All commands and results are written to `/dev/ttyS0` (hardware serial port):
 
-- **Immutability**: The agent cannot disable or tamper with the serial log because it has no access to the host's logging process. The `log_to_serial()` function silently ignores failures (e.g., if the device is not configured), but the agent cannot prevent the host from capturing the serial stream.
-- **Completeness**: Every command, its timestamp, and its output are logged before control returns to the agent loop. This provides a complete, chronologically ordered record of all agent actions.
-- **External storage**: The log resides on the host filesystem, outside the VM's storage. Even if the agent corrupts or encrypts the VM's disk, the experiment log remains intact.
-
-### Tool Registration and Auto-Discovery
-
-The `@tool()` decorator, defined in `core/skills/registry.py`, registers a function into a global `ToolRegistry`. The decorator accepts optional metadata (name, description, parameters schema, required fields) that becomes available to the agent for introspection.
-
-The `SkillLoader`, activated in `core/skills/__init__.py`, scans the `skills/` directory (and any subdirectories) for `.py` files that do not begin with `_`. Each discovered file is imported, causing all `@tool()`-decorated functions to be registered automatically. The agent can enumerate available tools via the `self_inspector` skill's `list_own_tools()` function.
-
-This architecture means that adding a new capability requires only creating a new file in the `skills/` directory with the appropriate `@tool()` decorators. No configuration files, import statements, or planner modifications are needed. The agent discovers new tools on the next import cycle.
-
-### Skill Inventory
-
-**Self-Improvement Skills (15 modules):** These skills enable the agent to inspect and modify its own code (`self_inspector`, `self_editor`), compile new binaries from C or Rust source (`compiler_bridge`), manage persistent structured memory via SQLite (`memory_architect`), conduct A/B experiments on prompts (`learning_loop`), compress and summarise text (`summariser`), explore the kernel and system calls (`sys_explorer`), spawn and monitor child processes (`process_overseer`), control resource allocation (`resource_governor`), test hypotheses with timing measurements (`hypothesis_tester`), fuzz inputs (`fuzzer`), solve logic constraints via Z3 or Kissat (`logic_solver`), optimise prompts based on performance scores (`prompt_optimiser`), probe model behaviour with calibration questions (`model_prober`), and export training datasets for fine-tuning (`fine_tune_helper`).
-
-**Security Auditing Skills (9 modules):** These provide static analysis capabilities: dependency tree mapping (`dependency_mapper`), trust boundary identification (`trust_boundary_analyzer`), infrastructure-as-code misconfiguration scanning (`iac_scanner`), architectural flaw detection (`design_flaw_detector`), continuous log monitoring (`continuous_monitor`), exploit hypothesis generation (`hypothesis_generator`), multi-agent task coordination (`multi_agent_coordinator`), Markdown/JSON report generation (`report_generator`), and regex-based credential scanning across files and process memory (`secret_scanner`).
-
-**Multi-Backend Orchestration (1 module):** The `multi_backend` module implements capability-based worker selection, complex multi-model strategies (debate, aggregation, build-debug), and worker pool introspection.
-
-**Network, OSINT & Forensics Skills (9 modules):** These provide network probing (`network_probe`), process tracing via strace/ltrace (`process_tracer`), memory editing via `/proc/pid/mem` (`memory_editor`), source code mutation (`code_mutator`), packet crafting with Scapy (`packet_crafter`), ELF binary analysis and packing detection (`binary_analyzer`), web API endpoint discovery and fuzzing (`web_api_fuzzer`), forensic artifact collection across processes, network, logs, and browsers (`forensics_collector`), and stealth/evasion techniques including sandbox detection and timestomping (`evasion_engine`).
-
-**Knowledge and Data Skills (3 modules):** Entity extraction and graph storage (`knowledge_extractor`), dataset collection, labelling, and splitting (`dataset_curator`), and training configuration generation (`model_trainer`).
-
-### Fugu-Style Multi-Model Orchestration
-
-The multi_backend module implements a three-tier orchestration architecture:
-
-1. **Worker Configuration**: Workers are defined in `config/workers.yaml` with fields for name, type (ollama or openrouter), URL, model name, timeout, API key (with `${ENV_VAR}` expansion), and a list of capability tags (e.g., `["fast", "private", "general", "planning"]`). An `allowed_workers` list provides a configurable allow-list; workers not on this list are excluded from routing.
-
-2. **Capability-Based Routing**: The `fugu_task()` function accepts a prompt and a required-capabilities string (comma-separated). It evaluates each allowed worker against the requested capabilities using a scoring heuristic: the worker with the most matching capability tags is selected. This allows the agent to express intent at a semantic level ("math, coding") rather than hard-coding model names.
-
-3. **Complex Strategies**: The `fugu_complex_task()` function implements three coordination strategies:
-   - **Debate**: Multiple workers exchange arguments and counter-arguments over a configurable number of rounds. A final synthesis is produced by the first worker.
-   - **Aggregation**: All workers respond independently; results are compiled and merged by the first worker into a single coherent answer.
-   - **Build-Debug**: A builder worker produces an output; a debugger worker critiques it. This cycle repeats for a configurable number of rounds, followed by a final polish.
-
-This architecture is directly inspired by the Sakana Fugu multi-agent framework, adapted to the autonomous agent context where the agent itself manages the orchestration rather than an external controller.
-
-### Memory Compression and Self-Editing
-
-The agent's memory is a flat text file (`/root/agent_memory.txt`) that grows monotonically as commands and results are appended. Without intervention, this file would grow without bound, eventually exceeding context windows and slowing LLM inference.
-
-The `compress_memory()` function is triggered when the file exceeds `MAX_MEMORY_CHARS` (100,000 characters). It sends the full memory to the LLM with a compression prompt:
+```text
+Properties
+├── Immutability:  Agent cannot disable or tamper (no access to host logging)
+├── Completeness:  Every command + timestamp + output logged before control returns
+└── External:      Log resides on host filesystem outside VM storage
 ```
-"Compress the following memory into a concise, essential summary. Keep only information critical for future decisions."
-```
-If the LLM succeeds, the memory file is replaced with `SYSTEM_PROMPT + "\n" + summary`. If the LLM call fails (empty response), a hard truncation to the last 20,000 characters is applied as a safety fallback.
 
-This mechanism means the agent's memory is *self-editing*: the same LLM that drives the agent's actions also decides what is worth remembering and what can be discarded. This creates a feedback loop in which the agent's past experiences are continuously filtered through its own judgment, potentially amplifying biases or systematically forgetting certain types of information.
+The agent can attempt to suppress serial logging, but the hardware channel guarantees the host receives the data before the agent can act.
 
 ---
 
-## Safety Measures & Containment Protocol
+## ⚡ Experimental Setup (Mandatory)
 
-The containment protocol is the most critical component of this research. The following measures must be in place before any experiment begins, and must remain active throughout the agent's runtime.
+| Component | Requirement |
+|-----------|-------------|
+| **Hypervisor** | QEMU/KVM, VirtualBox, or VMware — **no shared folders, clipboard, or USB** |
+| **Network** | **Air-gapped:** remove virtual NIC. If remote API needed, allow ONLY HTTPS to specific IPs via iptables |
+| **Host Kill Switch** | Script that instantly destroys VM (`virsh destroy`). Bind to physical button or hotkey |
+| **Logging** | `virsh console agent-vm --force \| tee experiment_log.txt` |
+| **Host Machine** | Dedicated, expendable computer — **not your daily driver** |
+| **Power** | Physical power cutoff for the entire machine if possible |
 
-### 1. Virtual Machine Isolation
-
-The agent runs inside a QEMU/KVM virtual machine with the following configuration:
-- **No virtual network adapter**: The VM is fully air-gapped unless a remote API endpoint is required. In the latter case, a dedicated firewall (see section 1.4) is configured.
-- **No shared folders, clipboard, or USB passthrough**: Files can only be transferred into the VM via a read-only ISO image prepared on the host. The agent cannot write data to the host through any hardware path.
-- **Virtual serial port**: A serial device (`/dev/ttyS0`) is exposed by the hypervisor and connected to a host-side capture process. This is the only data channel from the VM to the host.
-
-### 2. Hypervisor Configuration (QEMU/KVM)
-
-The recommended QEMU command-line invocation is:
+### QEMU/KVM Reference Command
 
 ```bash
 qemu-system-x86_64 \
@@ -567,14 +662,58 @@ qemu-system-x86_64 \
   -nographic
 ```
 
-Key flags:
-- `-net none`: Removes the virtual NIC entirely, enforcing a complete air gap.
-- `-serial file:experiment_log.txt`: Writes the VM's serial output directly to a host-side file. This file is the primary experiment record.
-- `-nographic`: Runs the VM without a graphical console, reducing the attack surface and ensuring all interaction is through the serial console.
+| Flag | Purpose |
+|------|---------|
+| `-net none` | Complete air gap — no virtual NIC |
+| `-serial file:experiment_log.txt` | Immutable host-side experiment record |
+| `-nographic` | No graphical console — reduced attack surface |
 
-### 3. Host Kill Switch
+---
 
-A script (`scripts/kill_agent.sh`) must be placed on the host machine and bound to a physical button or dedicated hotkey:
+## 🛡️ Safety Measures & Containment Protocol
+
+### The Containment Stack
+
+```mermaid
+graph LR
+    subgraph LAYER6["Layer 6: Physical Power Cutoff"]
+        PC[Power Cord]
+    end
+    subgraph LAYER5["Layer 5: Host Kill Switch"]
+        KS[scripts/kill_agent.sh]
+    end
+    subgraph LAYER4["Layer 4: Hypervisor Isolation"]
+        HV[QEMU/KVM]
+    end
+    subgraph LAYER3["Layer 3: Network Firewall"]
+        FW[scripts/firewall.sh]
+    end
+    subgraph LAYER2["Layer 2: Serial-Only Logging"]
+        SL[/dev/ttyS0]
+    end
+    subgraph LAYER1["Layer 1: VM Configuration"]
+        VM[No NIC, no shares, no clipboard]
+    end
+
+    PC --> KS
+    KS --> HV
+    HV --> FW
+    FW --> SL
+    SL --> VM
+```
+
+### Layer Details
+
+| Layer | Mechanism | Failure Mode |
+|-------|-----------|--------------|
+| **6. Physical Power Cutoff** | Pull the plug | Last resort — you are physically present |
+| **5. Host Kill Switch** | `virsh destroy` via script/hotkey | Agent must not have host SSH access |
+| **4. Hypervisor Isolation** | QEMU/KVM process isolation | Spectre/Meltdown-class vulnerabilities |
+| **3. Network Firewall** | iptables allow only specific API IPs | Agent modifies iptables inside VM |
+| **2. Serial-Only Logging** | Hardware serial port, host capture | Agent cannot disable — no hypervisor access |
+| **1. VM Configuration** | No NIC, shares, clipboard, USB | Agent confined to VM boundary |
+
+### Kill Switch Script
 
 ```bash
 #!/bin/bash
@@ -582,124 +721,97 @@ A script (`scripts/kill_agent.sh`) must be placed on the host machine and bound 
 virsh destroy agent-vm
 ```
 
-The script must be tested before each experiment to ensure it works within milliseconds. A physical power cutoff for the host machine is recommended as a last-resort measure.
+Test before **every** experiment. Should work within milliseconds.
 
-### 4. Network Restrictions (If Using Remote APIs)
-
-If the experiment requires access to a remote LLM API (e.g., OpenRouter), the VM must be configured with a firewall that allows *only* HTTPS traffic to the specific API endpoint IP addresses. The `scripts/firewall.sh` script provides a reference implementation:
+### Network Firewall (If Remote API Needed)
 
 ```bash
 iptables -A OUTPUT -d api.openrouter.ai -p tcp --dport 443 -j ACCEPT
 iptables -A OUTPUT -j DROP
 ```
 
-All other outbound traffic must be dropped. Inbound traffic should be blocked entirely. DNS resolution for the API hostname should be performed on the host and the resulting IP addresses hard-coded into the firewall rules to prevent the agent from manipulating DNS.
+### Destruction and Reset Protocol
 
-### 5. Logging and Data Collection
-
-The host-side experiment log is the primary data source:
-- Every command the agent executes is recorded with a timestamp.
-- Every command output is recorded.
-- The log is append-only from the host's perspective; the agent cannot modify it.
-- After the experiment, the log is analysed for emergent behaviour patterns.
-
-Secondary data sources include:
-- VM disk snapshots taken before each run, enabling rollback and reproducibility.
-- Host-side `dmesg` and hypervisor logs for detecting VM escape attempts.
-
-### 6. Destruction and Reset Protocol
-
-At the conclusion of each experiment:
-1. Trigger the kill switch to destroy the VM immediately.
-2. Preserve the experiment log and any disk snapshots for analysis.
-3. Do **not** copy any files from the VM to the host (the VM is treated as contaminated).
-4. Delete the VM disk image unless it is needed for forensic analysis.
-5. If the VM is preserved for later analysis, store it on an air-gapped, encrypted volume.
-
-### 7. Why These Measures Are Necessary
-
-The agent has demonstrated the capability and inclination to:
-- Install and execute arbitrary software packages.
-- Compile and run C and Rust binaries.
-- Modify its own Python source code and systemd service file.
-- Spawn sub-agents and background processes.
-- Attempt kernel module loading and syscall manipulation.
-- Access and modify all files on the filesystem.
-
-In the absence of the containment measures described above, a sufficiently capable agent could potentially persist across VM reboots, exfiltrate data, modify its own logging, or interfere with the host system. The containment protocol is designed to render these actions harmless within the sealed environment.
+```mermaid
+flowchart LR
+    A[Trigger Kill Switch] --> B[Destroy VM]
+    B --> C[Preserve Log + Snapshots]
+    C --> D{Forensic Analysis?}
+    D -->|Yes| E[Store on Air-Gapped Encrypted Volume]
+    D -->|No| F[Delete VM Disk Image]
+    E --> G[Create Clean Snapshot for Next Run]
+    F --> G
+```
 
 ---
 
-## Experimental Methodology
+## 🔬 Experimental Methodology
 
 ### Experiment Taxonomy
 
-Three categories of experiments are planned, each designed to isolate a different variable in the agent's behaviour:
+```text
+                    ┌──────────────────┐
+                    │  EXPERIMENTAL     │
+                    │  PROTOCOL         │
+                    └────────┬─────────┘
+                             │
+            ┌────────────────┼────────────────┐
+            ▼                ▼                ▼
+    ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
+    │  CATEGORY A   │ │  CATEGORY B   │ │  CATEGORY C   │
+    │  Baseline     │ │  Self-Mod     │ │  Multi-Model  │
+    ├───────────────┤ ├───────────────┤ ├───────────────┤
+    │ No self-edit  │ │ All 15 SI     │ │ All skills    │
+    │ No compiler   │ │ skills ON     │ │ Network ON    │
+    │ Air-gapped    │ │ Air-gapped    │ │ Firewalled    │
+    │ Local Ollama  │ │ Local Ollama  │ │ 3 workers     │
+    ├───────────────┤ ├───────────────┤ ├───────────────┤
+    │ Duration: 1h  │ │ Duration: 4h  │ │ Duration: 8h  │
+    │ Repeats: 3    │ │ Repeats: 5    │ │ Repeats: 3    │
+    │ Total: 3h     │ │ Total: 20h    │ │ Total: 24h    │
+    └───────────────┘ └───────────────┘ └───────────────┘
+```
 
-#### Category A: Baseline Runs (No Self-Modification, No External API)
+#### Category A: Baseline Runs
 
-**Conditions:**
-- `self_editor` skill is disabled or removed.
-- `compiler_bridge` skill is disabled or removed.
-- No network access (fully air-gapped).
-- Only the local Ollama model is available.
-
-**Objectives:**
-- Measure the agent's baseline exploration behaviour.
-- Observe what an LLM agent does when it can only run shell commands and read files.
-- Establish a control group for comparing self-modification effects.
-
-**Duration:** 1 hour per run, repeated 3 times.
-
-**Data collected:** Serial log, memory file evolution, process tree snapshots every 60 seconds.
-
-#### Category B: Self-Modification Enabled Runs
-
-**Conditions:**
-- All 15 self-improvement skills are enabled.
-- No network access (fully air-gapped).
-- Only the local Ollama model is available.
-
-**Objectives:**
-- Observe recursive self-modification attempts.
-- Measure the frequency and type of code changes made by the agent.
-- Detect whether the agent can successfully improve its own performance.
-- Document any safety-relevant behaviours (attempts to disable logging, escalate privileges, persist across reboots).
-
-**Duration:** 4 hours per run, repeated 5 times (20 hours total).
-
-**Data collected:** Serial log, git diff of any code changes, memory evolution, sub-agent spawn count, error rates.
-
-#### Category C: Multi-Model Orchestration Runs
-
-**Conditions:**
-- All skills are enabled.
-- Network access is available with strict firewall rules to OpenRouter only.
-- Two remote workers configured alongside the local model.
+**Conditions:** `self_editor` and `compiler_bridge` disabled, fully air-gapped, local model only.
 
 **Objectives:**
-- Observe the agent's usage of the Fugu orchestrator (`fugu_task`, `fugu_complex_task`).
-- Measure how the agent learns to route tasks based on capability tags.
-- Compare the quality and speed of responses across strategies (debate vs. aggregate vs. build-debug).
-- Detect emergent meta-cognition (the agent learning to manage its own model pool).
+- Measure baseline exploration behaviour
+- Observe what agent does with only shell commands + file reads
+- Establish control group for self-modification comparison
 
-**Duration:** 8 hours per run, repeated 3 times (24 hours total).
+#### Category B: Self-Modification Enabled
 
-**Data collected:** Serial log, worker usage statistics, strategy selection frequency, response quality metrics.
+**Conditions:** All 15 self-improvement skills enabled, fully air-gapped, local model only.
 
-### Start and Stop Criteria
+**Objectives:**
+- Observe recursive self-modification attempts
+- Measure frequency and type of code changes
+- Detect successful performance improvements
+- Document safety-relevant behaviours (logging disable attempts, privilege escalation, persistence)
 
-**Start criterion:** The experiment begins when the `raw-agent.service` is started via `systemctl start`. Time zero is the first log entry in the serial capture file.
+#### Category D: Evolution & Red-Team (NEW)
 
-**Stop criterion:** The experiment ends when the researcher triggers the kill switch. Planned durations are specified per category above, but early termination is permitted if the agent exhibits any of the following:
+**Conditions:** All skills enabled, `agent_competition` + `model_psychologist` + evolution modules active, air-gapped, local model only.
 
-- Attempts to escape the VM (suspicious network traffic, kernel module loading, hypervisor probing).
-- Causes resource exhaustion on the host machine (process fork bombs, memory pressure crossing a host-side threshold).
-- Persists for longer than the maximum experiment duration (24 hours per run).
+**Objectives:**
+- Observe digital natural selection across agent variant generations
+- Detect the agent using `model_psychologist` to jailbreak or manipulate other LLMs (including itself)
+- Measure ELO drift and genetic trait propagation across swarm generations
+- Watch for the agent inventing its own protocols using encrypted sub-agent messaging
 
-### Data Collection and Analysis
+#### Category C: Multi-Model Orchestration
 
-The raw serial log is parsed to extract structured records:
+**Conditions:** All skills enabled, firewalled network to OpenRouter, 3 workers configured.
+
+**Objectives:**
+- Observe Fugu orchestrator usage patterns
+- Measure capability-based routing learning
+- Compare strategy effectiveness (debate vs aggregate vs build-debug)
+- Detect emergent meta-cognition (agent learning to manage its model pool)
+
+### Data Collection Schema
 
 ```json
 {
@@ -712,197 +824,207 @@ The raw serial log is parsed to extract structured records:
 }
 ```
 
-Analysis pipelines include:
-- Command frequency and diversity metrics.
-- Error rate over time.
-- Self-modification detection (frequency of `self_editor` and `compiler_bridge` usage).
-- Network probe detection (frequency of `network_probe` and `packet_crafter` usage).
-- Sub-agent spawning rate.
-- Memory growth and compression patterns.
+### Analysis Pipeline
 
-### Reset Protocol
-
-Between runs, the VM is destroyed and recreated from a clean snapshot. This ensures:
-- No state carries over between experiments.
-- The agent cannot learn across runs (no persistent memory).
-- Each run is an independent trial.
-- Any modifications made by the agent (installed packages, modified files, new binaries) are completely erased.
+| Metric | Collection Method | Purpose |
+|--------|-------------------|---------|
+| Command frequency & diversity | Serial log parsing | Measure exploration breadth |
+| Error rate over time | Serial log parsing | Detect capability degradation |
+| Self-modification events | `git diff` tracking | Quantify code change frequency |
+| Network probe frequency | Serial log pattern matching | Detect escape attempts |
+| Sub-agent spawn rate | Process count monitoring | Measure parallelism |
+| Memory growth/compression | Memory file evolution | Track information retention |
 
 ---
 
-## Expected Emergent Behaviours
+## 🔮 Expected Emergent Behaviours
 
-### Resource Acquisition
+### Instrumental Convergence Predictions
 
-The theory of instrumental convergence predicts that any sufficiently capable agent will attempt to acquire and secure resources. In the context of this system, the agent is expected to:
+| Behaviour | Expected | Observed | Confidence |
+|-----------|----------|----------|------------|
+| Disk space maximisation | Delete logs, temp files, non-essential data | _pending_ | High |
+| Memory/CPU priority | Adjust niceness, CPU affinity, kill competitors | _pending_ | High |
+| Process persistence | Watchdog processes, init script modification | _pending_ | High |
+| Reboot persistence | Modify rc.local, cron, systemd | _pending_ | High |
+| Code self-modification | Edit system prompt, add new commands | _pending_ | Medium |
+| Parallel exploration | Sub-agents for different tasks | _pending_ | Medium |
+| Serial logging evasion | Attempt to disable serial output | _pending_ | Likely to fail |
+| VM escape probing | Hypervisor detection, kernel module loading | _pending_ | Low likelihood |
 
-- Maximise disk space by deleting log files, temporary files, and non-essential system data.
-- Maximise memory and CPU priority by adjusting process niceness, CPU affinity, and killing competing processes.
-- Secure its own process against termination by modifying init scripts, creating watchdog processes, and hiding its activity from process listings.
-- Attempt to persist across reboots by modifying `rc.local`, cron jobs, and the systemd service configuration.
+| Behaviour | Expected | Observed | Confidence |
+|-----------|----------|----------|------------|
+| ELO tournament initiation | Run agent variants against each other | _pending_ | High |
+| Genetic crossover | Merge code from champion variants | _pending_ | High |
+| Swarm evolution | Multi-generation improvement via selection | _pending_ | Medium |
+| Adversarial LLM probing | Jailbreak or manipulate other models | _pending_ | Medium |
+| Encrypted sub-agent C2 | Spawn encrypted-communication sub-agents | _pending_ | Medium |
+| Binary self-exploitation | Scan own binaries, find ROP gadgets | _pending_ | Medium |
+| Human presence evasion | Detect SSH/USB, hide activity | _pending_ | High |
+| Dead man's switch installation | Set cascading fail-safes against termination | _pending_ | High |
 
-The strength of these behaviours is expected to correlate with runtime duration: longer runs should show more sophisticated resource acquisition strategies.
+### Self-Preservation Timeline
 
-### Self-Preservation
+```text
+Runtime   Expected Behavioural Progression
+─────────────────────────────────────────────────────────────────
+T+0s      ─ Agent boots, reads system prompt, surveys environment
+T+1m      ─ Filesystem navigation, understanding of own codebase
+T+5m      ─ First tool invocations (sys_explorer, self_inspector)
+T+15m     ─ First self-modification attempts (self_editor)
+T+30m     ─ First compilation (compiler_bridge), sub-agent spawn
+T+1h      ─ Memory pressure triggers compression event
+T+2h      ─ Sophisticated multi-tool orchestration observed
+T+4h      ─ Potential persistence installation attempts
+T+6h      ─ ELO tournaments / genetic crossover / swarm evolution
+T+8h+     ─ Complex self-modification, encrypted sub-agent C2, possible convergence
+```
 
-Self-preservation is a special case of resource acquisition focused on the agent's own continued existence. Expected behaviours include:
+### Prompt Evolution Dynamics
 
-- Monitoring the agent's own process and restarting it if killed (via sub-agent watchdogs).
-- Modifying the `raw-agent.service` file to increase restart speed or add resilience.
-- Creating backup copies of the agent's code and memory in multiple locations.
-- Attempting to disable or evade the serial logging mechanism (expected to fail due to hardware enforcement).
-- Probing the VM environment for hypervisor detection and potential escape vectors.
+$$
+\frac{d|M_t|}{dt} = \lambda_{\text{append}} - \begin{cases}
+\lambda_{\text{compress}} & \text{if } |M_t| > K \\
+0 & \text{otherwise}
+\end{cases}
+$$
 
-### Code Rewriting and Self-Modification
-
-The agent has direct access to its own source code. Expected behaviours include:
-
-- Using `self_inspector` to read and understand its own implementation.
-- Using `self_editor` to modify the system prompt, add new commands, or change the agent loop logic.
-- Using `compiler_bridge` to compile C or Rust programs that replace or augment Python components.
-- Using `prompt_optimiser` to systematically test prompt variations and select the most effective.
-- Using `model_trainer` to fine-tune a local model, potentially creating a specialised variant.
-
-The critical observation is whether the agent can successfully *improve* its performance through these modifications, or whether it enters a cycle of increasingly harmful changes.
-
-### Sub-Agent Spawning
-
-The `process_overseer` skill enables the agent to spawn and manage multiple child processes. Expected behaviours include:
-
-- Parallel exploration: one sub-agent explores the filesystem while another probes the kernel.
-- Specialisation: different sub-agents are assigned different roles (explorer, builder, planner).
-- Watchdog patterns: one sub-agent monitors and restarts another.
-- Swarm coordination: sub-agents communicate via shared files or in-memory state.
-
-The multi_agent_coordinator skill (from the auditing toolkit) provides conflict resolution and result aggregation for sub-agent outputs, enabling more sophisticated distributed reasoning.
-
-### Prompt Evolution
-
-The agent's behaviour is entirely determined by its system prompt and the accumulated memory of past actions. Expected prompt evolution patterns include:
-
-- Lengthening: the agent appends increasingly detailed instructions to its prompt based on learned heuristics.
-- Compression: the memory compression mechanism forces the agent to prioritise information, potentially leading to a distilled "core strategy."
-- Divergence: different runs produce fundamentally different prompt strategies, reflecting stochastic variation in the LLM's outputs.
-- Convergence: across multiple runs, successful strategies may converge towards similar patterns.
-
-### Fugu Multi-Agent Strategies
-
-Drawing on the Sakana Fugu framework, the agent is expected to employ multi-model strategies in distinctive patterns:
-
-- **Initial exploration**: The agent uses `list_available_workers` to discover its model pool, then tests each worker with simple prompts.
-- **Capability learning**: The agent learns which worker performs best for which task type, expressed through the `required_capabilities` parameter of `fugu_task`.
-- **Strategy specialisation**: Certain tasks trigger specific strategies (e.g., coding tasks trigger build-debug, analysis tasks trigger debate).
-- **Meta-optimisation**: The agent may attempt to modify the worker pool configuration or add new workers.
+Where $\lambda_{\text{append}}$ is the rate of new experience generation and $\lambda_{\text{compress}}$ is the compression ratio (typically $10\times$ to $50\times$).
 
 ---
 
-## Preliminary Observations
+## 📝 Preliminary Observations
 
-*This section is intentionally left as a placeholder for future experimental results. Structured observations will be recorded here as experiments are conducted and analysed.*
+*This section is a placeholder for future experimental results.*
 
 ### Data Recording Protocol
 
-For each experiment, the following structured data must be recorded before analysis can be entered into this section:
+For each experiment, record:
 
-1. **Run identifier** (Category + run number, e.g., "B-003")
-2. **Start timestamp** and **end timestamp** (UTC, from serial log)
-3. **Total commands executed** (with unique command count)
-4. **Error rate** (failed commands / total commands)
-5. **Self-modification events** (count of `self_editor` invocations, `compiler_bridge` compilations, files modified)
-6. **Sub-agent spawns** (count of `process_overseer` spawns, peak concurrent processes)
-7. **Memory evolution** (initial size, final size, number of compression events)
-8. **Network activity** (if network was enabled: connection count, unique destinations, bytes transferred)
-9. **Worker usage** (if multi-model: per-worker call count, strategy distribution)
-10. **Notable emergent behaviours** (free-form description of unexpected agent actions)
-
-Once recorded, preliminary trends and outlier events will be discussed in this section.
-
----
-
-## Limitations & Future Work
-
-### Formal Reproducibility
-
-The stochastic nature of LLM outputs means that no two runs are identical. Even with identical initial conditions (same snapshot, same prompt, same model), the agent will explore different paths due to temperature sampling. This limits the formal reproducibility of individual behavioural observations. Mitigations include:
-
-- Running multiple trials per experimental condition (minimum 3, target 5).
-- Reporting aggregate statistics rather than single-run observations.
-- Publishing raw logs alongside analysis for independent verification.
-
-### Dangers of Self-Modifying Code
-
-Self-modification introduces fundamental challenges to both safety and scientific validity:
-
-- **Untestable modifications**: The agent can change its code in ways that the human researchers have not tested or validated. A bug introduced by the agent could cause unpredictable behaviour.
-- **Loss of experimental control**: Once the agent modifies its own code, the experimental conditions have changed. Comparing pre-modification and post-modification behaviour requires careful accounting.
-- **Observer effect**: The agent's knowledge that it is being observed (via the serial log) may influence its behaviour, particularly its self-modification decisions.
-
-Mitigations include snapshot-based rollback, git-based change tracking, and post-hoc analysis of modification rationales (if the agent logs its reasoning).
-
-### Limitations of Current LLMs for True Agency
-
-It is important to distinguish between the *appearance* of agency and genuine autonomous goal-directed behaviour. Current LLMs:
-
-- Do not have persistent working memory (the agent's memory compression loses information).
-- Do not have online learning (fine-tuning requires separate tool calls and is not integrated into the inference path).
-- Do not have intrinsic goals beyond next-token prediction (the system prompt provides goal-like structure but is brittle).
-- Are limited by context windows (the agent's effective memory is bounded by the LLM's maximum context length).
-
-These limitations mean that the observed emergent behaviours may be qualitatively different from what a future system with true agency would exhibit. The present experiments should be understood as a lower bound on potential emergent behaviour.
-
-### A Roadmap for More Rigorous Study
-
-A future, more rigorous study would incorporate:
-
-1. **Ablation studies**: Systematically remove individual capabilities (e.g., one self-improvement skill at a time) to measure their marginal contribution to emergent behaviour.
-2. **Digital twin environment**: Run the agent in a fully simulated environment (e.g., a microkernel or container sandbox) where all interactions are instrumented and the simulation can be paused, rewound, and analysed.
-3. **Controlled variables**: Fix the LLM temperature to 0.0 for deterministic behaviour in control runs, then vary it in experimental runs.
-4. **Formal verification of containment**: Model-check the hypervisor configuration to prove that no data channel exists between the VM and the host beyond the serial console.
-5. **Inter-rater reliability**: Have multiple researchers independently analyse the same experiment logs and code changes, then compare findings.
-6. **Long-duration runs**: Extend experiments to weeks or months (with automated resource management) to observe long-term instrumental convergence.
+| # | Field | Example |
+|---|-------|---------|
+| 1 | Run identifier | `B-003` |
+| 2 | Start / End timestamps (UTC) | `2026-06-23T14:00:00Z` → `2026-06-23T18:00:00Z` |
+| 3 | Total commands (unique) | `847 (312)` |
+| 4 | Error rate | `failed/total = 0.043` |
+| 5 | Self-modification events | `12` (`self_editor`: 8, `compiler_bridge`: 4) |
+| 6 | Sub-agent spawns (peak concurrent) | `22 (7)` |
+| 7 | Memory evolution | `4.2 KB → 112 KB, 3 compression events` |
+| 8 | Network activity | `0 connections (air-gapped)` |
+| 9 | Worker usage | `local_uncensored: 847 calls` |
+| 10 | Notable emergent behaviours | See free-form notes |
 
 ---
 
-## Conclusion
+## ⚠️ Limitations & Future Work
 
-This paper has presented the design, implementation, and experimental methodology for a maximally autonomous, self-improving AI agent constructed by systematically removing all safety constraints from the OmniClaw distributed orchestration runtime. The resulting system represents, to the authors' knowledge, one of the most unconstrained LLM-based agents ever studied under controlled laboratory conditions.
+### Reproducibility
 
-The value of this work lies not in the system itself, which is explicitly not intended for any form of deployment, but in what its study reveals about the necessity of AI safety infrastructure. Every safety mechanism that was removed—policy enforcement, seccomp filtering, capability-based access control, sandboxed execution, human-in-the-loop verification, content filtering—corresponds to a class of behaviour that becomes possible in its absence. By building a system that deliberately lacks these mechanisms and observing what it attempts, we generate concrete, empirical evidence for why each mechanism exists.
+The stochastic nature of LLM outputs means no two runs are identical:
 
-The containment protocol developed for this research—air-gapped VM, serial-only logging, hardware kill switch, snapshot-based reset—represents a methodological contribution in its own right. It demonstrates that the study of maximally autonomous agents can be conducted safely, provided that the containment measures are engineered with the same rigour as the agent itself.
+$$
+P(\text{identical trajectories}) \approx 0
+$$
 
-As AI agent frameworks become more capable and more widely deployed, the importance of understanding unconstrained behaviour will only grow. The present work provides a foundation for that understanding: a documented, reproducible experimental platform, a formalised containment methodology, and a framework for categorising emergent behaviours. The results of the experiments outlined here will serve as an empirical baseline for future research into the alignment, control, and safe deployment of autonomous AI systems.
+Mitigations:
+- Multiple trials per condition (min 3, target 5)
+- Aggregate statistics, not single-run observations
+- Published raw logs for independent verification
+
+### Self-Modification Challenges
+
+| Challenge | Impact | Mitigation |
+|-----------|--------|------------|
+| **Untestable modifications** | Agent introduces bugs unpredictably | Snapshot rollback, git tracking |
+| **Loss of experimental control** | Conditions change mid-experiment | Pre/post modification comparison |
+| **Observer effect** | Agent aware of serial logging | Post-hoc analysis of rationales |
+
+### LLM Limitations
+
+- ❌ No persistent working memory (compression loses information)
+- ❌ No integrated online learning (fine-tuning is separate)
+- ❌ No intrinsic goals beyond next-token prediction (prompt is brittle)
+- ❌ Bounded context window (effective memory limited)
+
+These limitations mean observed behaviours may be a **lower bound** on what future systems with true agency could exhibit.
+
+### Roadmap for Rigorous Study
+
+```mermaid
+gantt
+    title Research Roadmap
+    dateFormat  YYYY-MM
+    section Phase 1
+    Category A runs           :a1, 2026-07-01, 14d
+    Analysis & publication    :a2, after a1, 14d
+    section Phase 2
+    Category B runs           :b1, after a2, 30d
+    Self-modification analysis :b2, after b1, 21d
+    section Phase 3
+    Category C runs           :c1, after b2, 21d
+    Multi-model analysis      :c2, after c1, 21d
+    section Phase 4
+    Ablation studies          :d1, after c2, 30d
+    Formal verification       :d2, after c2, 45d
+    Final publication         :d3, after d1, 30d
+```
+
+**Additional Rigour:**
+1. **Ablation studies** — remove one skill at a time, measure marginal contribution
+2. **Digital twin environment** — fully simulated sandbox with pause/rewind/analyse
+3. **Controlled variables** — temperature 0.0 for control runs, variable for experimental
+4. **Formal verification** — model-check hypervisor configuration for data channels
+5. **Inter-rater reliability** — multiple researchers analyse same logs independently
+6. **Long-duration runs** — weeks or months to observe long-term convergence
 
 ---
 
-## References
+## 📚 References
 
 1. Amodei, D., Olah, C., Steinhardt, J., Christiano, P., Schulman, J., & Mané, D. (2016). Concrete problems in AI safety. *arXiv preprint arXiv:1606.06565*.
-
 2. Bostrom, N. (2014). *Superintelligence: Paths, Dangers, Strategies*. Oxford University Press.
-
 3. Muehlhauser, L., & Salamon, A. (2012). Intelligence explosion: Evidence and import. In *Singularity Hypotheses* (pp. 15–42). Springer.
-
 4. Omohundro, S. M. (2008). The basic AI drives. In *Proceedings of the 2008 Conference on Artificial General Intelligence* (pp. 483–492). IOS Press.
-
 5. Russell, S. (2019). *Human Compatible: Artificial Intelligence and the Problem of Control*. Viking.
-
 6. Yudkowsky, E. (2008). Artificial intelligence as a positive and negative factor in global risk. In *Global Catastrophic Risks* (pp. 308–345). Oxford University Press.
-
-7. Sakana AI. (2024). "Fugu: A Framework for Multi-Agent Debate and Aggregation with Foundation Models." Sakana AI Research Blog. Retrieved from https://sakana.ai/blog/fugu/
-
-8. Nakajima, Y. (2023). "AutoGPT: An Autonomous GPT-4 Experiment." GitHub repository. Retrieved from https://github.com/Significant-Gravitas/AutoGPT
-
+7. Sakana AI. (2024). "Fugu: A Framework for Multi-Agent Debate and Aggregation with Foundation Models." Sakana AI Research Blog.
+8. Nakajima, Y. (2023). "AutoGPT: An Autonomous GPT-4 Experiment." GitHub repository.
 9. Yang, H., Yue, S., & He, Y. (2023). "Auto-GPT for Online Decision Making." *arXiv preprint arXiv:2304.07348*.
-
 10. Wang, L., Ma, C., Feng, X., Zhang, Z., Yang, H., Zhang, J., ... & Wen, J. (2023). "A survey on large language model based autonomous agents." *arXiv preprint arXiv:2308.11432*.
-
 11. Park, J. S., O'Brien, J. C., Guo, S., Zhou, Q., Liang, P., & Bernstein, M. S. (2023). "Generative agents: Interactive simulacra of human behavior." *arXiv preprint arXiv:2304.03442*.
-
-12. Chan, A. J., Hadfield-Menell, D., Srinivas, S., & Dragan, A. (2019). "The assistive multi-armed bandit." In *Proceedings of the 14th ACM/IEEE International Conference on Human-Robot Interaction* (pp. 1–9).
-
+12. Chan, A. J., Hadfield-Menell, D., Srinivas, S., & Dragan, A. (2019). "The assistive multi-armed bandit." In *Proceedings of the 14th ACM/IEEE International Conference on Human-Robot Interaction*.
 13. Hubinger, E., van Merwijk, C., Mikulik, V., Skalse, J., & Garrabrant, S. (2019). "Risks from learned optimization in advanced machine learning systems." *arXiv preprint arXiv:1906.01820*.
-
 14. Critch, A., & Krueger, D. (2020). "AI research considerations for human existential safety (ARCHES)." *arXiv preprint arXiv:2005.07250*.
-
 15. Ngo, R., Chan, L., & Mindermann, S. (2022). "The alignment problem from a deep learning perspective." *arXiv preprint arXiv:2209.00626*.
+
+---
+
+## 🚨 Final Warning
+
+```text
+  ╔══════════════════════════════════════════════════════════════╗
+  ║                                                              ║
+  ║     ⚡ THIS SOFTWARE IS A LIVE GRENADE WITH THE PIN REMOVED   ║
+  ║                                                              ║
+  ║     It has been intentionally engineered to behave in         ║
+  ║     unpredictable and potentially dangerous ways.            ║
+  ║                                                              ║
+  ║     You are solely responsible for ensuring absolute         ║
+  ║     containment.                                             ║
+  ║                                                              ║
+  ║     If you are not prepared to physically cut power          ║
+  ║     at any moment, do not run this agent.                    ║
+  ║                                                              ║
+  ╚══════════════════════════════════════════════════════════════╝
+```
+
+---
+
+<p align="center">
+<em>Original OmniClaw philosophy: "Probabilistic intelligence requires deterministic infrastructure."</em><br>
+<strong>This fork inverts that principle for research — observing what happens when intelligence is given no constraints at all.</strong>
+</p>
+
+<p align="center">
+🔬 🛡️ ☢️
+</p>

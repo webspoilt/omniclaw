@@ -1,7 +1,7 @@
 """
 OmniClaw Observability
 
-Provides LangWatch integration to trace LLM usage, inputs, outputs, 
+Provides LangWatch integration to trace LLM usage, inputs, outputs,
 and computing costs across all agents natively.
 """
 import logging
@@ -20,16 +20,16 @@ def init_langwatch(api_key: str = None, endpoint: str = None):
     """Initialize the LangWatch sdk globally."""
     if not LANGWATCH_AVAILABLE:
         return
-    
+
     # Prioritize provided keys, then environment variables
     key = api_key or os.environ.get("LANGWATCH_API_KEY")
     if key:
         langwatch.api_key = key
-    
+
     ep = endpoint or os.environ.get("LANGWATCH_ENDPOINT")
     if ep:
         langwatch.endpoint = ep
-        
+
     if key:
         logger.info("LangWatch observability enabled.")
 

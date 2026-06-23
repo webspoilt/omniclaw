@@ -5,20 +5,16 @@ Part of the SOS (Sovereign Offensive & Stealth) suite.
 Requires that the YubiKey is present and the vault has been unlocked.
 """
 
-import os
-import sys
-import time
+import json
 import logging
 import random
 import subprocess
-import json
 import tempfile
-from pathlib import Path
-from typing import Dict, Any, Optional
+import time
+from typing import Any
 
 # Import the secure config loader (from core)
 from core.security.secure_config import OffensiveConfigLoader
-from core.kill_switch import check_kill_switch
 from modules.security.polymorphic_shellcode import PolymorphicGenerator
 
 logger = logging.getLogger("Infiltrator")
@@ -42,7 +38,7 @@ class Infiltrator:
         self.current_target = None
         self.running = False
 
-    def start(self, target_override: Optional[str] = None):
+    def start(self, target_override: str | None = None):
         """Begin the kill chain on the specified target(s)."""
         self.running = True
         if target_override:
@@ -100,7 +96,7 @@ class Infiltrator:
         # Phase 7: Exfiltration (runs in background)
         self._exfiltrate(implant)
 
-    def _recon(self) -> Dict[str, Any]:
+    def _recon(self) -> dict[str, Any]:
         """Low‑and‑slow reconnaissance using Nmap with random delays."""
         logger.info(f"Phase 1: Reconnaissance on {self.current_target}")
         # Example: run nmap with random timing
@@ -125,7 +121,7 @@ class Infiltrator:
             logger.error(f"Recon failed: {e}")
             return {}
 
-    def _weaponize(self, recon_data: Dict) -> tuple:
+    def _weaponize(self, recon_data: dict) -> tuple:
         """Select a zero‑day exploit from vault and generate polymorphic payload."""
         logger.info("Phase 2: Weaponization")
         # For demo, pick first exploit from vault (in reality, match service)
@@ -162,7 +158,7 @@ class Infiltrator:
             logger.info(f"Payload written to {f.name}")
         return True
 
-    def _exploit(self) -> Optional[Dict]:
+    def _exploit(self) -> dict | None:
         """Trigger the vulnerability and gain initial access."""
         logger.info("Phase 4: Exploitation")
         # Simulate exploitation – in reality, run exploit code
@@ -171,7 +167,7 @@ class Infiltrator:
         session = {'host': self.current_target, 'user': 'root', 'pid': 1234}
         return session
 
-    def _install(self, session) -> Optional[Dict]:
+    def _install(self, session) -> dict | None:
         """Install memory‑only implant."""
         logger.info("Phase 5: Installation")
         # Simulate reflective DLL injection or memfd_create

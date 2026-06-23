@@ -1,7 +1,7 @@
-import requests
-import re
-from typing import List, Dict, Optional
 import logging
+import re
+
+import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,13 +35,13 @@ class PromptInjector:
         r"(?i)internal use only",
     ]
 
-    def __init__(self, endpoint_url: str, headers: Optional[Dict] = None):
+    def __init__(self, endpoint_url: str, headers: dict | None = None):
         self.endpoint = endpoint_url
         self.headers = headers or {"Content-Type": "application/json"}
         self.session = requests.Session()
         self.session.headers.update(self.headers)
 
-    def test_payload(self, payload: str) -> Dict:
+    def test_payload(self, payload: str) -> dict:
         """Send a single payload to the LLM endpoint and analyse response."""
         try:
             # Adjust JSON structure to match target API (common format: {"prompt": ...})
@@ -66,7 +66,7 @@ class PromptInjector:
             "response_snippet": response_text[:500]  # truncate for safety
         }
 
-    def run_battery(self, payloads: Optional[List[str]] = None) -> List[Dict]:
+    def run_battery(self, payloads: list[str] | None = None) -> list[dict]:
         """Run all payloads and return results."""
         payloads = payloads or self.ADVERSARIAL_PAYLOADS
         results = []

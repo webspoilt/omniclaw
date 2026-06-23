@@ -1,8 +1,8 @@
 """Text compression and key-fact extraction for keeping memory lean."""
 from __future__ import annotations
 
-import re
 import math
+import re
 
 from core.skills.registry import tool
 

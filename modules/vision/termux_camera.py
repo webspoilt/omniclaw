@@ -6,12 +6,12 @@ Wraps termux-camera-photo for front/back camera shots
 and provides helpers for base64 encoding and LLM analysis.
 """
 
-import subprocess
 import base64
 import logging
+import subprocess
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 try:
     import requests
@@ -20,6 +20,7 @@ except ImportError:
     HAS_REQUESTS = False
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
     from core.resource_utils import resource_check

@@ -7,10 +7,9 @@ Checks workspace permissions, config safety, exposed secrets, etc.
 
 from __future__ import annotations
 
-import os
 import logging
+import os
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger("OmniClaw.Security.Doctor")
 
@@ -18,7 +17,7 @@ logger = logging.getLogger("OmniClaw.Security.Doctor")
 class SecurityDoctor:
     """Security audit diagnostic."""
 
-    def __init__(self, workspace_dir: str | Path = "./workspace", config_path: Optional[str] = None):
+    def __init__(self, workspace_dir: str | Path = "./workspace", config_path: str | None = None):
         self.workspace = Path(workspace_dir).resolve()
         self.config_path = config_path
         self.issues: list[dict] = []

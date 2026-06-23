@@ -1,30 +1,32 @@
-from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional
-from models import Message
-from cost_tracker import tracked_completion
-from database import SessionLocal, ConversationMemory
-from config import settings
 import uuid
+from abc import ABC
+
+from cost_tracker import tracked_completion
+from database import ConversationMemory, SessionLocal
+from models import Message
+
+from config import settings
+
 
 class BaseAgent(ABC):
     def __init__(self, name: str, system_prompt: str):
         self.name = name
         self.system_prompt = system_prompt
-        self.conversation_id: Optional[str] = None
-        self.messages: List[Message] = []
-    
-    async def initialize_conversation(self, conversation_id: Optional[str] = None):
+        self.conversation_id: str | None = None
+        self.messages: list[Message] = []
+
+    async def initialize_conversation(self, conversation_id: str | None = None):
         if conversation_id:
             self.conversation_id = conversation_id
             # Load previous messages from memory? (optional)
         else:
             self.conversation_id = str(uuid.uuid4())
         self.messages = [Message(role="system", content=self.system_prompt)]
-    
+
     async def add_user_message(self, content: str):
         self.messages.append(Message(role="user", content=content))
-    
-    async def call_llm(self, tools: Optional[List[Dict]] = None) -> str:
+
+    async def call_llm(self, tools: list[dict] | None = None) -> str:
         """Call LLM with current messages and optional tools."""
         response = await tracked_completion(
             model=settings.model,
@@ -36,12 +38,12 @@ class BaseAgent(ABC):
         content = assistant_message.content or ""
         self.messages.append(Message(role="assistant", content=content))
         return content
-    
-    async def run(self, user_input: str, tools: Optional[List[Dict]] = None) -> str:
+
+    async def run(self, user_input: str, tools: list[dict] | None = None) -> str:
         """Main entry point for agent."""
         await self.add_user_message(user_input)
         return await self.call_llm(tools)
-    
+
     def remember_trigger(self, trigger_phrase: str, response: str):
         """Store trigger phrase for future use."""
         db = SessionLocal()
@@ -53,8 +55,8 @@ class BaseAgent(ABC):
         db.add(mem)
         db.commit()
         db.close()
-    
-    def recall_trigger(self, trigger_phrase: str) -> Optional[str]:
+
+    def recall_trigger(self, trigger_phrase: str) -> str | None:
         """Retrieve memory for a trigger phrase."""
         db = SessionLocal()
         mem = db.query(ConversationMemory).filter(

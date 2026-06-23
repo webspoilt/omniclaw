@@ -7,14 +7,14 @@ Supports task offloading, knowledge queries, sync, and heartbeat
 with capability advertisement (CPU, memory, available models).
 """
 
+import logging
 import os
-import json
-import time
 import queue
 import threading
-import logging
-from typing import Any, Dict, Optional, Callable, List
+import time
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 try:
     import zmq
@@ -29,6 +29,7 @@ except ImportError:
     HAS_PSUTIL = False
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from modules.p2p.protocol import Message, MsgType
@@ -62,7 +63,7 @@ class NeuralMeshNode:
     """
 
     def __init__(self, node_id: str, listen_port: int,
-                 peers: List[str], aes_key: bytes):
+                 peers: list[str], aes_key: bytes):
         """
         Initialize NeuralMeshNode.
 
@@ -84,10 +85,10 @@ class NeuralMeshNode:
             raise ImportError("pyzmq required: pip install pyzmq")
 
         # Warn if using the hardcoded demo key from __main__
-        _DEMO_KEY_B64 = "dGhpc2lzMzJieXRla2V5Zm9yYWVzMjU2Z2NtISE="
+        _demo_key_b64 = "dGhpc2lzMzJieXRla2V5Zm9yYWVzMjU2Z2NtISE="
         try:
             import base64
-            if aes_key == base64.b64decode(_DEMO_KEY_B64):
+            if aes_key == base64.b64decode(_demo_key_b64):
                 import warnings
                 warnings.warn(
                     "NeuralMeshNode: using the default demo AES key — "
@@ -111,15 +112,15 @@ class NeuralMeshNode:
         self.router = self.ctx.socket(zmq.ROUTER)
         self.router.bind(f"tcp://*:{listen_port}")
 
-        self.dealers: Dict[str, zmq.Socket] = {}
-        self.peer_info: Dict[str, dict] = {}
-        self.pending: Dict[str, queue.Queue] = {}
+        self.dealers: dict[str, zmq.Socket] = {}
+        self.peer_info: dict[str, dict] = {}
+        self.pending: dict[str, queue.Queue] = {}
         self.lock = threading.Lock()
         self.running = False
 
         # Callbacks
-        self.task_handler: Optional[Callable] = None
-        self.knowledge_handler: Optional[Callable] = None
+        self.task_handler: Callable | None = None
+        self.knowledge_handler: Callable | None = None
 
         for addr in peers:
             if addr.strip():
@@ -225,7 +226,7 @@ class NeuralMeshNode:
 
     # ---- Public API ----
     def request_task(self, peer_id: str, task: dict,
-                     timeout: float = 30) -> Optional[Any]:
+                     timeout: float = 30) -> Any | None:
         rid = Message.make_id(self.node_id)
         q: queue.Queue = queue.Queue()
         with self.lock:
@@ -244,7 +245,7 @@ class NeuralMeshNode:
                 self.pending.pop(rid, None)
 
     def query_knowledge(self, peer_id: str, query: dict,
-                        timeout: float = 10) -> Optional[Any]:
+                        timeout: float = 10) -> Any | None:
         rid = Message.make_id(self.node_id)
         q: queue.Queue = queue.Queue()
         with self.lock:
@@ -262,7 +263,7 @@ class NeuralMeshNode:
             with self.lock:
                 self.pending.pop(rid, None)
 
-    def get_online_peers(self) -> List[str]:
+    def get_online_peers(self) -> list[str]:
         now = time.time()
         return [p for p, info in self.peer_info.items()
                 if now - info.get("last_seen", 0) < 15]

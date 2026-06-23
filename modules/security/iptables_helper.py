@@ -4,12 +4,12 @@ iptables_helper.py — Reads the eBPF attack_map via bpftool and inserts
 iptables TPROXY rules to redirect repeat offenders to the shadow shell.
 """
 
-import subprocess
 import json
-import time
 import logging
-import struct
 import socket
+import struct
+import subprocess
+import time
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")

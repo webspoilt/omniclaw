@@ -3,9 +3,8 @@ Auditor Agent: Validates simulation output for hallucinations and logical consis
 """
 
 import logging
-from dataclasses import dataclass
-from typing import Optional, List
 import re
+from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +12,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class AuditResult:
     passed: bool
-    reason: Optional[str] = None
+    reason: str | None = None
     score: float = 0.0
 
 
@@ -43,7 +42,7 @@ class Auditor:
 
         return AuditResult(passed=True, score=1.0)
 
-    def _detect_hallucinations(self, text: str, context: str) -> Optional[str]:
+    def _detect_hallucinations(self, text: str, context: str) -> str | None:
         """Simple pattern matching for unrealistic claims."""
         text_lower = text.lower()
         # Example: detect absurd Bitcoin prices

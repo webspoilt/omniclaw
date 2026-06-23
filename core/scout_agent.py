@@ -14,18 +14,16 @@ Features:
   - Safety-first: exits immediately on blocklisted targets
 """
 
-import os
-import sys
-import re
-import json
-import time
 import ipaddress
-import subprocess
+import json
 import logging
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-from dataclasses import dataclass
+import os
+import re
+import subprocess
+import sys
 from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 try:
     import yaml
@@ -65,7 +63,7 @@ _DEFAULT_CONFIG = {
 
 def load_config() -> dict:
     if HAS_YAML and os.path.isfile(CONFIG_FILE):
-        with open(CONFIG_FILE, "r") as f:
+        with open(CONFIG_FILE) as f:
             return {**_DEFAULT_CONFIG, **yaml.safe_load(f)}
     return dict(_DEFAULT_CONFIG)
 
@@ -105,7 +103,7 @@ def is_blocked(target: str) -> bool:
 # ------------------------------------------------------------------ #
 #  LLM Interaction                                                    #
 # ------------------------------------------------------------------ #
-def query_llm(prompt: str) -> Optional[str]:
+def query_llm(prompt: str) -> str | None:
     if not HAS_REQUESTS:
         logger.error("requests not installed")
         return None
@@ -140,8 +138,8 @@ def query_llm(prompt: str) -> Optional[str]:
     return None
 
 
-def analyze_with_llm(tool_outputs: Dict[str, str],
-                     target: str) -> Dict[str, Any]:
+def analyze_with_llm(tool_outputs: dict[str, str],
+                     target: str) -> dict[str, Any]:
     """
     Send all tool outputs to LLM for vulnerability analysis.
     Expects JSON: { summary, findings: [{title, severity, description, remediation}] }
@@ -185,7 +183,7 @@ class SecurityTool:
         self.args = cfg.get("args", [])
         self.enabled = cfg.get("enabled", True)
 
-    def run(self, target: str) -> Optional[str]:
+    def run(self, target: str) -> str | None:
         if not self.enabled:
             logger.info(f"{self.name} disabled, skipping")
             return None
@@ -232,9 +230,9 @@ class ScoutAgent:
     }
 
     def __init__(self, cfg: dict):
-        self.target: Optional[str] = None
-        self.results: Dict[str, str] = {}
-        self.tools: Dict[str, SecurityTool] = {}
+        self.target: str | None = None
+        self.results: dict[str, str] = {}
+        self.tools: dict[str, SecurityTool] = {}
 
         for name, tcfg in cfg.get("tools", {}).items():
             cls = self.TOOL_MAP.get(name, SecurityTool)
@@ -260,12 +258,12 @@ class ScoutAgent:
                 self.results[name] = out
             logger.info(f"✓ {name}")
 
-    def analyze(self) -> Dict[str, Any]:
+    def analyze(self) -> dict[str, Any]:
         if not self.results:
             return {"summary": "No data", "findings": []}
         return analyze_with_llm(self.results, self.target or "unknown")
 
-    def generate_report(self, analysis: Dict[str, Any]) -> Path:
+    def generate_report(self, analysis: dict[str, Any]) -> Path:
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         rpt = REPORT_DIR / f"vulnerability_report_{ts}.md"
 
@@ -294,7 +292,7 @@ class ScoutAgent:
         logger.info(f"Report → {rpt}")
         return rpt
 
-    def send_alerts(self, analysis: Dict[str, Any], report: Path):
+    def send_alerts(self, analysis: dict[str, Any], report: Path):
         """Alert on HIGH/CRITICAL findings via Telegram/Discord."""
         if not HAS_REQUESTS:
             return

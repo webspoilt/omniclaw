@@ -1,6 +1,5 @@
 import logging
 import time
-import threading
 
 logger = logging.getLogger("OmniClaw.BiometricVibe")
 
@@ -12,7 +11,7 @@ except ImportError:
     logger.warning("pynput not installed. Keystroke dynamics disabled.")
 
 try:
-    import speech_recognition as sr
+    import speech_recognition as sr  # noqa: F401
     SPEECH_AVAILABLE = True
 except ImportError:
     SPEECH_AVAILABLE = False
@@ -29,7 +28,7 @@ class BiometricVibe:
         self.last_keystroke_time = time.time()
         self.ema_interval = 0.5  # Base typing interval estimation
         self.alpha = 0.1         # EMA Smoothing factor
-        
+
         self.listener = None
         if PYNPUT_AVAILABLE:
             self.listener = keyboard.Listener(on_press=self._on_press)
@@ -44,11 +43,11 @@ class BiometricVibe:
         now = time.time()
         interval = now - self.last_keystroke_time
         self.last_keystroke_time = now
-        
+
         if interval < 3.0: # Active continuous typing
             # Update Exponential Moving Average
             self.ema_interval = (self.alpha * interval) + ((1 - self.alpha) * self.ema_interval)
-                
+
             # Naive verification: steady typing EMA indicates the standard owner
             # Production would use ML model (e.g. Isolation Forest) on vectors
             self.trust_score = min(100.0, self.trust_score + 0.05)
@@ -69,12 +68,12 @@ class BiometricVibe:
         if not SPEECH_AVAILABLE:
             logger.warning("Voice verification failed: Module unavailable.")
             return False
-            
+
         logger.info(f"Analyzing voiceprint from {audio_file or 'microphone'}")
-        
+
         # Simulated success
         success = True
-        
+
         if success:
             logger.info("Voiceprint verified. Trust score maximized.")
             self.trust_score = 100.0

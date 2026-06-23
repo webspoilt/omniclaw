@@ -4,10 +4,9 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
-
 
 _TRAIN_DIR = Path(__file__).resolve().parent.parent / "data" / "training"
 
@@ -22,7 +21,7 @@ _TRAIN_DIR = Path(__file__).resolve().parent.parent / "data" / "training"
     },
     required=["entries"],
 )
-async def export_chat_dataset(entries: str, filename: Optional[str] = None, split_ratio: float = 0.9) -> dict[str, Any]:
+async def export_chat_dataset(entries: str, filename: str | None = None, split_ratio: float = 0.9) -> dict[str, Any]:
     _TRAIN_DIR.mkdir(parents=True, exist_ok=True)
     try:
         data = json.loads(entries)
@@ -78,7 +77,7 @@ async def export_chat_dataset(entries: str, filename: Optional[str] = None, spli
     },
     required=["model_path", "train_file"],
 )
-async def run_loratune(model_path: str, train_file: str, val_file: Optional[str] = None, framework: str = "mlx", lora_rank: int = 8) -> str:
+async def run_loratune(model_path: str, train_file: str, val_file: str | None = None, framework: str = "mlx", lora_rank: int = 8) -> str:
     train_path = Path(train_file)
     if not train_path.is_file():
         return f"Error: training file not found: {train_file}"
@@ -173,7 +172,7 @@ async def check_training_status() -> dict[str, Any]:
     },
     required=[],
 )
-async def export_memory_as_dataset(memory_file: str = "/root/agent_memory.txt", output_filename: Optional[str] = None) -> dict[str, Any]:
+async def export_memory_as_dataset(memory_file: str = "/root/agent_memory.txt", output_filename: str | None = None) -> dict[str, Any]:
     mem_path = Path(memory_file)
     if not mem_path.is_file():
         return {"error": f"memory file not found: {memory_file}"}

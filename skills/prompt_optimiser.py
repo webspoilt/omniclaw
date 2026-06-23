@@ -5,10 +5,9 @@ import json
 import random
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
-
 
 _PROMPTS_DIR = Path(__file__).resolve().parent.parent / "data" / "prompts"
 
@@ -23,7 +22,7 @@ _PROMPTS_DIR = Path(__file__).resolve().parent.parent / "data" / "prompts"
     },
     required=["label", "text"],
 )
-async def store_prompt(label: str, text: str, initial_score: Optional[float] = None) -> str:
+async def store_prompt(label: str, text: str, initial_score: float | None = None) -> str:
     _PROMPTS_DIR.mkdir(parents=True, exist_ok=True)
     entry = {
         "label": label,
@@ -91,7 +90,7 @@ async def mutate_prompt(source_label: str, new_label: str, mutation_type: str = 
     },
     required=["label", "score"],
 )
-async def score_prompt(label: str, score: float, notes: Optional[str] = None) -> str:
+async def score_prompt(label: str, score: float, notes: str | None = None) -> str:
     path = _PROMPTS_DIR / f"{label.replace(' ', '_')}.json"
     if not path.exists():
         return f"Error: prompt '{label}' not found"

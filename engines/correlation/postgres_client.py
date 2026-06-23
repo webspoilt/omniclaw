@@ -5,9 +5,10 @@ Handles secure database connections with TLS and prepared statements.
 
 from __future__ import annotations
 
+import json
 import logging
 from contextlib import asynccontextmanager
-from typing import Any, Optional
+from typing import Any
 
 import asyncpg
 
@@ -17,14 +18,14 @@ logger = logging.getLogger(__name__)
 class PostgresClient:
     """
     Async PostgreSQL client for findings persistence.
-    
+
     Security:
     - TLS 1.3 with certificate pinning
     - Prepared statements only (no string interpolation)
     - Connection pooling with max limits
     - Read/write role separation
     """
-    
+
     def __init__(
         self,
         host: str,
@@ -42,9 +43,9 @@ class PostgresClient:
         self.password = password
         self.ssl_mode = ssl_mode
         self.max_connections = max_connections
-        
-        self._pool: Optional[asyncpg.Pool] = None
-    
+
+        self._pool: asyncpg.Pool | None = None
+
     async def connect(self) -> None:
         """Initialize connection pool."""
         self._pool = await asyncpg.create_pool(
@@ -58,43 +59,43 @@ class PostgresClient:
             command_timeout=30,
         )
         logger.info(f"Connected to PostgreSQL at {self.host}:{self.port}")
-    
+
     async def disconnect(self) -> None:
         """Close connection pool."""
         if self._pool:
             await self._pool.close()
             logger.info("PostgreSQL connection closed")
-    
+
     @asynccontextmanager
     async def transaction(self):
         """Acquire connection with transaction."""
         if not self._pool:
             raise RuntimeError("Not connected to database")
-        
+
         async with self._pool.acquire() as conn:
             async with conn.transaction():
                 yield conn
-    
+
     async def fetch_findings_by_scan(
         self,
         scan_id: str,
         min_confidence: float = 0.0,
-        vuln_category: Optional[str] = None,
+        vuln_category: str | None = None,
     ) -> list[dict[str, Any]]:
         """
         Fetch static findings for a scan.
-        
+
         Args:
             scan_id: Scan identifier
             min_confidence: Minimum confidence threshold
             vuln_category: Filter by vulnerability category
-            
+
         Returns:
             List of finding dictionaries
         """
         async with self.transaction() as conn:
             query = """
-                SELECT 
+                SELECT
                     f.finding_id,
                     f.scan_id,
                     f.rule_id,
@@ -120,19 +121,19 @@ class PostgresClient:
                   AND f.confidence_score >= $2
                   AND f.status = 'open'
             """
-            
+
             params = [scan_id, min_confidence]
-            
+
             if vuln_category:
                 query += " AND f.vuln_category = $3"
                 params.append(vuln_category)
-            
+
             query += " ORDER BY f.confidence_score DESC, f.severity DESC"
-            
+
             rows = await conn.fetch(query, *params)
-            
+
             return [dict(row) for row in rows]
-    
+
     async def fetch_slices_by_finding(
         self,
         finding_id: str,
@@ -141,7 +142,7 @@ class PostgresClient:
         async with self.transaction() as conn:
             rows = await conn.fetch(
                 """
-                SELECT 
+                SELECT
                     slice_id,
                     finding_id,
                     source_node,
@@ -157,7 +158,7 @@ class PostgresClient:
                 finding_id,
             )
             return [dict(row) for row in rows]
-    
+
     async def get_dynamic_results_by_finding(
         self,
         finding_id: str,
@@ -166,7 +167,7 @@ class PostgresClient:
         async with self.transaction() as conn:
             rows = await conn.fetch(
                 """
-                SELECT 
+                SELECT
                     r.result_id,
                     r.task_id,
                     r.vuln_type,
@@ -181,20 +182,20 @@ class PostgresClient:
                 finding_id,
             )
             return [dict(row) for row in rows]
-    
+
     async def upsert_correlation(
         self,
         finding_id: str,
-        result_id: Optional[str],
+        result_id: str | None,
         correlation_type: str,
         correlation_score: float,
         is_reachable: bool,
-        reachability_path: Optional[dict],
+        reachability_path: dict | None,
         priority: str,
     ) -> str:
         """
         Insert or update correlation record.
-        
+
         Returns:
             correlation_id
         """
@@ -224,7 +225,7 @@ class PostgresClient:
                 priority,
             )
             return row["correlation_id"]
-    
+
     async def create_exploit_queue_item(
         self,
         correlation_id: str,
@@ -235,7 +236,7 @@ class PostgresClient:
     ) -> str:
         """
         Create exploit queue item.
-        
+
         Returns:
             queue_item_id
         """
@@ -255,13 +256,13 @@ class PostgresClient:
                 priority,
             )
             return row["queue_item_id"]
-    
+
     async def get_queue_stats(self) -> dict[str, Any]:
         """Get exploit queue statistics."""
         async with self.transaction() as conn:
             row = await conn.fetchrow(
                 """
-                SELECT 
+                SELECT
                     COUNT(*) FILTER (WHERE queue_status = 'queued') as queued,
                     COUNT(*) FILTER (WHERE queue_status = 'assigned') as assigned,
                     COUNT(*) FILTER (WHERE queue_status = 'running') as running,

@@ -9,12 +9,13 @@ Executes in workspace directory with stripped environment.
 from __future__ import annotations
 
 import asyncio
+import logging
 import os
 import re
-import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Optional
+
 from core.security.risk_engine import RiskEngine
 
 logger = logging.getLogger("OmniClaw.Security.ShellSandbox")
@@ -100,7 +101,7 @@ class ShellSandbox:
         r"rmdir\s+/s",               # Windows rmdir
     ]
 
-    def __init__(self, workspace_dir: str | Path, risk_engine: Optional[RiskEngine] = None):
+    def __init__(self, workspace_dir: str | Path, risk_engine: RiskEngine | None = None):
         self.workspace = Path(workspace_dir).resolve()
         self.workspace.mkdir(parents=True, exist_ok=True)
         self.risk_engine = risk_engine
@@ -152,7 +153,7 @@ class ShellSandbox:
         self,
         command: str,
         timeout: int = 30,
-        confirm_callback: Optional[Callable] = None,
+        confirm_callback: Callable | None = None,
     ) -> ShellResult:
         """
         Execute command through three-tier filter.
@@ -221,7 +222,7 @@ class ShellSandbox:
             stdout, stderr = await asyncio.wait_for(
                 process.communicate(), timeout=timeout
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             try:
                 process.kill()
             except Exception:
@@ -274,9 +275,9 @@ class ShellSandbox:
                     safe[var] = os.environ[var]
         else:
             # Unix: restrict to minimal safe PATH
-            ALLOWED_VARS = ["USER", "LANG", "LC_ALL", "TERM"]
+            allowed_vars = ["USER", "LANG", "LC_ALL", "TERM"]
             safe = {}
-            for var in ALLOWED_VARS:
+            for var in allowed_vars:
                 if var in os.environ:
                     safe[var] = os.environ[var]
             safe["PATH"] = "/usr/local/bin:/usr/bin:/bin"

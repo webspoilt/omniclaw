@@ -5,13 +5,11 @@ Creates a temporary directory, writes the fixed module and test,
 runs the test in a subprocess, and cleans up.
 """
 
-import sys
 import shutil
 import subprocess
+import sys
 import tempfile
-import time
 from pathlib import Path
-from typing import Tuple
 
 
 def run_isolated_test(
@@ -19,7 +17,7 @@ def run_isolated_test(
     fixed_code: str,
     test_code: str,
     timeout: int = 30,
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """
     Run a test in an isolated sandbox directory.
 

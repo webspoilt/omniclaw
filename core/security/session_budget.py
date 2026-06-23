@@ -7,8 +7,8 @@ Prevents runaway loops, excessive API costs, and abuse.
 
 from __future__ import annotations
 
-import time
 import logging
+import time
 from dataclasses import dataclass, field
 
 logger = logging.getLogger("OmniClaw.Security.SessionBudget")

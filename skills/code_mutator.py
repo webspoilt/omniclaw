@@ -1,3 +1,4 @@
+# ruff: noqa: UP031
 import ast
 import os
 import random

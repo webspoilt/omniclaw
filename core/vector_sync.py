@@ -1,6 +1,5 @@
 import logging
-import time
-from typing import List, Dict, Any
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.VectorSync")
 
@@ -13,7 +12,7 @@ class VectorSyncLayer:
     def __init__(self, is_edge_node: bool, db_path: str):
         self.is_edge_node = is_edge_node
         self.db_path = db_path
-        
+
         if self.is_edge_node:
             self._init_sqlite_vec()
         else:
@@ -34,7 +33,7 @@ class VectorSyncLayer:
         # self.db = lancedb.connect(self.db_path)
         logger.info(f"Initialized LanceDB on Compute Core at {self.db_path}")
 
-    def search_local(self, query_vector: List[float], threshold: float = 0.75) -> Dict[str, Any]:
+    def search_local(self, query_vector: list[float], threshold: float = 0.75) -> dict[str, Any]:
         """
         Search local vector store.
         Returns {"found": bool, "results": [...]}
@@ -52,13 +51,13 @@ class VectorSyncLayer:
         # Mock hash
         return "hash_12345"
 
-    def apply_sync_update(self, vectors: List[Dict[str, Any]]):
+    def apply_sync_update(self, vectors: list[dict[str, Any]]):
         """
         Applies vectors downloaded from the Compute Core into the local SQLite-vec.
         """
         if not self.is_edge_node:
             return
-            
+
         logger.info(f"Applying {len(vectors)} new vectors to SQLite-vec cache.")
         # Evict old entries if capacity reached (LRU)
         # self.conn.execute("INSERT INTO vectors ...")

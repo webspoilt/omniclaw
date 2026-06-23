@@ -17,19 +17,18 @@ Features:
   - Duplicate prevention (hash store)
 """
 
-import os
-import re
-import sys
-import time
 import hashlib
-import shutil
-import tempfile
-import subprocess
 import json
 import logging
-import traceback as tb
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
 from pathlib import Path
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Any
 
 try:
     import yaml
@@ -42,8 +41,8 @@ except ImportError:
     requests = None
 
 try:
+    from watchdog.events import FileModifiedEvent, FileSystemEventHandler
     from watchdog.observers import Observer
-    from watchdog.events import FileSystemEventHandler, FileModifiedEvent
     HAS_WATCHDOG = True
 except ImportError:
     HAS_WATCHDOG = False
@@ -70,7 +69,7 @@ _DEFAULT_CONFIG = {
 def load_config() -> dict:
     """Load YAML config; fall back to defaults if file or yaml missing."""
     if yaml and os.path.isfile(CONFIG_FILE):
-        with open(CONFIG_FILE, "r") as f:
+        with open(CONFIG_FILE) as f:
             return {**_DEFAULT_CONFIG, **yaml.safe_load(f)}
     return dict(_DEFAULT_CONFIG)
 
@@ -99,7 +98,7 @@ logger = logging.getLogger("EvolutionAgent")
 # ------------------------------------------------------------------ #
 #  Helper Functions                                                   #
 # ------------------------------------------------------------------ #
-def notify(message: Dict[str, Any]):
+def notify(message: dict[str, Any]):
     """Send JSON payload to configured Telegram / Discord webhooks."""
     if not requests:
         logger.warning("requests not installed — skipping notification")
@@ -117,7 +116,7 @@ def notify(message: Dict[str, Any]):
             logger.error(f"Notification to {service} failed: {e}")
 
 
-def run_git(args: List[str], cwd: Path = GIT_REPO_PATH) -> str:
+def run_git(args: list[str], cwd: Path = GIT_REPO_PATH) -> str:
     """Run a git command; raise RuntimeError on failure."""
     result = subprocess.run(
         ["git"] + args, cwd=cwd, capture_output=True, text=True
@@ -128,7 +127,7 @@ def run_git(args: List[str], cwd: Path = GIT_REPO_PATH) -> str:
     return result.stdout.strip()
 
 
-def get_error_type(tb_lines: List[str]) -> str:
+def get_error_type(tb_lines: list[str]) -> str:
     """Extract short error type from traceback lines (e.g. 'AttributeError')."""
     for line in reversed(tb_lines):
         m = re.search(r"(\w+Error):", line)
@@ -137,7 +136,7 @@ def get_error_type(tb_lines: List[str]) -> str:
     return "UnknownError"
 
 
-def extract_source_file(tb_lines: List[str]) -> Optional[Path]:
+def extract_source_file(tb_lines: list[str]) -> Path | None:
     """
     Find the first source file inside SOURCE_DIRS from traceback lines.
     Typical line:  '  File "/path/to/file.py", line 123, in func'
@@ -195,7 +194,7 @@ def error_hash(text: str) -> str:
 # ------------------------------------------------------------------ #
 #  LLM Interaction                                                    #
 # ------------------------------------------------------------------ #
-def query_llm(prompt: str) -> Optional[str]:
+def query_llm(prompt: str) -> str | None:
     """Send prompt to Ollama or OpenAI; return text or None."""
     if not requests:
         logger.error("requests package not installed")
@@ -239,7 +238,7 @@ def _extract_code_block(response: str) -> str:
     return m.group(1).strip() if m else response.strip()
 
 
-def ask_fix(error_msg: str, tb_lines: List[str], source: str) -> Optional[str]:
+def ask_fix(error_msg: str, tb_lines: list[str], source: str) -> str | None:
     """Ask LLM for a corrected version of the source code."""
     prompt = (
         "You are an expert Python developer. The following error occurred.\n\n"
@@ -253,7 +252,7 @@ def ask_fix(error_msg: str, tb_lines: List[str], source: str) -> Optional[str]:
     return _extract_code_block(resp) if resp else None
 
 
-def ask_test(source: str, fixed: str, error_ctx: str) -> Optional[str]:
+def ask_test(source: str, fixed: str, error_ctx: str) -> str | None:
     """Ask LLM for a minimal test that verifies the fix."""
     prompt = (
         "You are an expert Python tester.\n\n"
@@ -274,7 +273,7 @@ def ask_test(source: str, fixed: str, error_ctx: str) -> Optional[str]:
 # ------------------------------------------------------------------ #
 def run_isolated_test(
     original_file: Path, fixed_code: str, test_code: str
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """
     Create a temp dir, write fixed code as module.py, write test_fix.py,
     run the test. Returns (passed, output).
@@ -337,7 +336,7 @@ class ErrorHandler:
     def __init__(self):
         self.seen: set = set()
 
-    def handle(self, tb_lines: List[str]):
+    def handle(self, tb_lines: list[str]):
         etype = get_error_type(tb_lines)
         h = error_hash("\n".join(tb_lines))
 
@@ -417,7 +416,7 @@ if HAS_WATCHDOG:
         def __init__(self, handler: ErrorHandler):
             super().__init__()
             self.handler = handler
-            self.positions: Dict[Path, int] = {}
+            self.positions: dict[Path, int] = {}
 
         def on_modified(self, event):
             if not isinstance(event, FileModifiedEvent):
@@ -428,7 +427,7 @@ if HAS_WATCHDOG:
 
         def _process(self, path: Path):
             try:
-                with open(path, "r") as f:
+                with open(path) as f:
                     f.seek(self.positions.get(path, 0))
                     lines = f.readlines()
                     self.positions[path] = f.tell()
@@ -450,8 +449,8 @@ if HAS_WATCHDOG:
                         tb_lines.append(nl)
                         i += 1
                     # Check if it contains ERROR/CRITICAL or looks like a real traceback
-                    if any("ERROR" in l or "CRITICAL" in l for l in tb_lines) or \
-                       any(l.startswith(("Traceback", "  File")) for l in tb_lines):
+                    if any("ERROR" in line or "CRITICAL" in line for line in tb_lines) or \
+                       any(line.startswith(("Traceback", "  File")) for line in tb_lines):
                         self.handler.handle(tb_lines)
                 i += 1
 

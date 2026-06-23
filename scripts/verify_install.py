@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import sys
 import platform
+import sys
 
 print("=== OmniClaw Pre-Flight System Verification ===")
 print(f"System: {platform.system()} {platform.release()}")
@@ -26,9 +26,9 @@ def check_dependencies():
         "openai": "openai",
         "anthropic": "anthropic"
     }
-    
+
     missing = []
-    
+
     for module_name, pip_name in critical_deps.items():
         try:
             __import__(module_name)
@@ -36,7 +36,7 @@ def check_dependencies():
         except ImportError:
             print(f"  ❌ MISSING: {module_name}")
             missing.append(pip_name)
-            
+
     if missing:
         print("\n❌ FAILED: Missing dependencies detected.")
         print("Please run: pip install " + " ".join(missing))

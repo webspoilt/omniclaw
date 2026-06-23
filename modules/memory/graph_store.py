@@ -9,7 +9,7 @@ and persists to JSON for cross-session continuity.
 import json
 import logging
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Any
 
 try:
     import networkx as nx
@@ -63,17 +63,17 @@ class GraphStore:
         if self.graph is not None:
             self.graph.add_edge(src, dst, **attrs)
 
-    def get_neighbors(self, node_id: str) -> List[str]:
+    def get_neighbors(self, node_id: str) -> list[str]:
         if self.graph and node_id in self.graph:
             return list(self.graph.neighbors(node_id))
         return []
 
-    def get_node(self, node_id: str) -> Optional[Dict[str, Any]]:
+    def get_node(self, node_id: str) -> dict[str, Any] | None:
         if self.graph and node_id in self.graph:
             return dict(self.graph.nodes[node_id])
         return None
 
-    def search(self, query: str) -> List[str]:
+    def search(self, query: str) -> list[str]:
         """Simple label-based search across nodes."""
         if not self.graph:
             return []
@@ -84,7 +84,7 @@ class GraphStore:
                 results.append(n)
         return results[:20]
 
-    def stats(self) -> Dict[str, int]:
+    def stats(self) -> dict[str, int]:
         if not self.graph:
             return {"nodes": 0, "edges": 0}
         return {"nodes": self.graph.number_of_nodes(),

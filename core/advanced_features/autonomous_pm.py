@@ -8,10 +8,8 @@ Author: OmniClaw Advanced Features
 """
 
 import os
-import json
 import re
 from dataclasses import dataclass, field
-from typing import Optional, Callable
 from datetime import datetime
 from enum import Enum
 
@@ -32,26 +30,26 @@ class FeatureSpec:
     name: str
     description: str
     status: FeatureStatus
-    
+
     # Requirements
     user_stories: list[str] = field(default_factory=list)
     acceptance_criteria: list[str] = field(default_factory=list)
     technical_requirements: list[str] = field(default_factory=list)
-    
+
     # Architecture
     components: list[str] = field(default_factory=list)
     api_endpoints: list[dict] = field(default_factory=list)
     data_models: list[dict] = field(default_factory=list)
-    
+
     # Files to create/modify
     files_to_create: list[str] = field(default_factory=list)
     files_to_modify: list[str] = field(default_factory=list)
-    
+
     # Implementation
     code_templates: dict[str, str] = field(default_factory=dict)
     tests: dict[str, str] = field(default_factory=dict)
     documentation: str = ""
-    
+
     # Metadata
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
@@ -78,16 +76,16 @@ class AutonomousProductManager:
     4. Writes tests
     5. Creates deployment configs
     6. Documents everything
-    
+
     Input: "Add user authentication with OAuth2"
     Output: Full implementation with tests, docs, configs
     """
-    
+
     def __init__(self, project_path: str = ".", llm_provider=None):
         self.project_path = project_path
         self.llm = llm_provider
-        self.current_spec: Optional[FeatureSpec] = None
-    
+        self.current_spec: FeatureSpec | None = None
+
     def process_feature_request(
         self,
         feature_request: str,
@@ -95,99 +93,99 @@ class AutonomousProductManager:
     ) -> FeatureSpec:
         """
         Process a feature request from start to finish.
-        
+
         Args:
             feature_request: Natural language description of feature
             auto_approve: Skip approval step if True
-        
+
         Returns:
             Complete FeatureSpec
         """
-        
+
         # Step 1: Generate SPEC
         spec = self._generate_spec(feature_request)
         spec.status = FeatureStatus.SPEC_APPROVED if auto_approve else FeatureStatus.PROPOSED
-        
+
         if not auto_approve:
             # In real implementation, would prompt user to approve
             print("📋 Feature SPEC generated - awaiting approval")
             return spec
-        
+
         # Step 2: Design architecture
         spec = self._design_architecture(spec)
         spec.status = FeatureStatus.ARCHITECTURE_DESIGNED
-        
+
         # Step 3: Implement
         spec = self._implement_feature(spec)
         spec.status = FeatureStatus.IMPLEMENTING
-        
+
         # Step 4: Write tests
         spec = self._write_tests(spec)
         spec.status = FeatureStatus.TESTING
-        
+
         # Step 5: Document
         self._generate_documentation(spec)
         spec.status = FeatureStatus.COMPLETED
-        
+
         self.current_spec = spec
         return spec
-    
+
     def _generate_spec(self, feature_request: str) -> FeatureSpec:
         """Generate feature specification from request"""
-        
+
         spec = FeatureSpec(
             name=self._extract_feature_name(feature_request),
             description=feature_request,
             status=FeatureStatus.PROPOSED
         )
-        
+
         # Generate user stories
         spec.user_stories = self._generate_user_stories(feature_request)
-        
+
         # Generate acceptance criteria
         spec.acceptance_criteria = self._generate_acceptance_criteria(feature_request)
-        
+
         # Generate technical requirements
         spec.technical_requirements = self._extract_technical_requirements(feature_request)
-        
+
         # Estimate effort
         spec.estimated_effort = self._estimate_effort(spec)
-        
+
         return spec
-    
+
     def _extract_feature_name(self, request: str) -> str:
         """Extract feature name from request"""
-        
+
         # Use LLM if available
         if self.llm:
             # Would call LLM here
             pass
-        
+
         # Simple extraction
         request = request.lower()
-        
+
         # Clean up
         name = request.replace("add ", "").replace("implement ", "").replace("create ", "")
         name = re.sub(r'[^a-z0-9\s]', '', name)
         words = name.split()[:4]
-        
+
         return "".join(word.capitalize() for word in words) + "Feature"
-    
+
     def _generate_user_stories(self, request: str) -> list[str]:
         """Generate user stories"""
-        
+
         # Template-based generation
         stories = [
             f"As a user, I can {request.lower().replace('add ', '').replace('implement ', '')} so that I can benefit from this feature",
-            f"As an admin, I can manage the feature settings",
-            f"As a developer, I can integrate this feature into other parts of the system"
+            "As an admin, I can manage the feature settings",
+            "As a developer, I can integrate this feature into other parts of the system"
         ]
-        
+
         return stories
-    
+
     def _generate_acceptance_criteria(self, request: str) -> list[str]:
         """Generate acceptance criteria"""
-        
+
         criteria = [
             "Feature works as described in requirements",
             "Code follows existing project patterns",
@@ -196,66 +194,66 @@ class AutonomousProductManager:
             "No security vulnerabilities introduced",
             "Performance is acceptable"
         ]
-        
+
         # Add specific criteria based on keywords
         request_lower = request.lower()
-        
+
         if "api" in request_lower or "endpoint" in request_lower:
             criteria.append("API endpoints return correct responses")
             criteria.append("API handles errors gracefully")
-        
+
         if "database" in request_lower or "store" in request_lower:
             criteria.append("Data is persisted correctly")
             criteria.append("Database queries are optimized")
-        
+
         if "auth" in request_lower or "login" in request_lower:
             criteria.append("Users can authenticate")
             criteria.append("Unauthorized access is prevented")
-        
+
         return criteria
-    
+
     def _extract_technical_requirements(self, request: str) -> list[str]:
         """Extract technical requirements"""
-        
+
         reqs = []
         request_lower = request.lower()
-        
+
         if "api" in request_lower:
             reqs.append("RESTful API endpoints")
             reqs.append("Request/response validation")
-        
+
         if "database" in request_lower:
             reqs.append("Database schema")
             reqs.append("Data access layer")
-        
+
         if "frontend" in request_lower or "ui" in request_lower:
             reqs.append("User interface components")
             reqs.append("State management")
-        
+
         if "auth" in request_lower:
             reqs.append("Authentication middleware")
             reqs.append("Authorization checks")
-        
+
         if "realtime" in request_lower or "websocket" in request_lower:
             reqs.append("WebSocket connections")
             reqs.append("Real-time updates")
-        
+
         # Always add these
         reqs.append("Error handling")
         reqs.append("Logging")
         reqs.append("Configuration management")
-        
+
         return reqs
-    
+
     def _estimate_effort(self, spec: FeatureSpec) -> str:
         """Estimate development effort"""
-        
+
         complexity = 1
-        
+
         # Based on requirements
         complexity += len(spec.user_stories)
         complexity += len(spec.technical_requirements) / 3
-        
+
         if complexity < 3:
             return "Small (1-2 days)"
         elif complexity < 5:
@@ -264,13 +262,13 @@ class AutonomousProductManager:
             return "Large (1-2 weeks)"
         else:
             return "X-Large (2+ weeks)"
-    
+
     def _design_architecture(self, spec: FeatureSpec) -> FeatureSpec:
         """Design feature architecture"""
-        
+
         # Determine components needed
         components = []
-        
+
         for req in spec.technical_requirements:
             if "API" in req:
                 components.append("API Layer")
@@ -280,9 +278,9 @@ class AutonomousProductManager:
                 components.append("Middleware")
             if "interface" in req.lower():
                 components.append("UI Components")
-        
+
         spec.components = components
-        
+
         # Design API endpoints if needed
         if "API Layer" in components:
             spec.api_endpoints = [
@@ -300,7 +298,7 @@ class AutonomousProductManager:
                     "response": {"items": []}
                 }
             ]
-        
+
         # Design data models if needed
         if "Data Layer" in components:
             spec.data_models = [
@@ -313,29 +311,29 @@ class AutonomousProductManager:
                     ]
                 }
             ]
-        
+
         return spec
-    
+
     def _implement_feature(self, spec: FeatureSpec) -> FeatureSpec:
         """Implement the feature"""
-        
+
         # Create file templates based on architecture
         for component in spec.components:
             if component == "API Layer":
                 spec.code_templates.update(self._generate_api_template(spec))
             elif component == "Data Layer":
                 spec.code_templates.update(self._generate_data_template(spec))
-        
+
         spec.files_to_create = list(spec.code_templates.keys())
-        
+
         return spec
-    
+
     def _generate_api_template(self, spec: FeatureSpec) -> dict[str, str]:
         """Generate API layer code"""
-        
+
         templates = {}
         feature_name = spec.name.lower()
-        
+
         # Router
         router_file = f"api/{feature_name}_routes.py"
         templates[router_file] = f'''"""
@@ -374,7 +372,7 @@ async def get_{feature_name}(item_id: str):
     """Get {spec.name} by ID"""
     raise HTTPException(status_code=404, detail="{spec.name} not found")
 '''
-        
+
         # Service
         service_file = f"services/{feature_name}_service.py"
         templates[service_file] = f'''"""
@@ -385,17 +383,17 @@ Business logic for {spec.name}
 class {spec.name}Service:
     def __init__(self):
         self.items = {{}}
-    
+
     async def create(self, data: dict) -> dict:
         """Create new item"""
         item_id = "generated_id"
         self.items[item_id] = {{"id": item_id, **data}}
         return self.items[item_id]
-    
+
     async def get(self, item_id: str) -> dict:
         """Get item by ID"""
         return self.items.get(item_id)
-    
+
     async def list(self) -> list:
         """List all items"""
         return list(self.items.values())
@@ -403,15 +401,15 @@ class {spec.name}Service:
 # Singleton instance
 {spec.name.lower()}_service = {spec.name}Service()
 '''
-        
+
         return templates
-    
+
     def _generate_data_template(self, spec: FeatureSpec) -> dict[str, str]:
         """Generate data layer code"""
-        
+
         templates = {}
         feature_name = spec.name.lower()
-        
+
         # Model
         model_file = f"models/{feature_name}.py"
         templates[model_file] = f'''"""
@@ -426,14 +424,14 @@ from datetime import datetime
 
 class {spec.name}(Base):
     __tablename__ = "{feature_name}"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
     description = Column(String(1000))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 '''
-        
+
         # Repository
         repo_file = f"repositories/{feature_name}_repo.py"
         templates[repo_file] = f'''"""
@@ -448,7 +446,7 @@ from .models import {spec.name}
 class {spec.name}Repository:
     def __init__(self, db: AsyncSession):
         self.db = db
-    
+
     async def create(self, data: dict) -> {spec.name}:
         """Create new record"""
         obj = {spec.name}(**data)
@@ -456,7 +454,7 @@ class {spec.name}Repository:
         await self.db.commit()
         await self.db.refresh(obj)
         return obj
-    
+
     async def get_by_id(self, id: str) -> {spec.name}:
         """Get by ID"""
         result = await self.db.execute(
@@ -464,15 +462,15 @@ class {spec.name}Repository:
         )
         return result.scalar_one_or_none()
 '''
-        
+
         return templates
-    
+
     def _write_tests(self, spec: FeatureSpec) -> FeatureSpec:
         """Write tests for the feature"""
-        
+
         tests = {}
         feature_name = spec.name.lower()
-        
+
         # Unit tests
         tests[f"tests/unit/test_{feature_name}_service.py"] = f'''"""
 Unit tests for {spec.name} Service
@@ -500,7 +498,7 @@ async def test_get_item(service):
     result = await service.get(created["id"])
     assert result is not None
 '''
-        
+
         # API tests
         tests[f"tests/api/test_{feature_name}_api.py"] = f'''"""
 API tests for {spec.name}
@@ -529,13 +527,13 @@ def test_create_{feature_name}(client):
     }})
     assert response.status_code == 200
 '''
-        
+
         spec.tests = tests
         return spec
-    
+
     def _generate_documentation(self, spec: FeatureSpec) -> str:
         """Generate feature documentation"""
-        
+
         doc = f'''# {spec.name}
 
 ## Overview
@@ -545,19 +543,19 @@ def test_create_{feature_name}(client):
 '''
         for story in spec.user_stories:
             doc += f"- {story}\n"
-        
+
         doc += '''
 ## Acceptance Criteria
 '''
         for criteria in spec.acceptance_criteria:
             doc += f"- [ ] {criteria}\n"
-        
+
         doc += '''
 ## Technical Requirements
 '''
         for req in spec.technical_requirements:
             doc += f"- {req}\n"
-        
+
         if spec.api_endpoints:
             doc += '''
 ## API Endpoints
@@ -567,7 +565,7 @@ def test_create_{feature_name}(client):
 {endpoint['description']}
 
 '''
-        
+
         if spec.data_models:
             doc += '''
 ## Data Models
@@ -580,7 +578,7 @@ def test_create_{feature_name}(client):
                 for field in model.get('fields', []):
                     doc += f"| {field['name']} | {field['type']} |\n"
                 doc += '\n'
-        
+
         doc += f'''
 ## Implementation Status
 - Status: {spec.status.value}
@@ -590,15 +588,15 @@ def test_create_{feature_name}(client):
 ---
 *Generated by OmniClaw Autonomous PM*
 '''
-        
+
         self.current_spec = spec
         spec.documentation = doc
-        
+
         return doc
-    
+
     def implement_to_disk(self, spec: FeatureSpec) -> ImplementationResult:
         """Write all generated code to disk"""
-        
+
         result = ImplementationResult(
             success=True,
             files_created=[],
@@ -607,15 +605,15 @@ def test_create_{feature_name}(client):
             errors=[],
             warnings=[]
         )
-        
+
         # Create directories
         base_path = self.project_path
-        
+
         # Write code templates
         for file_path, content in spec.code_templates.items():
             full_path = os.path.join(base_path, file_path)
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
-            
+
             try:
                 with open(full_path, 'w') as f:
                     f.write(content)
@@ -623,65 +621,65 @@ def test_create_{feature_name}(client):
             except Exception as e:
                 result.errors.append(f"Failed to create {file_path}: {e}")
                 result.success = False
-        
+
         # Write tests
         for file_path, content in spec.tests.items():
             full_path = os.path.join(base_path, file_path)
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
-            
+
             try:
                 with open(full_path, 'w') as f:
                     f.write(content)
                 result.files_created.append(file_path)
             except Exception as e:
                 result.errors.append(f"Failed to create {file_path}: {e}")
-        
+
         # Write documentation
         doc_path = os.path.join(base_path, f"docs/features/{spec.name.lower()}.md")
         os.makedirs(os.path.dirname(doc_path), exist_ok=True)
-        
+
         try:
             with open(doc_path, 'w') as f:
                 f.write(spec.documentation)
             result.files_created.append(doc_path)
         except Exception as e:
             result.errors.append(f"Failed to create documentation: {e}")
-        
+
         return result
 
 
 # Demo
 if __name__ == "__main__":
     pm = AutonomousProductManager("/tmp/demo-project")
-    
+
     # Process a feature request
     spec = pm.process_feature_request(
         "Add user authentication with OAuth2",
         auto_approve=True
     )
-    
+
     print("👔 AUTONOMOUS PRODUCT MANAGER")
     print("=" * 50)
-    
+
     print(f"\n📋 Feature: {spec.name}")
     print(f"Status: {spec.status.value}")
     print(f"Effort: {spec.estimated_effort}")
-    
+
     print("\n📝 User Stories:")
     for story in spec.user_stories:
         print(f"  - {story}")
-    
+
     print("\n✅ Acceptance Criteria:")
     for criteria in spec.acceptance_criteria:
         print(f"  - {criteria}")
-    
+
     print("\n🏗️ Components:")
     for comp in spec.components:
         print(f"  - {comp}")
-    
+
     print("\n📁 Files to Create:")
     for f in spec.files_to_create:
         print(f"  - {f}")
-    
+
     print("\n📄 Documentation Preview:")
     print(spec.documentation[:500] + "...")

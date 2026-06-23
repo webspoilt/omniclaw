@@ -1,5 +1,6 @@
 from .base import BaseAgent
 
+
 class ArchitectAgent(BaseAgent):
     def __init__(self):
         system_prompt = """You are the Architect agent. Your role is to:

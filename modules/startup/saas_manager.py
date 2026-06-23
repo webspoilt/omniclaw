@@ -10,11 +10,12 @@ v4.2 additions (Issue #26):
   - LeadStore: JSON-persisted lead database for outreach tracking
 """
 
-import subprocess
-import time
-import threading
+import datetime
 import json
 import logging
+import subprocess
+import threading
+import time
 from pathlib import Path
 
 try:
@@ -24,6 +25,7 @@ except ImportError:
     HAS_REQUESTS = False
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
     from core.kill_switch import check_kill_switch
@@ -121,9 +123,9 @@ class LeadStore:
         """Add or update a lead by keyword+profile."""
         leads = self._load()
         key = (lead.get("keyword", ""), lead.get("profile", ""))
-        for i, l in enumerate(leads):
-            if (l.get("keyword"), l.get("profile")) == key:
-                leads[i] = {**l, **lead}
+        for i, lead_item in enumerate(leads):
+            if (lead_item.get("keyword"), lead_item.get("profile")) == key:
+                leads[i] = {**lead_item, **lead}
                 self._save(leads)
                 return
         lead.setdefault("added_at", datetime.now().isoformat(timespec="seconds"))

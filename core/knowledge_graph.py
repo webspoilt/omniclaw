@@ -8,13 +8,14 @@ semantic search + structured reasoning across the hive.
 
 import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("KnowledgeGraph")
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 try:
@@ -47,8 +48,8 @@ class KnowledgeGraph:
             self.vectors.create_table()
         logger.info(f"KnowledgeGraph initialized at {self.base}")
 
-    def add_knowledge(self, id: str, text: str, vector: List[float],
-                      relations: Optional[List[Dict]] = None,
+    def add_knowledge(self, id: str, text: str, vector: list[float],
+                      relations: list[dict] | None = None,
                       metadata: str = ""):
         """
         Add a knowledge entry:
@@ -63,7 +64,7 @@ class KnowledgeGraph:
                 self.graph.add_edge(id, rel["target"],
                                     relation=rel.get("type", "related"))
 
-    def query(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def query(self, payload: dict[str, Any]) -> dict[str, Any]:
         """
         Unified query interface (used by P2P mesh).
 
@@ -72,7 +73,7 @@ class KnowledgeGraph:
           - "text": str → graph text search
           - "node": str → get node + neighbors
         """
-        results: Dict[str, Any] = {}
+        results: dict[str, Any] = {}
 
         if "vector" in payload and self.vectors:
             results["similar"] = self.vectors.search(
@@ -98,8 +99,8 @@ class KnowledgeGraph:
             self.graph.save()
         logger.info("Knowledge graph saved")
 
-    def stats(self) -> Dict[str, Any]:
-        s: Dict[str, Any] = {}
+    def stats(self) -> dict[str, Any]:
+        s: dict[str, Any] = {}
         if self.vectors:
             s["vectors"] = self.vectors.count()
         if self.graph:

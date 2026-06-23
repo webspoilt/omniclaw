@@ -6,13 +6,12 @@ Spawns 50+ agents with distinct personas using Ollama.
 import asyncio
 import logging
 import random
-from typing import List, Dict, Any, Optional
+from typing import Any
 
 import aiohttp
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from .personas import PERSONAS, Persona
-from .config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ class SwarmSimulator:
         self.base_url = base_url
         self.agents = self._create_agents()
 
-    def _create_agents(self) -> List[Agent]:
+    def _create_agents(self) -> list[Agent]:
         """Create agents by cycling through available personas."""
         agents = []
         for i in range(self.num_agents):
@@ -59,7 +58,7 @@ class SwarmSimulator:
                     text = await resp.text()
                     raise Exception(f"Ollama error {resp.status}: {text}")
 
-    async def _agent_task(self, agent: Agent, context: str, similar_memories: List[str]) -> str:
+    async def _agent_task(self, agent: Agent, context: str, similar_memories: list[str]) -> str:
         """Task for a single agent: generate a response based on persona."""
         persona_desc = agent.persona.description
         memories_text = ""
@@ -73,7 +72,7 @@ class SwarmSimulator:
         response = await self._query_ollama(prompt, agent)
         return f"Agent {agent.id} ({agent.persona.name}): {response}"
 
-    async def run(self, context: str, similar_memories: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def run(self, context: str, similar_memories: list[str] | None = None) -> dict[str, Any]:
         """Run all agents concurrently and aggregate results."""
         if similar_memories is None:
             similar_memories = []

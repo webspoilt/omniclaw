@@ -1,7 +1,7 @@
 import logging
-import litellm
-
 from collections import OrderedDict
+
+import litellm
 
 logger = logging.getLogger("OmniClaw.RecommendationEngine")
 
@@ -24,14 +24,14 @@ class OmniClawState:
     def predict_mode(self) -> str:
         security_keywords = ['scan', 'hack', 'audit', 'threat', 'vulnerability', 'nmap', 'exploit']
         creative_keywords = ['design', 'write', 'draw', 'generate', 'create', 'blog']
-        
+
         recent = " ".join(self.interest_evolution[-3:]).lower()
-        
+
         if any(word in recent for word in security_keywords):
             return "GHOST_MODE (Aggressive Security)"
         if any(word in recent for word in creative_keywords):
             return "CREATIVE_MODE (Brainstorm & Design)"
-            
+
         return "DEV_MODE (Standard Development)"
 
 class RecommendationEngine:
@@ -45,10 +45,10 @@ class RecommendationEngine:
         self.embed_model = embed_model
         self.llm_model = llm_model
         self.state = OmniClawState()
-        
+
         self.collection = None
         self._chroma_initialized = False
-        
+
         # Simple LRU cache for LLM ranking to save tokens
         self._rank_cache = OrderedDict()
         self._cache_size = 50
@@ -57,7 +57,7 @@ class RecommendationEngine:
         global CHROMA_AVAILABLE
         if self._chroma_initialized:
             return
-            
+
         try:
             import chromadb
             CHROMA_AVAILABLE = True
@@ -67,7 +67,7 @@ class RecommendationEngine:
             logger.warning("chromadb not installed. Recommendation Engine degraded.")
             self._chroma_initialized = True
             return
-            
+
         try:
             import chromadb
             self.client = chromadb.Client()
@@ -88,7 +88,7 @@ class RecommendationEngine:
             {"id": "t5", "desc": "kernel_alerts - Read shadow kernel eBPF anomalies"},
             {"id": "t6", "desc": "quantum_script - Execute QASM on quantum hardware"}
         ]
-        
+
         try:
             for t in tools:
                 # Using litellm for embeddings to keep it model-agnostic
@@ -104,10 +104,10 @@ class RecommendationEngine:
     def get_candidates(self, user_query: str, n=3) -> list:
         """1. Candidate Generation via Vector Search"""
         self._init_chroma()
-        
+
         if not CHROMA_AVAILABLE or not self.collection:
             return ["All local tools (Vector DB unavailable)"]
-            
+
         try:
             query_emb = litellm.embedding(model=self.embed_model, input=[user_query]).data[0]['embedding']
             results = self.collection.query(query_embeddings=[query_emb], n_results=n)
@@ -121,36 +121,36 @@ class RecommendationEngine:
         history = self.state.interest_evolution
         mode = self.state.predict_mode()
         recent_history = tuple(history[-3:]) if history else ('None',)
-        
+
         # Check cache early to save tokens and latency
         cache_key = (query, mode, recent_history, tuple(candidates))
         if cache_key in self._rank_cache:
             # Move to end to show it was recently used
             self._rank_cache.move_to_end(cache_key)
             return self._rank_cache[cache_key]
-            
+
         prompt = f"""
         User Task: {query}
         Current Agent Mode: {mode}
         Session History (Recent Actions): {recent_history}
         Candidate Tools: {candidates}
-        
+
         Based on the user's intent and history, pick the SINGLE BEST tool from the candidates to use next.
         Return only the tool name.
         """
-        
+
         try:
             response = await litellm.acompletion(
                 model=self.llm_model,
                 messages=[{"role": "user", "content": prompt}]
             )
             result = response.choices[0].message.content.strip()
-            
+
             # Update cache
             self._rank_cache[cache_key] = result
             if len(self._rank_cache) > self._cache_size:
                 self._rank_cache.popitem(last=False)
-                
+
             return result
         except Exception as e:
             logger.error(f"Action ranking failed: {e}")

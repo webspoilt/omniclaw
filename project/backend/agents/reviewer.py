@@ -1,5 +1,6 @@
 from .base import BaseAgent
 
+
 class ReviewerAgent(BaseAgent):
     def __init__(self):
         system_prompt = """You are the Reviewer/Compliance agent. Review the code produced by the Coder.

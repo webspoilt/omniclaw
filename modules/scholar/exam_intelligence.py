@@ -12,13 +12,12 @@ v4.2 additions (Issue #25):
   - get_next_deadline(): returns closest exam deadline as dict (used by MCP)
 """
 
-import time
 import json
-import random
 import logging
+import random
+import time
+from datetime import date, datetime
 from pathlib import Path
-from datetime import datetime, date
-from typing import Optional
 
 try:
     import requests
@@ -39,6 +38,7 @@ except ImportError:
     HAS_SCHEDULE = False
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
     from core.kill_switch import check_kill_switch
@@ -270,12 +270,8 @@ if __name__ == "__main__":
     ExamScholar().run()
 
 
-import time
-import json
-import random
 import logging
 from pathlib import Path
-from datetime import datetime
 
 try:
     import requests
@@ -296,6 +292,7 @@ except ImportError:
     HAS_SCHEDULE = False
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
     from core.kill_switch import check_kill_switch

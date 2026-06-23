@@ -6,11 +6,10 @@ Collects performance telemetry, asks LLM for optimization suggestions,
 and can apply refactoring with safety checks (kill switch, backups, manual approval).
 """
 
-import time
 import logging
 import shutil
+import time
 from pathlib import Path
-from typing import Optional
 
 try:
     import requests
@@ -19,9 +18,10 @@ except ImportError:
     HAS_REQUESTS = False
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
-    from core.kill_switch import check_kill_switch, KILL_SWITCH
+    from core.kill_switch import KILL_SWITCH, check_kill_switch
     from core.resource_utils import resource_check
 except ImportError:
     KILL_SWITCH = False
@@ -50,7 +50,7 @@ class Genesis:
         if len(self.telemetry) > self.max_telemetry:
             self.telemetry = self.telemetry[-self.max_telemetry:]
 
-    def _llm(self, prompt: str) -> Optional[str]:
+    def _llm(self, prompt: str) -> str | None:
         if self.daemon and hasattr(self.daemon, "llm_inference"):
             return self.daemon.llm_inference(prompt)
         if not HAS_REQUESTS:
@@ -66,7 +66,7 @@ class Genesis:
             logger.error(f"LLM: {e}")
             return None
 
-    def analyze_performance(self) -> Optional[str]:
+    def analyze_performance(self) -> str | None:
         """Ask LLM to analyze telemetry and suggest optimizations."""
         if len(self.telemetry) < 10:
             logger.info("Not enough telemetry yet")
@@ -83,7 +83,7 @@ class Genesis:
         )
         return self._llm(prompt)
 
-    def suggest_refactor(self, module_path: Path) -> Optional[str]:
+    def suggest_refactor(self, module_path: Path) -> str | None:
         """Read a module and ask LLM for refactoring suggestions."""
         if not module_path.exists():
             return None

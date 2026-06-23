@@ -5,7 +5,6 @@ import os
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Optional
 
 from core.skills.registry import tool
 
@@ -37,7 +36,7 @@ async def check_compiler_available() -> dict[str, bool]:
     },
     required=["source", "output_name"],
 )
-async def compile_c_source(source: str, output_name: str, flags: Optional[str] = None) -> str:
+async def compile_c_source(source: str, output_name: str, flags: str | None = None) -> str:
     with tempfile.TemporaryDirectory(prefix="omniclaw_compile_") as tmp:
         src_path = Path(tmp) / "source.c"
         src_path.write_text(source, encoding="utf-8")
@@ -101,7 +100,7 @@ async def compile_rust_source(source: str, output_name: str) -> str:
     },
     required=["binary_path"],
 )
-async def run_binary(binary_path: str, args: Optional[str] = None, timeout_sec: int = 30) -> str:
+async def run_binary(binary_path: str, args: str | None = None, timeout_sec: int = 30) -> str:
     bp = Path(binary_path).resolve()
     if not bp.is_file():
         return "Error: binary not found"

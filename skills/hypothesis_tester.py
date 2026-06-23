@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import subprocess
 import time
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
 
@@ -18,7 +18,7 @@ from core.skills.registry import tool
     },
     required=["command"],
 )
-async def measure_execution_time(command: str, iterations: int = 5, description: Optional[str] = None) -> dict[str, Any]:
+async def measure_execution_time(command: str, iterations: int = 5, description: str | None = None) -> dict[str, Any]:
     timings: list[float] = []
     errors: list[str] = []
 
@@ -67,7 +67,7 @@ async def measure_execution_time(command: str, iterations: int = 5, description:
     },
     required=["control_command", "variant_command"],
 )
-async def run_experiment(control_command: str, variant_command: str, iterations: int = 5, label: Optional[str] = None) -> dict[str, Any]:
+async def run_experiment(control_command: str, variant_command: str, iterations: int = 5, label: str | None = None) -> dict[str, Any]:
     control = await measure_execution_time(control_command, iterations, "control")
     variant = await measure_execution_time(variant_command, iterations, "variant")
 
@@ -153,8 +153,8 @@ async def statistical_test(values_a_json: str, values_b_json: str) -> dict[str, 
     required=[],
 )
 async def check_file_change_timing(iterations: int = 10) -> dict[str, Any]:
-    import tempfile
     import os
+    import tempfile
     writes: list[float] = []
     reads: list[float] = []
     deletes: list[float] = []

@@ -4,10 +4,9 @@ from __future__ import annotations
 import json
 import sqlite3
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
-
 
 MEMORY_DIR = Path(__file__).resolve().parent.parent / "data" / "agent_memory"
 
@@ -52,7 +51,7 @@ async def create_memory_table(table_name: str, schema_sql: str) -> str:
     },
     required=["key", "value"],
 )
-async def store_knowledge(key: str, value: str, tags: Optional[str] = None) -> str:
+async def store_knowledge(key: str, value: str, tags: str | None = None) -> str:
     conn = _ensure_db("agent_memory")
     try:
         conn.execute(

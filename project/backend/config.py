@@ -1,5 +1,7 @@
 import os
+
 from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
     openrouter_api_key: str = os.getenv("OPENROUTER_API_KEY", "")

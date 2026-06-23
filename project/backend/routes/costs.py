@@ -1,11 +1,11 @@
-from fastapi import APIRouter, HTTPException
-from database import SessionLocal, CostEntry
+
+from database import CostEntry, SessionLocal
+from fastapi import APIRouter
 from models import CostRecord
-from typing import List
 
 router = APIRouter(prefix="/api/costs", tags=["costs"])
 
-@router.get("/", response_model=List[CostRecord])
+@router.get("/", response_model=list[CostRecord])
 async def get_costs(limit: int = 100):
     db = SessionLocal()
     costs = db.query(CostEntry).order_by(CostEntry.timestamp.desc()).limit(limit).all()

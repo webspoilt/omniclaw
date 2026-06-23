@@ -6,16 +6,16 @@ Like a hacking tool dashboard - click to launch tools
 
 Usage:
     python web_interface.py
-    
+
 Then open http://localhost:5000 in your browser
 
 Author: OmniClaw Advanced Features
 """
 
-from flask import Flask, render_template_string, jsonify, request
 import json
 import os
 
+from flask import Flask, jsonify, render_template_string
 
 app = Flask(__name__)
 
@@ -94,20 +94,20 @@ HTML_TEMPLATE = '''
             --warning: #ffbe0b;
             --danger: #ff006e;
         }
-        
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
             font-family: 'Fira Code', monospace;
             background: var(--bg-dark);
             color: var(--text);
             min-height: 100vh;
-            background-image: 
+            background-image:
                 radial-gradient(ellipse at 20% 20%, rgba(0, 255, 136, 0.03) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 80%, rgba(0, 212, 255, 0.03) 0%, transparent 50%),
                 linear-gradient(180deg, #0a0a0f 0%, #0f0f18 100%);
         }
-        
+
         /* Header */
         header {
             background: linear-gradient(90deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
@@ -121,7 +121,7 @@ HTML_TEMPLATE = '''
             z-index: 100;
             backdrop-filter: blur(10px);
         }
-        
+
         .logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.5rem;
@@ -131,18 +131,18 @@ HTML_TEMPLATE = '''
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
         }
-        
+
         .logo span {
             font-size: 0.8rem;
             color: var(--text-dim);
             margin-left: 10px;
         }
-        
+
         .header-actions {
             display: flex;
             gap: 1rem;
         }
-        
+
         .btn {
             padding: 0.5rem 1rem;
             border: 1px solid var(--border);
@@ -154,29 +154,29 @@ HTML_TEMPLATE = '''
             border-radius: 4px;
             transition: all 0.2s;
         }
-        
+
         .btn:hover {
             border-color: var(--primary);
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
         }
-        
+
         .btn-primary {
             background: var(--primary);
             color: var(--bg-dark);
             border-color: var(--primary);
         }
-        
+
         .btn-primary:hover {
             background: var(--primary-dim);
         }
-        
+
         /* Main Content */
         main {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
-        
+
         /* Status Bar */
         .status-bar {
             display: flex;
@@ -187,13 +187,13 @@ HTML_TEMPLATE = '''
             border-radius: 8px;
             border: 1px solid var(--border);
         }
-        
+
         .status-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .status-dot {
             width: 8px;
             height: 8px;
@@ -201,12 +201,12 @@ HTML_TEMPLATE = '''
             background: var(--success);
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-        
+
         /* Category Tabs */
         .tabs {
             display: flex;
@@ -214,7 +214,7 @@ HTML_TEMPLATE = '''
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
-        
+
         .tab {
             padding: 0.75rem 1.5rem;
             background: var(--bg-card);
@@ -226,20 +226,20 @@ HTML_TEMPLATE = '''
             border-radius: 4px;
             transition: all 0.2s;
         }
-        
+
         .tab:hover, .tab.active {
             background: var(--bg-card-hover);
             border-color: var(--primary);
             color: var(--primary);
         }
-        
+
         /* Tools Grid */
         .tools-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1rem;
         }
-        
+
         .tool-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -250,7 +250,7 @@ HTML_TEMPLATE = '''
             position: relative;
             overflow: hidden;
         }
-        
+
         .tool-card::before {
             content: '';
             position: absolute;
@@ -262,35 +262,35 @@ HTML_TEMPLATE = '''
             opacity: 0;
             transition: opacity 0.3s;
         }
-        
+
         .tool-card:hover {
             background: var(--bg-card-hover);
             border-color: var(--primary);
             transform: translateY(-2px);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
-        
+
         .tool-card:hover::before {
             opacity: 1;
         }
-        
+
         .tool-icon {
             font-size: 2rem;
             margin-bottom: 1rem;
         }
-        
+
         .tool-name {
             font-size: 1rem;
             font-weight: 600;
             color: var(--text);
             margin-bottom: 0.5rem;
         }
-        
+
         .tool-desc {
             font-size: 0.8rem;
             color: var(--text-dim);
         }
-        
+
         /* Console */
         .console {
             background: #000;
@@ -303,7 +303,7 @@ HTML_TEMPLATE = '''
             max-height: 300px;
             overflow-y: auto;
         }
-        
+
         .console-header {
             display: flex;
             justify-content: space-between;
@@ -311,18 +311,18 @@ HTML_TEMPLATE = '''
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--border);
         }
-        
+
         .console-output {
             color: var(--primary);
             white-space: pre-wrap;
         }
-        
+
         .console-input {
             display: flex;
             gap: 0.5rem;
             margin-top: 0.5rem;
         }
-        
+
         .console-input input {
             flex: 1;
             background: var(--bg-card);
@@ -331,36 +331,36 @@ HTML_TEMPLATE = '''
             color: var(--text);
             font-family: inherit;
         }
-        
+
         /* Terminal Style */
         .terminal {
             background: rgba(0, 0, 0, 0.8);
             border-radius: 8px;
             overflow: hidden;
         }
-        
+
         .terminal-header {
             background: #1a1a2e;
             padding: 0.5rem 1rem;
             display: flex;
             gap: 0.5rem;
         }
-        
+
         .terminal-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
         }
-        
+
         .terminal-dot.red { background: #ff5f56; }
         .terminal-dot.yellow { background: #ffbd2e; }
         .terminal-dot.green { background: #27c93f; }
-        
+
         /* Search */
         .search-bar {
             margin-bottom: 2rem;
         }
-        
+
         .search-bar input {
             width: 100%;
             padding: 1rem;
@@ -371,13 +371,13 @@ HTML_TEMPLATE = '''
             font-family: inherit;
             font-size: 1rem;
         }
-        
+
         .search-bar input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
         }
-        
+
         /* Footer */
         footer {
             text-align: center;
@@ -398,7 +398,7 @@ HTML_TEMPLATE = '''
             <button class="btn btn-primary" onclick="launchCLI()">▶ Launch CLI</button>
         </div>
     </header>
-    
+
     <main>
         <!-- Status Bar -->
         <div class="status-bar">
@@ -416,12 +416,12 @@ HTML_TEMPLATE = '''
                 <span>Memory: <strong>256 MB</strong></span>
             </div>
         </div>
-        
+
         <!-- Search -->
         <div class="search-bar">
             <input type="text" placeholder="🔍 Search tools..." onkeyup="searchTools(this.value)">
         </div>
-        
+
         <!-- Category Tabs -->
         <div class="tabs">
             <button class="tab active" onclick="showSection('all', this)">All Tools</button>
@@ -432,12 +432,12 @@ HTML_TEMPLATE = '''
             <button class="tab" onclick="showSection('seic', this)">📊 SEIC</button>
             <button class="tab" onclick="showSection('infrastructure', this)">🏗️ Infrastructure</button>
         </div>
-        
+
         <!-- Tools Grid -->
         <div class="tools-grid" id="toolsGrid">
             <!-- Tools will be rendered here -->
         </div>
-        
+
         <!-- Console/Terminal -->
         <div class="terminal" id="terminal" style="display: none; margin-top: 2rem;">
             <div class="terminal-header">
@@ -457,34 +457,34 @@ $ </div>
             </div>
         </div>
     </main>
-    
+
     <footer>
         <p>OmniClaw Advanced Features | The Ultimate AI-Powered Toolkit</p>
         <p>Type 'help' in terminal for commands | Click tools to launch</p>
     </footer>
-    
+
     <script>
         const toolsData = {{ tools_json | safe }};
         let currentSection = 'all';
-        
+
         function renderTools(category = 'all', search = '') {
             const grid = document.getElementById('toolsGrid');
             let tools = [];
-            
+
             if (category === 'all') {
                 Object.values(toolsData).forEach(cat => tools.push(...cat));
             } else {
                 tools = toolsData[category] || [];
             }
-            
+
             // Filter by search
             if (search) {
-                tools = tools.filter(t => 
+                tools = tools.filter(t =>
                     t.name.toLowerCase().includes(search.toLowerCase()) ||
                     t.desc.toLowerCase().includes(search.toLowerCase())
                 );
             }
-            
+
             grid.innerHTML = tools.map(tool => `
                 <div class="tool-card" onclick="launchTool('${tool.id}')">
                     <div class="tool-icon">${tool.icon}</div>
@@ -493,29 +493,29 @@ $ </div>
                 </div>
             `).join('');
         }
-        
+
         function showSection(section, btn) {
             currentSection = section;
-            
+
             // Update tabs
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             if (btn) btn.classList.add('active');
             else document.querySelector(`.tab[onclick*="${section}"]`)?.classList.add('active');
-            
+
             renderTools(section);
         }
-        
+
         function searchTools(query) {
             renderTools(currentSection, query);
         }
-        
+
         function launchTool(toolId) {
             const output = document.getElementById('consoleOutput');
             output.innerHTML += `<br>> Launching ${toolId}...`;
-            
+
             // Show terminal
             document.getElementById('terminal').style.display = 'block';
-            
+
             // Simulate launch
             setTimeout(() => {
                 output.innerHTML += `<br>✓ Tool ${toolId} initialized`;
@@ -523,25 +523,25 @@ $ </div>
                 output.innerHTML += `<br><br>$ `;
             }, 500);
         }
-        
+
         function openTerminal() {
             document.getElementById('terminal').style.display = 'block';
             document.getElementById('terminalInput').focus();
         }
-        
+
         function handleTerminal(e) {
             if (e.key === 'Enter') executeCommand();
         }
-        
+
         function executeCommand() {
             const input = document.getElementById('terminalInput');
             const output = document.getElementById('consoleOutput');
             const cmd = input.value.trim();
-            
+
             if (!cmd) return;
-            
+
             output.innerHTML += cmd + '<br>';
-            
+
             // Process commands
             const commands = {
                 'help': 'Available commands: help, list, scan, search, status, clear, exit',
@@ -550,7 +550,7 @@ $ </div>
                 'status': 'System Status: Online | Tools: 35+ | SEIC: Active',
                 'clear': 'clear',
             };
-            
+
             if (commands[cmd]) {
                 if (commands[cmd] === 'clear') {
                     output.innerHTML = 'OmniClaw v2.0 - Type \\'help\\' for available commands<br><br>$ ';
@@ -560,14 +560,14 @@ $ </div>
             } else {
                 output.innerHTML += `Command not found: ${cmd}<br>Type 'help' for available commands<br><br>$ `;
             }
-            
+
             input.value = '';
         }
-        
+
         function launchCLI() {
             window.location.href = '/cli';
         }
-        
+
         // Initial render
         renderTools();
     </script>
@@ -628,7 +628,6 @@ def api_status():
 
 def main():
     """Run web interface"""
-    import os
     host = os.environ.get('OMNICLAW_WEB_HOST', '127.0.0.1')
     port = int(os.environ.get('OMNICLAW_WEB_PORT', 5000))
     print(f"""
@@ -640,7 +639,7 @@ def main():
     ║   Or run CLI launcher: python -m omniclaw_advanced_features.launcher   ║
     ╚══════════════════════════════════════════════════════════════════════════╝
     """)
-    
+
     app.run(host=host, port=port, debug=False)
 
 

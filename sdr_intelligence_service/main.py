@@ -1,8 +1,6 @@
 import asyncio
 import logging
-import time
-import os
-import math
+
 import numpy as np
 
 # Configure logging
@@ -39,16 +37,16 @@ class SDRIntelligenceService:
     def generate_synthetic_samples(self, num_samples: int = 1024) -> np.ndarray:
         """Generates synthetic complex I/Q samples (sine wave + noise) for testing."""
         t = np.arange(num_samples) / self.sample_rate
-        
+
         # Simulate a small frequency offset (e.g. 1200 Hz carrier offset from center frequency)
-        freq_offset = 1200.0 
+        freq_offset = 1200.0
         carrier = np.exp(2j * np.pi * freq_offset * t)
-        
+
         # Add thermal noise (Gaussian complex noise)
         noise_std = 0.5
-        noise = (np.random.normal(0, noise_std, num_samples) + 
+        noise = (np.random.normal(0, noise_std, num_samples) +
                  1j * np.random.normal(0, noise_std, num_samples))
-        
+
         # Combine
         samples = carrier + noise
         return samples
@@ -95,17 +93,17 @@ class SDRIntelligenceService:
     def verify_fingerprint(self, features: dict) -> tuple:
         """Verifies if the extracted RF fingerprint matches authorized transmitters."""
         tolerance = {"offset_hz": 500.0, "entropy": 0.5, "flatness": 0.05}
-        
+
         for name, baseline in self.fingerprint_baselines.items():
             offset_diff = abs(features["offset_hz"] - baseline["offset_hz"])
             entropy_diff = abs(features["entropy"] - baseline["entropy"])
             flatness_diff = abs(features["flatness"] - baseline["flatness"])
 
-            if (offset_diff <= tolerance["offset_hz"] and 
-                entropy_diff <= tolerance["entropy"] and 
+            if (offset_diff <= tolerance["offset_hz"] and
+                entropy_diff <= tolerance["entropy"] and
                 flatness_diff <= tolerance["flatness"]):
                 return True, name
-                
+
         return False, "Unknown/Unauthenticated Transmitter"
 
     async def run_loop(self):
@@ -116,15 +114,15 @@ class SDRIntelligenceService:
                 # Capture and process I/Q samples
                 samples = self.capture_samples(2048)
                 features = self.extract_features(samples)
-                
+
                 # Verify fingerprint
                 auth, match_name = self.verify_fingerprint(features)
-                
+
                 # Log outcome
                 log_msg = (f"Capture - Freq Offset: {features['offset_hz']:.1f}Hz, "
                            f"Entropy: {features['entropy']:.3f}, Flatness: {features['flatness']:.4f} | "
                            f"Status: {'AUTHORIZED ('+match_name+')' if auth else 'ANOMALY DETECTED ('+match_name+')'}")
-                
+
                 if auth:
                     logger.info(log_msg)
                 else:
@@ -147,7 +145,7 @@ async def main():
     # Configure loop to run for a short duration or indefinitely
     try:
         await asyncio.wait_for(service.run_loop(), timeout=15)
-    except asyncio.TimeoutError:
+    except TimeoutError:
         logger.info("Verification timeout reached. Service shutting down.")
 
 if __name__ == "__main__":

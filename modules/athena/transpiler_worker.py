@@ -1,6 +1,6 @@
 import logging
-import subprocess
 import os
+import subprocess
 
 logger = logging.getLogger("OmniClaw.Athena.Transpiler")
 
@@ -12,7 +12,7 @@ class TranspilerWorker:
     """
     def __init__(self, llm_client=None):
         self.llm_client = llm_client
-        
+
     def _generate_sympy(self, problem_statement: str) -> str:
         prompt = f"Solve this using sympy. Output ONLY valid python without markdown blocks: {problem_statement}"
         if self.llm_client:
@@ -23,12 +23,12 @@ class TranspilerWorker:
         """Executes SymPy script inside an isolated chroot/cgroup sandbox"""
         sandbox_dir = "/tmp/omniclaw_sandbox"
         os.makedirs(sandbox_dir, exist_ok=True)
-        
+
         script_path = os.path.join(sandbox_dir, "run.py")
         with open(script_path, "w") as f:
             f.write(python_code)
-        
-        logger.info(f"Executing sandboxed SymPy script...")
+
+        logger.info("Executing sandboxed SymPy script...")
         try:
             # Requires root/sudo for true unshare, but for demo we simulate
             # In production: ["unshare", "--user", "--net", "--pid", "python3", script_path]
@@ -42,10 +42,10 @@ class TranspilerWorker:
 
     def handle_task(self, problem_statement: str) -> str:
         logger.info(f"Handling Athena Transpiler task: {problem_statement}")
-        
+
         sympy_code = self._generate_sympy(problem_statement)
         stdout, stderr = self.execute_sandbox(sympy_code)
-        
+
         # Self-correction loop
         if "Integral(" in stdout or stderr:
             logger.warning("SymPy failed to resolve integral or hit an error. Re-prompting.")
@@ -55,7 +55,7 @@ class TranspilerWorker:
                 stdout, stderr = self.execute_sandbox(sympy_code)
             else:
                 stdout = "Simulation: successfully resolved integral after retry."
-                
+
         return stdout
 
 if __name__ == "__main__":

@@ -20,18 +20,13 @@ Author: OmniClaw Advanced Features - Security Research Module
 """
 
 import ast
-import json
 import os
 import re
 import sqlite3
-import hashlib
 import uuid
-import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Callable
-
 
 # =============================================================================
 # ENUMS & DATA STRUCTURES
@@ -71,18 +66,18 @@ class Vulnerability:
     severity: VulnerabilitySeverity
     title: str
     description: str
-    
+
     # Location
     file_path: str
     line_number: int
     code_snippet: str
-    
+
     # Details
     cwe_id: str = ""
     cvss_score: float = 0.0
     impact: str = ""
     remediation: str = ""
-    
+
     # Metadata
     confidence: str = "high"  # high, medium, low
     verified: bool = False
@@ -96,14 +91,14 @@ class SecurityReport:
     project_name: str
     scan_date: datetime
     vulnerabilities: list[Vulnerability]
-    
+
     # Summary
     critical_count: int = 0
     high_count: int = 0
     medium_count: int = 0
     low_count: int = 0
     info_count: int = 0
-    
+
     # Recommendations
     overall_severity: str = ""
     risk_rating: str = ""
@@ -133,15 +128,15 @@ class VulnerabilityScanner:
     Advanced vulnerability detection engine.
     Scans code for security vulnerabilities and weaknesses.
     """
-    
+
     def __init__(self):
         self.vulnerabilities: list[Vulnerability] = []
         self.db_path = "./vulnerabilities.db"
         self._init_database()
-        
+
         # Load vulnerability patterns
         self.patterns = self._load_patterns()
-    
+
     def _init_database(self):
         """Initialize vulnerability database"""
         self.conn = sqlite3.connect(self.db_path)
@@ -160,10 +155,10 @@ class VulnerabilityScanner:
             )
         """)
         self.conn.commit()
-    
+
     def _load_patterns(self) -> dict:
         """Load vulnerability detection patterns"""
-        
+
         return {
             # SQL Injection
             VulnerabilityType.SQL_INJECTION: {
@@ -180,7 +175,7 @@ class VulnerabilityScanner:
                 "description": "User input directly concatenated into SQL query",
                 "remediation": "Use parameterized queries or ORM"
             },
-            
+
             # Cross-Site Scripting (XSS)
             VulnerabilityType.XSS: {
                 "patterns": [
@@ -197,7 +192,7 @@ class VulnerabilityScanner:
                 "description": "Untrusted data included in web page without validation",
                 "remediation": "Use context-aware output encoding and Content Security Policy"
             },
-            
+
             # Remote Code Execution
             VulnerabilityType.RCE: {
                 "patterns": [
@@ -216,7 +211,7 @@ class VulnerabilityScanner:
                 "description": "Application executes arbitrary code from untrusted source",
                 "remediation": "Avoid dynamic code execution, use sandboxing"
             },
-            
+
             # Path Traversal
             VulnerabilityType.PATH_TRAVERSAL: {
                 "patterns": [
@@ -233,7 +228,7 @@ class VulnerabilityScanner:
                 "description": "Application uses insufficient validation to access files",
                 "remediation": "Validate and sanitize file paths, use allowlists"
             },
-            
+
             # Hardcoded Secrets
             VulnerabilityType.HARDCODE_SECRETS: {
                 "patterns": [
@@ -251,7 +246,7 @@ class VulnerabilityScanner:
                 "description": "Sensitive data hardcoded in source code",
                 "remediation": "Use environment variables or secrets manager"
             },
-            
+
             # Insecure Deserialization
             VulnerabilityType.DESERIALIZATION: {
                 "patterns": [
@@ -269,7 +264,7 @@ class VulnerabilityScanner:
                 "description": "Untrusted data deserialized without validation",
                 "remediation": "Use safe deserialization, validate input"
             },
-            
+
             # XXE
             VulnerabilityType.XXE: {
                 "patterns": [
@@ -286,7 +281,7 @@ class VulnerabilityScanner:
                 "description": "XML parser processes external entity references",
                 "remediation": "Disable external entities and DTD processing"
             },
-            
+
             # SSRF
             VulnerabilityType.SSRF: {
                 "patterns": [
@@ -302,7 +297,7 @@ class VulnerabilityScanner:
                 "description": "Application fetches untrusted URL without validation",
                 "remediation": "Validate URLs against allowlists"
             },
-            
+
             # Weak Crypto
             VulnerabilityType.WEAK_CRYPTO: {
                 "patterns": [
@@ -320,7 +315,7 @@ class VulnerabilityScanner:
                 "description": "Application uses broken or weak cryptographic algorithm",
                 "remediation": "Use modern algorithms (AES-256, SHA-256+)"
             },
-            
+
             # Command Injection
             VulnerabilityType.RCE: {
                 "patterns": [
@@ -338,27 +333,27 @@ class VulnerabilityScanner:
                 "remediation": "Avoid shell commands, use API instead"
             }
         }
-    
+
     def scan_file(self, file_path: str) -> list[Vulnerability]:
         """Scan a single file for vulnerabilities"""
-        
+
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 content = f.read()
         except:
             return []
-        
+
         vulnerabilities = []
-        
+
         # Check each vulnerability type
         for vuln_type, pattern_data in self.patterns.items():
             patterns = pattern_data["patterns"]
-            
+
             for i, line in enumerate(content.split('\n'), 1):
                 # Skip comments
                 if line.strip().startswith(('#', '//', '/*', '*', '<!--')):
                     continue
-                
+
                 for pattern in patterns:
                     try:
                         if re.search(pattern, line, re.IGNORECASE):
@@ -379,23 +374,23 @@ class VulnerabilityScanner:
                             break
                     except re.error:
                         pass
-        
+
         # Also run AST-based analysis
         if file_path.endswith('.py'):
             vulnerabilities.extend(self._scan_python_ast(file_path, content))
-        
+
         return vulnerabilities
-    
+
     def _scan_python_ast(self, file_path: str, content: str) -> list[Vulnerability]:
         """Advanced AST-based Python vulnerability scanning"""
-        
+
         vulnerabilities = []
-        
+
         try:
             tree = ast.parse(content)
         except:
             return vulnerabilities
-        
+
         # Check for dangerous imports
         dangerous_imports = {
             'pickle': VulnerabilityType.DESERIALIZATION,
@@ -404,7 +399,7 @@ class VulnerabilityScanner:
             'exec': VulnerabilityType.RCE,
             'subprocess': VulnerabilityType.RCE,
         }
-        
+
         for node in ast.walk(tree):
             # Check dangerous function calls
             if isinstance(node, ast.Call):
@@ -423,7 +418,7 @@ class VulnerabilityScanner:
                             cvss_score=9.8
                         )
                         vulnerabilities.append(vuln)
-            
+
             # Check for SQL queries
             if isinstance(node, ast.Call):
                 if hasattr(node.func, 'attr'):
@@ -444,42 +439,42 @@ class VulnerabilityScanner:
                                     cvss_score=9.8
                                 )
                                 vulnerabilities.append(vuln)
-        
+
         return vulnerabilities
-    
+
     def scan_project(self, project_path: str) -> SecurityReport:
         """Scan entire project for vulnerabilities"""
-        
+
         vulnerabilities = []
-        
+
         # File extensions to scan
         extensions = {'.py', '.js', '.ts', '.java', '.go', '.rb', '.php', '.cs'}
-        
+
         for root, dirs, files in os.walk(project_path):
             # Skip common non-source directories
             dirs[:] = [d for d in dirs if d not in [
                 '__pycache__', 'node_modules', '.git', 'venv', 'dist', 'build'
             ]]
-            
+
             for file in files:
                 if any(file.endswith(ext) for ext in extensions):
                     file_path = os.path.join(root, file)
                     vulns = self.scan_file(file_path)
                     vulnerabilities.extend(vulns)
-        
+
         # Generate report
         return self._generate_report(project_path, vulnerabilities)
-    
+
     def _generate_report(self, project_name: str, vulnerabilities: list[Vulnerability]) -> SecurityReport:
         """Generate security report"""
-        
+
         report = SecurityReport(
             id=str(uuid.uuid4()),
             project_name=project_name,
             scan_date=datetime.now(),
             vulnerabilities=vulnerabilities
         )
-        
+
         # Count by severity
         for vuln in vulnerabilities:
             if vuln.severity == VulnerabilitySeverity.CRITICAL:
@@ -492,7 +487,7 @@ class VulnerabilityScanner:
                 report.low_count += 1
             else:
                 report.info_count += 1
-        
+
         # Calculate risk rating
         if report.critical_count > 0:
             report.risk_rating = "CRITICAL"
@@ -504,42 +499,42 @@ class VulnerabilityScanner:
             report.risk_rating = "LOW"
         else:
             report.risk_rating = "MINIMAL"
-        
+
         # Generate recommendations
         report.recommendations = self._generate_recommendations(vulnerabilities)
-        
+
         return report
-    
+
     def _generate_recommendations(self, vulnerabilities: list[Vulnerability]) -> list[str]:
         """Generate security recommendations"""
-        
+
         recommendations = []
-        
+
         types_found = set(v.type for v in vulnerabilities)
-        
+
         if VulnerabilityType.SQL_INJECTION in types_found:
             recommendations.append("Use parameterized queries or ORM for all database operations")
-        
+
         if VulnerabilityType.XSS in types_found:
             recommendations.append("Implement Content Security Policy and output encoding")
-        
+
         if VulnerabilityType.RCE in types_found:
             recommendations.append("Avoid eval/exec, use sandboxing for untrusted code")
-        
+
         if VulnerabilityType.HARDCODE_SECRETS in types_found:
             recommendations.append("Move secrets to environment variables or secrets manager")
-        
+
         if VulnerabilityType.DESERIALIZATION in types_found:
             recommendations.append("Use safe serialization formats, validate all input")
-        
+
         if VulnerabilityType.WEAK_CRYPTO in types_found:
             recommendations.append("Upgrade to modern cryptographic algorithms")
-        
+
         return recommendations
-    
+
     def save_report(self, report: SecurityReport, output_path: str = "security_report.md"):
         """Save report to file"""
-        
+
         md = f"""# Security Audit Report
 ## Project: {report.project_name}
 ## Date: {report.scan_date.strftime('%Y-%m-%d %H:%M')}
@@ -563,7 +558,7 @@ class VulnerabilityScanner:
 ## Vulnerabilities Found
 
 """
-        
+
         # Group by severity
         severity_order = [
             VulnerabilitySeverity.CRITICAL,
@@ -572,12 +567,12 @@ class VulnerabilityScanner:
             VulnerabilitySeverity.LOW,
             VulnerabilitySeverity.INFO
         ]
-        
+
         for severity in severity_order:
             vulns = [v for v in report.vulnerabilities if v.severity == severity]
             if vulns:
                 md += f"### {severity.value.upper()} Severity\n\n"
-                
+
                 for vuln in vulns:
                     md += f"""**{vuln.title}**
 
@@ -585,7 +580,7 @@ class VulnerabilityScanner:
 - **CWE:** {vuln.cwe_id}
 - **CVSS:** {vuln.cvss_score}
 - **Description:** {vuln.description}
-- **Code:** 
+- **Code:**
 ```
 {vuln.code_snippet}
 ```
@@ -593,14 +588,14 @@ class VulnerabilityScanner:
 
 ---
 """
-        
+
         md += """
 ## Recommendations
 
 """
         for rec in report.recommendations:
             md += f"- {rec}\n"
-        
+
         md += f"""
 ---
 
@@ -613,10 +608,10 @@ class VulnerabilityScanner:
 ---
 *This report is for authorized security testing only.*
 """
-        
+
         with open(output_path, 'w') as f:
             f.write(md)
-        
+
         return output_path
 
 
@@ -628,17 +623,17 @@ class CVEResearchAgent:
     """
     Research and track CVEs.
     """
-    
+
     def __init__(self, llm_provider=None):
         self.llm = llm_provider
         self.cve_cache: dict[str, CVEDetails] = {}
-    
+
     async def research_cve(self, cve_id: str) -> CVEDetails:
         """Research a specific CVE"""
-        
+
         # Would fetch from NVD API
         # This is a placeholder
-        
+
         return CVEDetails(
             id=cve_id,
             description="CVE description from NVD",
@@ -650,10 +645,10 @@ class CVEResearchAgent:
             exploitation="Proof of concept available",
             mitigation="Apply vendor patch"
         )
-    
+
     async def search_vulnerabilities(self, keyword: str) -> list[dict]:
         """Search for vulnerabilities by keyword"""
-        
+
         # Would search CVE database
         return [
             {
@@ -663,10 +658,10 @@ class CVEResearchAgent:
                 "cvss": 8.5
             }
         ]
-    
+
     def get_latest_cves(self, limit: int = 10) -> list[dict]:
         """Get latest CVEs"""
-        
+
         # Would fetch from NVD
         return [
             {
@@ -686,21 +681,21 @@ class AttackSurfaceAnalyzer:
     """
     Analyze application attack surface.
     """
-    
+
     def __init__(self):
         self.endpoints: list[dict] = []
         self.inputs: list[dict] = []
         self.auth_points: list[dict] = []
-    
+
     def analyze_file(self, file_path: str) -> dict:
         """Analyze a file for attack surface"""
-        
+
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 content = f.read()
         except:
             return {}
-        
+
         analysis = {
             "endpoints": [],
             "inputs": [],
@@ -708,7 +703,7 @@ class AttackSurfaceAnalyzer:
             "file_upload": False,
             "external_calls": []
         }
-        
+
         # Find endpoints
         endpoint_patterns = [
             r'@app\.(?:get|post|put|delete|patch)\([\'""]\/([^\'""/]+)',
@@ -716,24 +711,24 @@ class AttackSurfaceAnalyzer:
             r'app\.(?:get|post|put|delete|patch)\([\'""]\/([^\'""/]+)',
             r'def\s+(?:handle_|process_|do_)?(\w+)\s*\(',
         ]
-        
+
         for pattern in endpoint_patterns:
             matches = re.finditer(pattern, content)
             for match in matches:
                 analysis["endpoints"].append(match.group(1))
-        
+
         # Find inputs
         input_patterns = [
             r'request\.(?:args|form|json|values)\[[\'""](\w+)[\'""]\]',
             r'Request\.(?:Query|Form|Body)\([\'""](\w+)[\'""]',
             r'@RequestParam\([\'""](\w+)[\'""]\)',
         ]
-        
+
         for pattern in input_patterns:
             matches = re.finditer(pattern, content)
             for match in matches:
                 analysis["inputs"].append(match.group(1))
-        
+
         # Find authentication
         auth_patterns = [
             r'@require',
@@ -743,15 +738,15 @@ class AttackSurfaceAnalyzer:
             r'verify_token',
             r'jwt\.decode',
         ]
-        
+
         for pattern in auth_patterns:
             if re.search(pattern, content):
                 analysis["auth_points"].append(pattern)
-        
+
         # Find file uploads
         if re.search(r'(?:file|multipart)', content, re.IGNORECASE):
             analysis["file_upload"] = True
-        
+
         # Find external calls
         external_patterns = [
             r'requests\.(?:get|post)',
@@ -759,16 +754,16 @@ class AttackSurfaceAnalyzer:
             r'axios\.',
             r'http\.',
         ]
-        
+
         for pattern in external_patterns:
             if re.search(pattern, content):
                 analysis["external_calls"].append(pattern)
-        
+
         return analysis
-    
+
     def analyze_project(self, project_path: str) -> dict:
         """Analyze entire project attack surface"""
-        
+
         total_analysis = {
             "total_endpoints": 0,
             "total_inputs": 0,
@@ -776,27 +771,27 @@ class AttackSurfaceAnalyzer:
             "high_risk_features": [],
             "recommendations": []
         }
-        
+
         extensions = {'.py', '.js', '.ts', '.java'}
-        
+
         for root, dirs, files in os.walk(project_path):
             dirs[:] = [d for d in dirs if d not in ['__pycache__', 'node_modules', '.git']]
-            
+
             for file in files:
                 if any(file.endswith(ext) for ext in extensions):
                     file_path = os.path.join(root, file)
                     analysis = self.analyze_file(file_path)
-                    
+
                     total_analysis["total_endpoints"] += len(analysis.get("endpoints", []))
                     total_analysis["total_inputs"] += len(analysis.get("inputs", []))
-        
+
         # Generate recommendations
         if total_analysis["total_endpoints"] > 0:
             if total_analysis["total_inputs"] / total_analysis["total_endpoints"] < 2:
                 total_analysis["recommendations"].append(
                     "Low input validation coverage - review all endpoints"
                 )
-        
+
         return total_analysis
 
 
@@ -827,19 +822,19 @@ class SecurityResearchHub:
     ║                                                                          ║
     ╚══════════════════════════════════════════════════════════════════════════╝
     """
-    
+
     def __init__(self, llm_provider=None):
         self.llm = llm_provider
-        
+
         # Initialize modules
         self.scanner = VulnerabilityScanner()
         self.cve_agent = CVEResearchAgent(llm_provider)
         self.surface_analyzer = AttackSurfaceAnalyzer()
-    
+
     # =========================================================================
     # MAIN SCANNING FUNCTIONS
     # =========================================================================
-    
+
     async def scan_for_vulnerabilities(
         self,
         project_path: str,
@@ -847,64 +842,64 @@ class SecurityResearchHub:
     ) -> SecurityReport:
         """
         Scan project for vulnerabilities.
-        
+
         Args:
             project_path: Path to project
             scan_type: full, quick, extended
-        
+
         Returns:
             SecurityReport with all findings
         """
-        
+
         print(f"🔍 Starting {scan_type} vulnerability scan...")
-        
+
         # Run vulnerability scan
         report = self.scanner.scan_project(project_path)
-        
-        print(f"✅ Scan complete!")
+
+        print("✅ Scan complete!")
         print(f"   Critical: {report.critical_count}")
         print(f"   High: {report.high_count}")
         print(f"   Medium: {report.medium_count}")
         print(f"   Low: {report.low_count}")
-        
+
         return report
-    
+
     async def scan_file(self, file_path: str) -> list[Vulnerability]:
         """Scan a single file for vulnerabilities"""
-        
+
         return self.scanner.scan_file(file_path)
-    
+
     async def analyze_attack_surface(self, project_path: str) -> dict:
         """Analyze project attack surface"""
-        
+
         return self.surface_analyzer.analyze_project(project_path)
-    
+
     async def research_cve(self, cve_id: str) -> CVEDetails:
         """Research a specific CVE"""
-        
+
         return await self.cve_agent.research_cve(cve_id)
-    
+
     async def search_vulnerabilities(self, keyword: str) -> list[dict]:
         """Search for vulnerabilities"""
-        
+
         return await self.cve_agent.search_vulnerabilities(keyword)
-    
+
     # =========================================================================
     # REPORTING
     # =========================================================================
-    
+
     def generate_report(self, report: SecurityReport, output_path: str = "security_report.md") -> str:
         """Generate security report"""
-        
+
         return self.scanner.save_report(report, output_path)
-    
+
     def generate_responsible_disclosure(
         self,
         vulnerability: Vulnerability,
         project_name: str
     ) -> str:
         """Generate responsible disclosure report"""
-        
+
         report = f"""# Responsible Disclosure Report
 
 ## Vulnerability Details
@@ -949,13 +944,13 @@ Reported by OmniClaw Security Research
 ---
 *For authorized security testing only.*
 """
-        
+
         return report
-    
+
     # =========================================================================
     # PENETRATION TEST ASSISTANCE (AUTHORIZED)
     # =========================================================================
-    
+
     async def plan_penetration_test(
         self,
         target: str,
@@ -963,15 +958,15 @@ Reported by OmniClaw Security Research
     ) -> dict:
         """
         Plan a penetration test (for authorized testing only).
-        
+
         Args:
             target: Target application/system
             scope: In-scope targets
-        
+
         Returns:
             Penetration test plan
         """
-        
+
         return {
             "target": target,
             "scope": scope,
@@ -1024,7 +1019,7 @@ Reported by OmniClaw Security Research
                 "Report immediately if critical vulnerability found"
             ]
         }
-    
+
     async def suggest_attack_vectors(
         self,
         target_type: str
@@ -1033,7 +1028,7 @@ Reported by OmniClaw Security Research
         Suggest common attack vectors for testing.
         (For authorized testing only)
         """
-        
+
         vectors = {
             "web_application": [
                 {"vector": "SQL Injection", "testing": "Try ' OR '1'='1 in all inputs"},
@@ -1052,7 +1047,7 @@ Reported by OmniClaw Security Research
                 {"vector": "Insecure Communication", "testing": "Check for TLS/SSL pinning"},
             ]
         }
-        
+
         return vectors.get(target_type, [])
 
 
@@ -1061,51 +1056,51 @@ Reported by OmniClaw Security Research
 # =============================================================================
 
 if __name__ == "__main__":
-    
+
     print("""
     ╔══════════════════════════════════════════════════════════════════════════╗
     ║              🛡️ OMNICLAW SECURITY RESEARCH SUITE 🛡️                     ║
     ╚══════════════════════════════════════════════════════════════════════════╝
-    
+
     Usage:
-    
+
     from omniclaw_advanced_features import SecurityResearchHub
-    
+
     # Initialize
     security = SecurityResearchHub()
-    
+
     # 1. SCAN FOR VULNERABILITIES
     report = await security.scan_for_vulnerabilities("/path/to/project")
-    
+
     # 2. GENERATE REPORT
     security.generate_report(report, "security_report.md")
-    
+
     # 3. ANALYZE ATTACK SURFACE
     surface = await security.analyze_attack_surface("/path/to/project")
-    
+
     # 4. RESEARCH CVE
     cve = await security.research_cve("CVE-2024-0001")
-    
+
     # 5. PLAN PENETRATION TEST (Authorized)
     plan = await security.plan_penetration_test("target.com", ["api.target.com"])
-    
+
     # 6. SUGGEST ATTACK VECTORS (Authorized)
     vectors = await security.suggest_attack_vectors("web_application")
-    
+
     # 7. RESPONSIBLE DISCLOSURE
     disclosure = security.generate_responsible_disclosure(vuln, "MyProject")
-    
+
     """)
-    
+
     # Quick demo
     import asyncio
-    
+
     async def demo():
         security = SecurityResearchHub()
-        
+
         # Demo scan (won't find real vulns in empty dir)
         print("\n🔍 Running demo scan...")
-        
+
         # Create test file
         test_code = '''
 import sqlite3
@@ -1118,20 +1113,20 @@ def get_user(user_id):
 def execute_command(cmd):
     eval(cmd)
 '''
-        
+
         os.makedirs("/tmp/test_vuln", exist_ok=True)
         with open("/tmp/test_vuln/vuln_demo.py", 'w') as f:
             f.write(test_code)
-        
+
         # Scan
         vulns = await security.scan_file("/tmp/test_vuln/vuln_demo.py")
-        
+
         print(f"\n✅ Found {len(vulns)} vulnerabilities:")
-        
+
         for v in vulns:
             print(f"\n[{v.severity.value.upper()}] {v.title}")
             print(f"  File: {v.file_path}:{v.line_number}")
             print(f"  CWE: {v.cwe_id}")
             print(f"  CVSS: {v.cvss_score}")
-    
+
     asyncio.run(demo())

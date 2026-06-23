@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from typing import Dict, Any, Optional
 
 try:
     from browser_use import Agent, Controller
@@ -34,12 +33,12 @@ class BrowserAutomationAgent:
         """
         if not BROWSER_USE_AVAILABLE:
             return "Error: browser-use or langchain_openai is not installed."
-            
+
         if not self.llm:
             return "Error: LLM could not be initialized. Please check your AI API keys."
-            
+
         logger.info(f"Starting browser automation for task: {task}")
-        
+
         try:
             agent = Agent(
                 task=task,

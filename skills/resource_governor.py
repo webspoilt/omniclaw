@@ -4,7 +4,7 @@ from __future__ import annotations
 import os
 import subprocess
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
 
@@ -17,7 +17,7 @@ from core.skills.registry import tool
     },
     required=[],
 )
-async def get_cpu_affinity(pid: Optional[int] = None) -> dict[str, Any]:
+async def get_cpu_affinity(pid: int | None = None) -> dict[str, Any]:
     target = pid if pid is not None else os.getpid()
     try:
         proc = subprocess.run(["taskset", "-p", str(target)], capture_output=True, text=True, timeout=5)
@@ -59,7 +59,7 @@ async def set_cpu_affinity(pid: int, cpu_mask: str) -> str:
     },
     required=[],
 )
-async def get_process_memory(pid: Optional[int] = None) -> dict[str, Any]:
+async def get_process_memory(pid: int | None = None) -> dict[str, Any]:
     target = pid if pid is not None else os.getpid()
     try:
         status_path = Path(f"/proc/{target}/status")
@@ -87,7 +87,7 @@ async def get_process_memory(pid: Optional[int] = None) -> dict[str, Any]:
     },
     required=[],
 )
-async def monitor_io(pid: Optional[int] = None) -> dict[str, Any]:
+async def monitor_io(pid: int | None = None) -> dict[str, Any]:
     target = pid if pid is not None else os.getpid()
     try:
         io_path = Path(f"/proc/{target}/io")

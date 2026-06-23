@@ -1,6 +1,8 @@
-import aiohttp
 import logging
-from typing import List, Dict, Any
+from typing import Any
+
+import aiohttp
+
 from core.skills.registry import tool
 
 logger = logging.getLogger(__name__)
@@ -18,19 +20,19 @@ class SocialThreatSpider:
     }
 
     @tool(needs_confirmation=True)
-    async def crawl_threat_intelligence(self, query: str) -> List[Dict[str, Any]]:
+    async def crawl_threat_intelligence(self, query: str) -> list[dict[str, Any]]:
         """
         Crawls GitHub, Reddit, and Hacker News for specific security intelligence.
-        
+
         Args:
             query: The keyword or CVE to search for.
-            
+
         Returns:
             A list of intelligence items (Title, URL, Summary).
         """
         logger.info(f"Spidering social feeds for: {query}")
         results = []
-        
+
         async with aiohttp.ClientSession() as session:
             # GitHub Search
             try:

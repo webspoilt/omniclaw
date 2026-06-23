@@ -1,7 +1,9 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import logging
 from routes import agents, costs, tools
+
 from config import settings
 
 logging.basicConfig(level=settings.log_level)

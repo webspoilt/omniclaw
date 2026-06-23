@@ -1,18 +1,20 @@
-from .mcp_base import MCPTool
-from typing import Dict, Any
 import asyncio
+from typing import Any
+
+from .mcp_base import MCPTool
+
 
 class EbpfMonitorTool(MCPTool):
     """MCP tool that monitors system calls using eBPF (simulated)."""
-    
+
     @property
     def name(self) -> str:
         return "ebpf_monitor"
-    
+
     @property
     def description(self) -> str:
         return "Monitor system calls and resource usage via eBPF. Returns recent events."
-    
+
     def parameters_schema(self) -> dict:
         return {
             "type": "object",
@@ -29,14 +31,14 @@ class EbpfMonitorTool(MCPTool):
                 }
             }
         }
-    
-    async def execute(self, parameters: Dict[str, Any]) -> str:
+
+    async def execute(self, parameters: dict[str, Any]) -> str:
         duration = min(parameters.get("duration_sec", 10), 60)
         pid = parameters.get("pid")
-        
+
         # Simulate eBPF collection (in reality you'd call bcc or libbpf)
         await asyncio.sleep(1)  # simulate work
-        
+
         # Mock output
         events = [
             f"PID {pid or 'any'} called open() on /etc/passwd" if pid else "Multiple processes: open, read, write",

@@ -8,17 +8,17 @@ Ported from NanoClaw's tools/registry.py.
 import logging
 from pathlib import Path
 
-from core.skills.registry import ToolRegistry, ToolInfo, tool
 from core.skills.loader import SkillLoader
+from core.skills.registry import ToolInfo, ToolRegistry, tool
 
 logger = logging.getLogger("OmniClaw.Skills")
 
 # Core Internal Skills
-import core.skills.wifi_recon
-import core.skills.osint_reputation
 import core.skills.injection_auditor
+import core.skills.osint_reputation
 import core.skills.osint_sentiment
 import core.skills.social_spider
+import core.skills.wifi_recon  # noqa: F401
 
 # Auto-load all .py skills from the project skills/ directory (unconditional)
 _project_skills = Path(__file__).resolve().parent.parent.parent / "skills"

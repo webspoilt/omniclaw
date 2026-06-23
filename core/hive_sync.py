@@ -11,17 +11,17 @@ Handles:
   - Integration hooks for FAISS search and LLM inference callbacks
 """
 
-import os
-import sys
-import json
-import time
-import threading
-import queue
-import logging
 import base64
-from typing import Dict, Any, Optional, Callable, List
+import json
+import logging
+import os
+import queue
+import threading
+import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 try:
     import zmq
@@ -42,7 +42,7 @@ try:
 except ImportError:
     try:
         from Crypto.Cipher import AES
-        from Crypto.Random import get_random_bytes
+        from Crypto.Random import get_random_bytes  # noqa: F401
         HAS_CRYPTO = True
     except ImportError:
         HAS_CRYPTO = False
@@ -81,7 +81,7 @@ _DEFAULT_CONFIG = {
 
 def load_config() -> dict:
     if HAS_YAML and os.path.isfile(CONFIG_FILE):
-        with open(CONFIG_FILE, "r") as f:
+        with open(CONFIG_FILE) as f:
             return {**_DEFAULT_CONFIG, **yaml.safe_load(f)}
     # Also try env vars
     return {
@@ -213,15 +213,15 @@ class HiveNode:
         logger.info(f"ROUTER bound on :{self.listen_port}")
 
         # DEALER per peer
-        self.dealers: Dict[str, zmq.Socket] = {}
-        self.peers: Dict[str, Peer] = {}
+        self.dealers: dict[str, zmq.Socket] = {}
+        self.peers: dict[str, Peer] = {}
 
-        self.pending: Dict[str, queue.Queue] = {}
+        self.pending: dict[str, queue.Queue] = {}
         self.pending_lock = threading.Lock()
 
         # Callbacks
-        self.on_query: Optional[Callable] = None
-        self.on_offload: Optional[Callable] = None
+        self.on_query: Callable | None = None
+        self.on_offload: Callable | None = None
 
         self.running = False
 
@@ -342,7 +342,7 @@ class HiveNode:
         self.on_offload = fn
 
     def query_peer(self, peer_id: str, query: str,
-                   timeout: float = 10.0) -> Optional[Any]:
+                   timeout: float = 10.0) -> Any | None:
         rid = f"{self.node_id}_{time.time()}_{os.urandom(4).hex()}"
         q: queue.Queue = queue.Queue()
         with self.pending_lock:
@@ -361,7 +361,7 @@ class HiveNode:
                 self.pending.pop(rid, None)
 
     def offload_task(self, peer_id: str, task: Any,
-                     timeout: float = 60.0) -> Optional[Any]:
+                     timeout: float = 60.0) -> Any | None:
         rid = f"{self.node_id}_{time.time()}_{os.urandom(4).hex()}"
         q: queue.Queue = queue.Queue()
         with self.pending_lock:
@@ -379,7 +379,7 @@ class HiveNode:
             with self.pending_lock:
                 self.pending.pop(rid, None)
 
-    def get_online_peers(self) -> List[str]:
+    def get_online_peers(self) -> list[str]:
         now = time.time()
         return [pid for pid, p in self.peers.items()
                 if now - p.last_seen < self.peer_timeout]

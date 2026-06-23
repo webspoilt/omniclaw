@@ -19,16 +19,16 @@ import asyncio
 import json
 import logging
 import time
-from typing import Any, Dict, Optional
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.HealthServer")
 
 _START_TIME = time.time()
 
 
-def _collect_health() -> Dict[str, Any]:
+def _collect_health() -> dict[str, Any]:
     """Collect health data from available modules."""
-    health: Dict[str, Any] = {
+    health: dict[str, Any] = {
         "status": "ok",
         "uptime_s": round(time.time() - _START_TIME, 1),
         "modules": {},
@@ -133,7 +133,7 @@ async def _handle_connection(
         )
         writer.write(response.encode())
         await writer.drain()
-    except Exception:
+    except Exception:  # noqa: S110
         pass
     finally:
         writer.close()
@@ -165,7 +165,7 @@ class HealthServer:
     def __init__(self, host: str = "127.0.0.1", port: int = 8080):
         self.host = host
         self.port = port
-        self._task: Optional[asyncio.Task] = None
+        self._task: asyncio.Task | None = None
 
     async def start(self) -> None:
         """Start the health server as a background asyncio task."""

@@ -1,5 +1,6 @@
-import litellm
 import logging
+
+import litellm
 
 from .hardware_monitor import hardware_monitor
 
@@ -20,7 +21,7 @@ class Arbitrator:
         task_type can be "simple", "complex", or "reasoning"
         """
         health = hardware_monitor.get_system_health()
-        
+
         if task_type == "simple" and not health.get("is_overloaded", False):
             model = self.local_model
         elif task_type == "reasoning":
@@ -30,9 +31,9 @@ class Arbitrator:
             model = self.default_cloud_model
             if task_type == "simple":
                 logger.warning(f"System overloaded (CPU: {health.get('cpu_percent')}%, RAM: {health.get('ram_percent')}%). Routing simple task to cloud: {model}")
-            
+
         logger.info(f"Routing '{task_type}' task to model: {model}")
-        
+
         try:
             response = await litellm.acompletion(
                 model=model,

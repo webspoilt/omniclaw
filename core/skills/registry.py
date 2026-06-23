@@ -8,13 +8,11 @@ and `ToolRegistry` class for managing and executing them.
 
 from __future__ import annotations
 
-import importlib
-import importlib.util
-import sys
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import wraps
-from typing import Any, Callable, Optional
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.Skills.Registry")
 
@@ -33,7 +31,7 @@ class ToolInfo:
 
 # Global tool registry
 _registry: dict[str, ToolInfo] = {}
-_tool_registry_instance: Optional["ToolRegistry"] = None
+_tool_registry_instance: ToolRegistry | None = None
 
 
 def tool(
@@ -41,7 +39,7 @@ def tool(
     description: str,
     parameters: dict[str, Any],
     needs_confirmation: bool = False,
-    required: Optional[list[str]] = None,
+    required: list[str] | None = None,
 ) -> Callable:
     """
     Decorator to register a function as an agent tool.
@@ -128,7 +126,7 @@ class ToolRegistry:
         self,
         name: str,
         arguments: dict[str, Any],
-        confirm_callback: Optional[Callable] = None,
+        confirm_callback: Callable | None = None,
     ) -> str:
         """
         Execute a tool by name with given arguments.

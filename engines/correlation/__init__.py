@@ -3,11 +3,11 @@
 #
 # Architecture: Postgres Ingestion -> Reachability Analysis -> Priority Scoring -> Exploit Queue
 
-from .correlation_engine import CorrelationEngine, CorrelationConfig
-from .reachability import ReachabilityAnalyzer, PathResult
-from .priority_scorer import PriorityScorer, PriorityResult
+from .correlation_engine import CorrelationConfig, CorrelationEngine
 from .exploit_queue import ExploitQueueManager, QueueItem, QueuePriority
 from .postgres_client import PostgresClient
+from .priority_scorer import PriorityResult, PriorityScorer
+from .reachability import PathResult, ReachabilityAnalyzer
 
 __all__ = [
     "CorrelationEngine",

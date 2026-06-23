@@ -1,11 +1,12 @@
 import asyncio
 import logging
-import time
 import socket
-import aiohttp
-from typing import Dict, List, Optional, Any, Set
+import time
 from dataclasses import dataclass, field
+from typing import Any
 from urllib.parse import urljoin, urlparse
+
+import aiohttp
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger("ReconEngine")
@@ -16,7 +17,7 @@ class ReconFinding:
     target: str
     description: str
     severity: str = "info"
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
 class ReconEngine:
@@ -24,25 +25,25 @@ class ReconEngine:
     Recon Engine — Outside-in security discovery.
     Based on OmniClaw's BugBountyHunter.
     """
-    
+
     def __init__(self):
-        self.findings: List[ReconFinding] = []
-        self.subdomains: Set[str] = set()
-        self.endpoints: Set[str] = set()
-        
-    async def run_discovery(self, domain: str) -> Dict[str, Any]:
+        self.findings: list[ReconFinding] = []
+        self.subdomains: set[str] = set()
+        self.endpoints: set[str] = set()
+
+    async def run_discovery(self, domain: str) -> dict[str, Any]:
         """Run full discovery on a domain."""
         logger.info(f"Starting discovery for {domain}")
-        
+
         # 1. Subdomain Enumeration
         await self._enumerate_subdomains(domain)
-        
+
         # 2. Port Scanning & Service Discovery
         await self._scan_services()
-        
+
         # 3. Web & API Discovery
         await self._discover_endpoints()
-        
+
         return {
             "subdomains": list(self.subdomains),
             "endpoints": list(self.endpoints),
@@ -87,7 +88,7 @@ class ReconEngine:
                     _, writer = await asyncio.wait_for(conn, timeout=1.0)
                     writer.close()
                     await writer.wait_closed()
-                    
+
                     self.findings.append(ReconFinding(
                         type="open_port",
                         target=f"{sub}:{port}",

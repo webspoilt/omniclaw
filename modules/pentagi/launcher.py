@@ -1,14 +1,15 @@
 """
 PentAGI Subsystem Launcher
 
-Manages the cloning, Docker Compose execution, and configuration bridging 
+Manages the cloning, Docker Compose execution, and configuration bridging
 between OmniClaw's environment and PentAGI's `.env` requirements.
 """
 
+import logging
 import os
 import subprocess
-import logging
 from pathlib import Path
+
 import yaml
 
 logger = logging.getLogger(__name__)
@@ -19,7 +20,7 @@ class PentagiLauncher:
         self.pentagi_dir = self.workspace / "modules" / "pentagi" / "vxcontrol_pentagi"
         self.repo_url = "https://github.com/vxcontrol/pentagi"
         self.omniclaw_config = self.workspace / "config.yaml"
-        
+
     def _clone_repo(self):
         """Clone the repository if it does not exist."""
         if not self.pentagi_dir.exists():
@@ -39,7 +40,7 @@ class PentagiLauncher:
         """
         env_file_path = self.pentagi_dir / ".env"
         example_env_path = self.pentagi_dir / ".env.example"
-        
+
         # Read PentAGI .env.example
         if not env_file_path.exists() and example_env_path.exists():
             env_content = example_env_path.read_text()
@@ -51,18 +52,18 @@ class PentagiLauncher:
         # Attempt to inject known keys from OmniClaw config
         if not self.omniclaw_config.exists():
             return
-            
+
         try:
-            with open(self.omniclaw_config, 'r') as f:
+            with open(self.omniclaw_config) as f:
                 omni_cfg = yaml.safe_load(f)
-                
+
             apis = omni_cfg.get("apis", [])
             env_lines = env_file_path.read_text().splitlines()
             new_lines = []
-            
+
             openai_key = next((api["key"] for api in apis if api["provider"] == "openai"), None)
             anthropic_key = next((api["key"] for api in apis if api["provider"] == "anthropic"), None)
-            
+
             for line in env_lines:
                 if line.startswith("OPEN_AI_KEY=") and openai_key:
                     new_lines.append(f"OPEN_AI_KEY={openai_key}")
@@ -70,10 +71,10 @@ class PentagiLauncher:
                     new_lines.append(f"ANTHROPIC_API_KEY={anthropic_key}")
                 else:
                     new_lines.append(line)
-                    
+
             env_file_path.write_text("\n".join(new_lines) + "\n")
             logger.info("Successfully synced API keys from OmniClaw config to PentAGI .env")
-            
+
         except Exception as e:
             logger.warning(f"Could not sync OmniClaw configs to PentAGI .env: {e}")
 
@@ -84,7 +85,7 @@ class PentagiLauncher:
         """
         self._clone_repo()
         self._sync_env_configuration()
-        
+
         logger.info("Starting PentAGI docker-compose stack...")
         try:
             # Standard Pentagi requires the main file and graphs/db

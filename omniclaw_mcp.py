@@ -7,10 +7,12 @@ Can be used with clients like Claude Desktop.
 
 import subprocess
 from pathlib import Path
+
 from dotenv import load_dotenv
-from mcp.server.fastmcp import FastMCP
-from core.automation.browser_agent import run_browser_automation_sync
 from kernel_bridge.ebpf_monitor import ebpf_monitor
+from mcp.server.fastmcp import FastMCP
+
+from core.automation.browser_agent import run_browser_automation_sync
 from core.quantum_gateway import quantum_gateway
 
 # Load environment variables securely
@@ -26,7 +28,7 @@ def run_agent_task(prompt: str) -> str:
     try:
         result = subprocess.run(
             ["python", "omniclaw.py", "task", prompt],
-            capture_output=True, 
+            capture_output=True,
             text=True,
             check=False
         )
@@ -47,16 +49,16 @@ def get_config() -> str:
     # Fallback to config.example.yaml if config is not created
     if not config_path.exists():
         config_path = Path("config.example.yaml")
-        
+
     if config_path.exists():
-        with open(config_path, "r") as f:
+        with open(config_path) as f:
             return f.read()
     return "Error: config not found."
 
 @mcp.tool()
 def navigate_and_interact(task_description: str) -> str:
     """
-    Uses an AI Vision agent and headless browser to navigate the web, 
+    Uses an AI Vision agent and headless browser to navigate the web,
     fill forms, extract data, or perform any complex web sequence.
     """
     try:

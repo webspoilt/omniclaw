@@ -1,22 +1,22 @@
 import asyncio
+import logging
+from urllib.parse import urljoin
+
 import aiohttp
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse, parse_qs
-import logging
-from typing import Set, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 class ContextualFuzzer:
-    def __init__(self, target_url: str, user_a_token: str, user_b_token: str, 
+    def __init__(self, target_url: str, user_a_token: str, user_b_token: str,
                  kill_switch: asyncio.Event, max_concurrent=10):
         self.target_url = target_url.rstrip('/')
         self.user_a_token = user_a_token
         self.user_b_token = user_b_token
         self.kill_switch = kill_switch
         self.semaphore = asyncio.Semaphore(max_concurrent)
-        self.endpoints: Set[str] = set()
-        self.idor_candidates: List[Dict] = []
+        self.endpoints: set[str] = set()
+        self.idor_candidates: list[dict] = []
 
     async def discover_endpoints(self, session: aiohttp.ClientSession):
         """Crawl the target to find all links and forms."""
@@ -40,15 +40,15 @@ class ContextualFuzzer:
                 # Record parameters
                 method = form.get('method', 'get').lower()
                 inputs = form.find_all('input')
-                params = {inp.get('name'): inp.get('value', '') 
+                params = {inp.get('name'): inp.get('value', '')
                           for inp in inputs if inp.get('name')}
                 self.endpoints.add((full_url, method, params))  # store tuple for later
             logger.info(f"Discovered {len(self.endpoints)} endpoints")
         except Exception as e:
             logger.error(f"Discovery error: {e}")
 
-    async def test_idor(self, session: aiohttp.ClientSession, endpoint: str, 
-                        params: Dict, method: str = 'get'):
+    async def test_idor(self, session: aiohttp.ClientSession, endpoint: str,
+                        params: dict, method: str = 'get'):
         """Attempt to access endpoint with swapped tokens."""
         if self.kill_switch.is_set():
             return

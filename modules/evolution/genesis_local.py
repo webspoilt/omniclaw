@@ -4,17 +4,17 @@ genesis_local.py - Nightly self-refactor engine (runs only on Asus TUF).
 Performs fuzzing and LLM-based patching of core code.
 """
 
-import os
-import sys
-import time
-import random
-import subprocess
-import tempfile
 import ast
 import logging
-from pathlib import Path
-import requests
+import os
+import random
 import shutil
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import requests
 
 # Force local-only check
 ASUS_TUF_ONLY = os.environ.get('OMNICLAW_NODE') == 'desktop' or Path('/proc/device-tree/model').read_text().find('TUF') != -1
@@ -34,29 +34,29 @@ class LocalGenesis:
         self.ollama_url = config.get('ollama_url', 'http://localhost:11434')
         self.llm_model = config.get('llm_model', 'codellama:latest')
         self.fuzz_iterations = config.get('fuzz_iterations', 100)
-        
+
     def run_nightly(self):
         """Main entry point - called by cron."""
         logger.info("Starting nightly self-evolution cycle")
-        
+
         # 1. Find Python files to analyze
         python_files = list(self.core_dir.rglob('*.py')) + list(self.modules_dir.rglob('*.py'))
-        
+
         # 2. Perform simple static analysis (AST-based)
         for py_file in random.sample(python_files, min(5, len(python_files))):
             self._analyze_and_patch(py_file)
-        
+
         # 3. Run fuzzing on critical modules
         self._fuzz_core_modules()
-        
+
         logger.info("Nightly self-evolution complete")
-    
+
     def _analyze_and_patch(self, file_path):
         """Analyze a Python file for potential improvements using LLM."""
         logger.info(f"Analyzing {file_path}")
-        
+
         code = file_path.read_text(encoding="utf-8")
-        
+
         prompt = f"""You are a code optimization expert. Analyze this Python code for:
 1. Performance bottlenecks
 2. Security vulnerabilities
@@ -69,18 +69,18 @@ Output only the code inside ```python ... ```.
 ```python
 {code}
 ```"""
-        
+
         try:
             resp = requests.post(f"{self.ollama_url}/api/generate",
                                json={"model": self.llm_model, "prompt": prompt, "stream": False},
                                timeout=120)
             response = resp.json().get('response', '')
-            
+
             import re
             match = re.search(r'```python\n(.*?)```', response, re.DOTALL)
             if match:
                 improved_code = match.group(1)
-                
+
                 try:
                     ast.parse(improved_code)
                     backup = file_path.with_suffix(file_path.suffix + '.genesis.bak')
@@ -91,15 +91,15 @@ Output only the code inside ```python ... ```.
                     logger.error(f"LLM produced invalid syntax for {file_path}: {e}")
         except Exception as e:
             logger.error(f"LLM analysis failed for {file_path}: {e}")
-    
+
     def _fuzz_core_modules(self):
         """Simple fuzzing by running modules with random inputs."""
         for module in self.core_dir.glob('*.py'):
             if module.name.startswith('__'):
                 continue
-            
+
             logger.info(f"Fuzzing {module}")
-            
+
             for _ in range(self.fuzz_iterations):
                 try:
                     args = ['--' + str(random.randint(1,1000)) for _ in range(random.randint(0,3))]
@@ -133,11 +133,11 @@ def schedule_nightly(config_path='config/genesis_config.yaml'):
             config = yaml.safe_load(f)
     except FileNotFoundError:
         config = {}
-    
+
     genesis = LocalGenesis(config)
     schedule.every().day.at("02:00").do(genesis.run_nightly)
     logger.info("Nightly schedule registered (02:00 AM).")
-    
+
     while True:
         schedule.run_pending()
         time.sleep(60)

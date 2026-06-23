@@ -1,8 +1,9 @@
 import asyncio
-import aiohttp
 import hashlib
 import logging
-from typing import Dict, Any, Optional
+from typing import Any
+
+import aiohttp
 
 logger = logging.getLogger(__name__)
 
@@ -12,8 +13,8 @@ class PoCValidator:
         self.kill_switch = kill_switch
         self.evidence_chain = []  # list of dicts with hash, payload, response snippet
 
-    async def execute_payload(self, session: aiohttp.ClientSession, 
-                              payload: Dict[str, Any]) -> Optional[Dict]:
+    async def execute_payload(self, session: aiohttp.ClientSession,
+                              payload: dict[str, Any]) -> dict | None:
         """
         payload: {
             'type': 'xss' | 'sqli' | 'injection',

@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime
-from typing import List, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +17,14 @@ class DisclosureEngine:
         }
         return suggestions.get(vuln_type.lower(), "Apply secure coding practices and input validation.")
 
-    def generate_report(self, findings: List[Dict], target: str) -> str:
+    def generate_report(self, findings: list[dict], target: str) -> str:
         """Create a Markdown vulnerability disclosure report."""
         now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
         report = f"""# Vulnerability Disclosure Report
 
-**Target:** {target}  
-**Date:** {now}  
-**Report ID:** OMNICLAW-{now[:10].replace('-','')}  
+**Target:** {target}
+**Date:** {now}
+**Report ID:** OMNICLAW-{now[:10].replace('-','')}
 
 ## Summary
 {len(findings)} confirmed vulnerabilities were identified during automated assessment.
@@ -45,10 +44,10 @@ class DisclosureEngine:
 - **Source Code Leaked:** {f['leaked_source']}
 - **Response Status:** {f['status']}
 
-**Remediation:**  
+**Remediation:**
 {remediation}
 
-**Chain of Custody:**  
+**Chain of Custody:**
 Evidence hash recorded and stored securely.
 
 ---

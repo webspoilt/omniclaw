@@ -5,11 +5,11 @@ Handles evidence encryption, professional report generation, and remediation sug
 All operations assume explicit authorisation for security testing.
 """
 
-import os
-import json
 import datetime
+import json
+import os
+
 from cryptography.fernet import Fernet
-from typing import Dict, Any, Optional, List
 
 # ----------------------------------------------------------------------
 # Remediation dictionary (vulnerability -> recommended fix)
@@ -40,7 +40,7 @@ class EvidenceCapture:
     (e.g., environment variable or secrets manager).
     """
 
-    def __init__(self, key: Optional[bytes] = None):
+    def __init__(self, key: bytes | None = None):
         """
         Initialise the encryptor. If no key is provided, generate a new one.
         In production, load the key from a secure location.
@@ -52,7 +52,7 @@ class EvidenceCapture:
         self.cipher = Fernet(self.key)
 
     def save_encrypted_evidence(self, payload_response: str, vuln_type: str,
-                                metadata: Optional[Dict] = None,
+                                metadata: dict | None = None,
                                 output_dir: str = "./evidence") -> str:
         """
         Encrypt the payload response and save it with a timestamp.
@@ -83,7 +83,7 @@ class EvidenceCapture:
         print(f"[+] Encrypted evidence saved: {filepath}")
         return filepath
 
-    def decrypt_evidence(self, filepath: str) -> Dict:
+    def decrypt_evidence(self, filepath: str) -> dict:
         """Decrypt an evidence file and return the original dictionary."""
         with open(filepath, 'rb') as f:
             encrypted = f.read()
@@ -102,9 +102,9 @@ class ReportGenerator:
     # Template for the report
     REPORT_TEMPLATE = """# Vulnerability Research Report
 
-**Title:** {title}  
-**Date:** {date}  
-**Authorised Tester:** {tester}  
+**Title:** {title}
+**Date:** {date}
+**Authorised Tester:** {tester}
 **Target:** {target}
 
 ---
@@ -131,7 +131,7 @@ class ReportGenerator:
         self.tester_name = tester_name
 
     @staticmethod
-    def _generate_remediation_suggestions(findings: List[Dict]) -> str:
+    def _generate_remediation_suggestions(findings: list[dict]) -> str:
         """
         Convert a list of findings into a formatted remediation section.
         Each finding should have a 'vuln_type' key.
@@ -159,7 +159,7 @@ class ReportGenerator:
 
     def generate_markdown(self, title: str, target: str,
                          executive_summary: str, technical_breakdown: str,
-                         findings: List[Dict]) -> str:
+                         findings: list[dict]) -> str:
         """
         Generate a complete report in Markdown format.
         """
@@ -191,14 +191,14 @@ class ReportGenerator:
         This example uses weasyprint.
         """
         try:
-            from weasyprint import HTML
             import markdown
+            from weasyprint import HTML
         except ImportError:
             print("[-] 'weasyprint' or 'markdown' not installed. Install with: pip install weasyprint markdown")
             return
 
         # Read markdown, convert to HTML, then to PDF
-        with open(markdown_path, 'r', encoding='utf-8') as f:
+        with open(markdown_path, encoding='utf-8') as f:
             md_content = f.read()
         html_content = markdown.markdown(md_content, extensions=['extra'])
         HTML(string=html_content).write_pdf(pdf_path)
@@ -212,14 +212,14 @@ class ResponsibleDisclosureModule:
     High‑level interface combining evidence capture and report generation.
     """
 
-    def __init__(self, encryption_key: Optional[bytes] = None, tester_name: str = "OmniClaw Operator"):
+    def __init__(self, encryption_key: bytes | None = None, tester_name: str = "OmniClaw Operator"):
         self.evidence = EvidenceCapture(encryption_key)
         self.report = ReportGenerator(tester_name)
 
     def handle_finding(self, payload_response: str, vuln_type: str,
-                       metadata: Dict, finding_details: Dict,
+                       metadata: dict, finding_details: dict,
                        target: str, executive_summary: str,
-                       technical_breakdown: str, output_dir: str = "./reports") -> Dict:
+                       technical_breakdown: str, output_dir: str = "./reports") -> dict:
         """
         Complete workflow:
         1. Encrypt and save evidence.

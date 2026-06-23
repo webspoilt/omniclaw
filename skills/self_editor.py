@@ -4,7 +4,6 @@ from __future__ import annotations
 import os
 import sys
 from pathlib import Path
-from typing import Optional
 
 from core.skills.registry import tool
 
@@ -106,7 +105,7 @@ async def replace_method_in_file(relative_path: str, function_name: str, new_bod
     },
     required=[],
 )
-async def restart_self(target_script: Optional[str] = None) -> str:
+async def restart_self(target_script: str | None = None) -> str:
     if target_script:
         script = _project_root() / target_script
         script = script.resolve()

@@ -25,12 +25,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import os
-import sys
-import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional
 
 logging.basicConfig(
     level=logging.INFO,
@@ -48,7 +44,7 @@ _HONEYPOT_LOG = LOG_DIR / "honeypot.log"
 #  Canned fake responses                                              #
 # ------------------------------------------------------------------ #
 
-_FAKE_RESPONSES: Dict[str, str] = {
+_FAKE_RESPONSES: dict[str, str] = {
     "ls": (
         "bin  boot  dev  etc  home  lib  lib64  media  mnt  "
         "opt  proc  root  run  sbin  srv  sys  tmp  usr  var"
@@ -157,7 +153,7 @@ async def _handle_session(
         while True:
             try:
                 data = await asyncio.wait_for(reader.readline(), timeout=120)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 _log_event(peer_str, "TIMEOUT")
                 break
             if not data:
@@ -211,7 +207,7 @@ class ShadowShellHoneypot:
     def __init__(self, host: str = "0.0.0.0", port: int = 2222):
         self.host = host
         self.port = port
-        self._server: Optional[asyncio.AbstractServer] = None
+        self._server: asyncio.AbstractServer | None = None
 
     async def start(self) -> None:
         """Start the honeypot server."""

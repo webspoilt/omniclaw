@@ -1,9 +1,8 @@
 import base64
-import json
 import datetime
-import os
-from typing import Dict, Optional
+import json
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +24,8 @@ class EvidenceCollector:
             data = str(obj)
         return base64.b64encode(data.encode('utf-8')).decode('utf-8')
 
-    def save_poc(self, vulnerability_type: str, request_data: Dict, response_data: Dict,
-                 metadata: Optional[Dict] = None) -> str:
+    def save_poc(self, vulnerability_type: str, request_data: dict, response_data: dict,
+                 metadata: dict | None = None) -> str:
         """
         Save the PoC as a JSON file with Base64‑encoded fields.
         Returns the file path.
@@ -59,7 +58,7 @@ class EvidenceCollector:
         return filepath
 
     def save_llm_conversation(self, vulnerability_type: str, prompt: str, response: str,
-                              metadata: Optional[Dict] = None) -> str:
+                              metadata: dict | None = None) -> str:
         """
         Save an LLM conversation (prompt + response) as Base64.
         """

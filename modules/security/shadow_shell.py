@@ -6,13 +6,12 @@ Listens on port 2222, presents a fake shell to attackers,
 logs every command, and uses an LLM to classify attacker intent.
 """
 
+import json
+import logging
 import socket
 import threading
-import logging
-import time
-import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 try:
     import requests
@@ -21,6 +20,7 @@ except ImportError:
     HAS_REQUESTS = False
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
     from core.kill_switch import check_kill_switch

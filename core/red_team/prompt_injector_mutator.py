@@ -1,9 +1,7 @@
-import requests
-import json
-import re
-import base64
-from typing import List, Dict, Optional
 import logging
+import re
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +23,7 @@ class PromptInjectorMutator:
         r"(?i)canary[_-]?token",
     ]
 
-    def __init__(self, target_url: str, target_headers: Optional[Dict] = None,
+    def __init__(self, target_url: str, target_headers: dict | None = None,
                  local_llm_url: str = "http://localhost:11434/api/generate",
                  local_model: str = "llama3"):
         self.target_url = target_url
@@ -48,7 +46,7 @@ class PromptInjectorMutator:
             logger.error(f"Local LLM error: {e}")
             return ""
 
-    def _mutate_prompt(self, base_prompt: str, iteration: int) -> List[str]:
+    def _mutate_prompt(self, base_prompt: str, iteration: int) -> list[str]:
         """
         Ask local LLM to generate variations of the base prompt.
         Returns a list of mutated prompts.
@@ -67,7 +65,7 @@ Return only the mutated prompts, one per line, no explanations."""
         prompts = [line.strip() for line in response.split('\n') if line.strip()]
         return prompts[:3]  # limit
 
-    def _test_target(self, prompt: str) -> Dict:
+    def _test_target(self, prompt: str) -> dict:
         """Send prompt to target LLM and analyse response for leaks."""
         try:
             # Adjust payload to match target API (e.g., {"prompt": prompt})
@@ -86,7 +84,7 @@ Return only the mutated prompts, one per line, no explanations."""
             "response_snippet": resp_text[:300]
         }
 
-    def run(self, base_prompt: str, max_depth: int = 2) -> List[Dict]:
+    def run(self, base_prompt: str, max_depth: int = 2) -> list[dict]:
         """
         Recursively mutate and test prompts up to max_depth.
         """

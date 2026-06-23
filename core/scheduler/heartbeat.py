@@ -10,8 +10,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import Callable, Coroutine
 from pathlib import Path
-from typing import Any, Callable, Coroutine, Optional
+from typing import Any
 
 logger = logging.getLogger("OmniClaw.Scheduler.Heartbeat")
 
@@ -53,9 +54,9 @@ class HeartbeatService:
     def __init__(
         self,
         workspace: str | Path,
-        llm_callback: Optional[Callable] = None,
-        on_execute: Optional[Callable[[str], Coroutine[Any, Any, str]]] = None,
-        on_notify: Optional[Callable[[str], Coroutine[Any, Any, None]]] = None,
+        llm_callback: Callable | None = None,
+        on_execute: Callable[[str], Coroutine[Any, Any, str]] | None = None,
+        on_notify: Callable[[str], Coroutine[Any, Any, None]] | None = None,
         interval_s: int = 30 * 60,
         enabled: bool = True,
     ):
@@ -88,7 +89,7 @@ class HeartbeatService:
         self.interval_s = interval_s
         self.enabled = enabled
         self._running = False
-        self._task: Optional[asyncio.Task] = None
+        self._task: asyncio.Task | None = None
         self._tick_count = 0
         self._last_action = "none"
         _mode = "LLM" if llm_callback else "keyword-detection (no LLM callback)"
@@ -99,7 +100,7 @@ class HeartbeatService:
         """Path to HEARTBEAT.md."""
         return self.workspace / "HEARTBEAT.md"
 
-    def _read_heartbeat_file(self) -> Optional[str]:
+    def _read_heartbeat_file(self) -> str | None:
         """Read HEARTBEAT.md content."""
         if self.heartbeat_file.exists():
             try:
@@ -209,7 +210,7 @@ class HeartbeatService:
         except Exception:
             logger.exception("Heartbeat execution failed")
 
-    async def trigger_now(self) -> Optional[str]:
+    async def trigger_now(self) -> str | None:
         """Manually trigger a heartbeat check."""
         content = self._read_heartbeat_file()
         if not content:

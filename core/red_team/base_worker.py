@@ -1,6 +1,7 @@
-import redis
-from rq import Queue, Connection, Worker
 import logging
+
+import redis
+from rq import Connection, Queue, Worker
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

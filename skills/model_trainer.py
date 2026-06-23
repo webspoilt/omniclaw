@@ -1,3 +1,4 @@
+# ruff: noqa: S108, S110, UP031
 import json
 import os
 import subprocess

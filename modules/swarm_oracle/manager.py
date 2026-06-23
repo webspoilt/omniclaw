@@ -6,13 +6,12 @@ Orchestrates user input, triggers MiroFish simulations, and invokes the Auditor.
 
 import asyncio
 import logging
-from pathlib import Path
 
-from .swarm_engine import SwarmSimulator
 from .auditor import Auditor
-from .knowledge import KnowledgeGraph
 from .config import settings
+from .knowledge import KnowledgeGraph
 from .models import SimulationRequest, SimulationResult
+from .swarm_engine import SwarmSimulator
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

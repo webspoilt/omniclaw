@@ -1,7 +1,8 @@
+import logging
+
+from agents.orchestrator import Orchestrator
 from fastapi import APIRouter, HTTPException
 from models import AgentTaskRequest, AgentTaskResponse, Message
-from agents.orchestrator import Orchestrator
-import logging
 
 router = APIRouter(prefix="/api/agents", tags=["agents"])
 logger = logging.getLogger(__name__)
