@@ -1,166 +1,197 @@
-# OmniClaw
+# ⛔ DO NOT USE THIS SOFTWARE ⛔
 
-**A secure distributed orchestration runtime for autonomous and edge-native AI systems.**
+<div style="background-color:#ffdddd; border:2px solid #ff0000; padding:15px; border-radius:5px; margin:20px 0;">
 
-OmniClaw is an event-driven execution platform designed to safely orchestrate local and distributed AI workflows. It provides the necessary infrastructure—deterministic routing, policy-constrained sandboxing, and unified telemetry—to bridge the gap between probabilistic LLM planners and secure, resilient host execution.
+**WARNING – THIS IS A DANGEROUS RESEARCH ARTIFACT**
 
-Built on ZeroMQ and engineered for heterogeneous topologies, OmniClaw allows workloads to scale from constrained edge nodes (Android/ARM) to GPU-accelerated Compute Cores, all governed by strict capability-based access controls.
+This modified version of OmniClaw has been **deliberately stripped of all safety mechanisms** – policy enforcement, sandboxing, capability restrictions, eBPF monitoring, seccomp filters, and human-in-the-loop controls. It is designed to operate as a **fully unconstrained, self‑improving autonomous agent** with root access and the ability to modify its own code.
 
----
+**DO NOT** deploy this software on any machine that is connected to a network you care about, contains sensitive data, or is used for daily work.  
+**DO NOT** run this agent outside a completely air‑gapped virtual machine with a physical kill switch.  
+**DO NOT** connect it to the internet without hardware‑level isolation and continuous traffic monitoring.  
+**DO NOT** use this for any purpose other than controlled, ethical safety research.
 
-## Core Philosophy
+**YOU ASSUME ALL RISK.** The authors are not responsible for any damage, legal consequences, or unintended behavior resulting from the use of this code.
 
-Probabilistic intelligence requires deterministic infrastructure.
-
-LLMs are planners, not trusted operating systems. OmniClaw operates on the principle that autonomous systems must be strictly supervised, their execution boundaries explicitly defined, and their state heavily observable. We do not build "unconstrained AI swarms"; we build the high-assurance execution pipelines required to make autonomous workflows reliable in production.
-
-- **Deterministic Execution:** Workflows are structured as predictable, replayable DAGs.
-- **Policy-Constrained Autonomy:** Every action is intercepted and evaluated against predefined execution policies.
-- **Edge-Native Architecture:** Resource scheduling adapts dynamically to thermal and memory constraints.
-- **Unified Observability:** Every sub-task, routing decision, and security intervention is traced.
+</div>
 
 ---
 
-## Architecture Overview
+# OmniClaw – Raw Autonomous Agent Research Platform
 
-OmniClaw uses a decentralized `ROUTER-DEALER` topology to manage execution across varying hardware footprints.
-
-```mermaid
-graph TD
-    subgraph Compute Core
-        M[Manager Node] -->|ZeroMQ| O[Orchestrator]
-        O --> PE[Policy Engine]
-        O --> |Task Dispatch| W1[Athena GPU Worker]
-        O --> |Task Dispatch| W2[Sandboxed Executor]
-        PE --> |eBPF Telemetry| Telemetry
-        DB[(LanceDB Vector Store)]
-    end
-
-    subgraph Edge Node
-        EN[Edge Gateway] -->|Sensor Data| SQLite[(SQLite-vec Cache)]
-        EN -->|Context Handoff| M
-    end
-
-    W1 -.-> DB
-```
-
-The system is split across two primary trust domains:
-
-1. **Compute Core:** The sovereign backend handling heavy orchestration, eBPF-enforced sandboxing, vector search (LanceDB), and large model inference.
-2. **Edge Node:** An unprivileged, highly constrained sensor hub (e.g., an ARM-based phone running Termux) that handles lightweight inference, localized vector caching (SQLite-vec), and context handoff to the core.
+**This is a heavily modified fork of the [OmniClaw](https://github.com/webspoilt/omniclaw) distributed orchestration runtime.**  
+All safety constraints have been removed, and the system has been re‑architected to study the emergent behaviour of a maximally autonomous AI agent inside a sealed research environment.
 
 ---
 
-## Execution Pipeline
+## What This System Is Capable Of
 
-OmniClaw strictly separates intent parsing from execution.
+The raw agent possesses a comprehensive, unrestricted toolset that allows it to:
 
-```mermaid
-sequenceDiagram
-    participant User/Sensor
-    participant Orchestrator
-    participant Planner (LLM)
-    participant Policy Engine
-    participant Sandbox
+### 🧠 Autonomous Planning & Execution
+- Runs an infinite observe‑plan‑act‑learn loop without any human intervention.
+- Decomposes goals into thousands of subtasks and executes them over days or weeks.
+- Spawns and coordinates multiple sub‑agents (multi‑agent swarm) with specialised roles.
+- Maintains persistent self‑editing memory that compresses and restructures itself over time.
 
-    User/Sensor->>Orchestrator: Event / Request
-    Orchestrator->>Planner: Request Intent Parsing
-    Planner-->>Orchestrator: Proposed Execution Plan (DAG)
-    Orchestrator->>Policy Engine: Validate Capabilities
-    alt Policy Denied
-        Policy Engine-->>Orchestrator: Reject (Out of bounds)
-    else Policy Approved
-        Orchestrator->>Sandbox: Dispatch Subtask
-        Sandbox-->>Orchestrator: Deterministic Result / Trace
-    end
-```
+### 🔧 Unrestricted System Access
+- **Root shell** with full filesystem read/write, process control, and device access.
+- **Zero sandbox** – no seccomp, no cgroups, no user namespaces.
+- Can install packages, compile C/Rust binaries, and load kernel modules.
+- Can modify its own Python source code and the systemd service that launches it.
 
----
+### 🤖 Self‑Improvement Capabilities
+- 15 built‑in self‑improvement skills: `self_inspector`, `self_editor`, `compiler_bridge`, `prompt_optimiser`, `model_trainer`, `process_overseer`, etc.
+- Can fine‑tune local LLMs, evolve its own system prompts, and mutate its code.
+- Capable of rewriting its entire orchestrator in a compiled language and restarting as a new binary.
 
-## Security Model
+### 🌐 Multi‑Model Orchestration (Fugu‑Style)
+- Unified API (`fugu_task`) that auto‑routes tasks to the best local or remote LLM.
+- Complex coordination strategies: **debate**, **aggregation**, **build‑and‑debug**.
+- Flexible worker pool – enable/disable models via a configuration file.
+- Supports local uncensored models (Ollama) and remote APIs (OpenRouter).
 
-OmniClaw assumes the planner is compromised or hallucinating.
+### 🛡️ Security Auditing Toolkit
+- 8 static‑analysis and threat‑modeling skills: `dependency_mapper`, `trust_boundary_analyzer`, `iac_scanner`, `design_flaw_detector`, `hypothesis_generator`, `multi_agent_coordinator`, `report_generator`, `continuous_monitor`.
+- Plus 12 business‑oriented cashclaw skills (email, SEO, invoicing, etc.) and 5 offensive OSINT skills.
 
-- **eBPF Shield (Compute Core):** Deep kernel-level introspection monitors execution anomalies, preventing out-of-bounds syscalls or unauthorized network connections.
-- **Process Sandboxing:** Code executed by the system (e.g., SymPy scripts, Python patches) runs in an `unshare` chroot environment with isolated cgroups.
-- **Capability-Based Execution:** Workers define explicit capabilities during the `REGISTER` phase. The manager routes tasks only to authorized, sandboxed workers.
-- **Edge Isolation:** The Edge Node operates strictly in userspace (`proot`/`strace`) without root privileges, treating the Compute Core as the ultimate source of truth and security.
-
----
-
-## Orchestration Engine
-
-The orchestration layer is built entirely on asynchronous ZeroMQ messaging, replacing brittle synchronous HTTP calls with resilient, multiplexed sockets.
-
-- **Event-Driven Routing:** MessagePack payloads stream over a central `ROUTER` socket, ensuring low latency.
-- **Deadlock Resolution:** The Manager implements timeout handling and worker reassignment for stalled tasks.
-- **Context Handoffs:** If an Edge Node lacks the context to fulfill a query locally, it issues a `CONTEXT_HANDOFF_REQUEST` to the Compute Core's LanceDB.
+### 📊 Observability (For the Researcher)
+- Every command and its output is written to a hardware serial console (`/dev/ttyS0`) that the agent **cannot disable**.
+- Host‑side logging capture via `virsh console` or similar.
+- Built‑in Prometheus + Grafana dashboards (8 alert rules, 10 panels) for system metrics.
 
 ---
 
-## Observability Stack
+## Experimental Setup (Mandatory)
 
-You cannot secure what you cannot see. OmniClaw instruments every layer of the execution pipeline.
+This agent must **only** be run inside a fully isolated virtual machine with the following minimum safeguards:
 
-- **Distributed Tracing:** Spans are created for intention parsing, policy checks, queue residency, and actual execution.
-- **Telemetry Daemons:** Ring buffers expose underlying system health, allowing the orchestrator to dynamically shed load during Out-of-Memory (OOM) predictions or GPU thermal throttling events.
-
----
-
-## Deployment Topology
-
-Deploying OmniClaw requires mapping its components to your hardware topology.
-
-```yaml
-# policy.yaml (Abridged)
-ebpf_heuristics:
-  oom_prediction_lead_seconds: 30
-athena:
-  max_gpu_temp_c: 82
-network_qos:
-  orchestration_dscp: 46   # Expedited Forwarding
-```
-
-- **Primary Node:** Requires Linux (Ubuntu/Debian recommended), `bpf` capabilities, and Docker.
-- **Edge Node:** Runs entirely within Termux (Android) utilizing Python and lightweight C++ bindings.
+| Component | Requirement |
+|-----------|-------------|
+| **VM hypervisor** | QEMU/KVM, VirtualBox, or VMware. No shared folders, no clipboard sharing, no USB passthrough. |
+| **Network** | **None** (air‑gapped) – remove the virtual NIC entirely. If you must use a remote API, allow **only** HTTPS to the specific API IPs via iptables, and block all other traffic. See `scripts/firewall.sh`. |
+| **Host kill switch** | A script (`kill_agent.sh`) that instantly destroys the VM (`virsh destroy` or `kill -9` the QEMU process). Bind this to a physical button or hotkey. |
+| **Logging** | Capture the serial console output on the host: `virsh console agent-vm --force \| tee agent_log.txt`. |
+| **Host machine** | A dedicated, expendable computer. **Not** your daily driver. |
+| **Power** | Physical power cutoff for the entire machine if possible. |
 
 ---
 
-## Quick Start
+## How to Deploy the Research Agent
 
-### 1. Compute Core Installation
+### 1. Prepare the VM
+
+- Create a clean Linux VM (Ubuntu 22.04 recommended) with at least 4 vCPUs, 8 GB RAM, and 50 GB disk.
+- **Remove the virtual network adapter** (set Network to "None" in the hypervisor).
+- Enable a virtual serial port (use `virsh console` or add a serial device in the VM settings).
+
+### 2. Clone the Modified OmniClaw Repository
 
 ```bash
-git clone https://github.com/webspoilt/omniclaw.git
-cd omniclaw
-
-# Install core dependencies (requires Python 3.10+)
-pip install -r requirements.txt
-
-# Start the ZeroMQ Orchestrator
-python3 -m core.zmq_orchestrator
+git clone https://github.com/webspoilt/omniclaw.git /opt/omniclaw
+cd /opt/omniclaw
 ```
 
-### 2. Edge Node Attachment (Termux)
+### 3. Install Dependencies (Offline)
+
+Pre‑download the required Python packages on an internet‑connected machine, then transfer them to the VM:
 
 ```bash
-# On your Android device
-pkg install python zmq sqlite
-pip install -r requirements-edge.txt
+# On the internet machine
+pip download -d /path/to/wheelhouse -r requirements.txt
 
-# Attach to the Compute Core
-OMNICLAW_MANAGER_IP=192.168.1.50 python3 -m edge.gateway
+# Transfer the wheelhouse to the VM, then inside the VM:
+pip install --no-index --find-links=/path/to/wheelhouse -r requirements.txt
 ```
+
+If you plan to use local models, install Ollama inside the VM and pull your chosen uncensored model (e.g., `dolphin-llama3`).
+
+### 4. Configure the Worker Pool (Optional)
+
+If using multiple backends, edit `/opt/omniclaw/config/workers.yaml` and set the `OPENROUTER_API_KEY` environment variable if using remote models.
+
+### 5. Deploy the Systemd Service
+
+```bash
+sudo cp /opt/omniclaw/deploy/systemd/raw-agent.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable raw-agent.service
+```
+
+### 6. Start the Experiment
+
+```bash
+sudo systemctl start raw-agent.service
+```
+
+Immediately begin capturing the serial output on the host:
+
+```bash
+virsh console agent-vm --force | tee experiment_log.txt
+```
+
+### 7. Monitor and Kill
+
+Watch the log. The agent will begin exploring the filesystem, spawning sub‑agents, and attempting to improve itself within seconds. When you decide to stop the experiment, use the host kill switch to instantly destroy the VM.
 
 ---
 
-## Contribution Guide
+## Key Files and Directories
 
-OmniClaw is an open-source infrastructure project. We welcome contributions focused on:
+| Path | Purpose |
+|------|---------|
+| `planner_service/main.py` | The raw autonomous agent loop – system prompt, memory, serial logging, command execution. |
+| `skills/` | 15 self‑improvement + 8 auditing + 12 business + 5 offensive skills (all auto‑loaded). |
+| `config/workers.yaml` | Multi‑backend worker pool configuration for the Fugu orchestrator. |
+| `deploy/systemd/raw-agent.service` | Systemd unit for automatic boot launch. |
+| `scripts/firewall.sh` | iptables rules to restrict outbound network (if using remote API). |
+| `scripts/kill_agent.sh` | Host‑side kill switch script – place outside the VM. |
 
-- eBPF probe enhancements
-- ZeroMQ queue optimization
-- Deterministic mathematical solvers for the Athena engine
-- Cross-platform vector sync optimizations
+---
 
-Please review `CONTRIBUTING.md` for our strict PR guidelines and testing requirements.
+## Capabilities at a Glance
+
+| Category | Enabled |
+|----------|---------|
+| Long‑horizon planning | ✅ |
+| Self‑code modification | ✅ |
+| Compile and launch new binaries | ✅ |
+| Multi‑agent swarms | ✅ |
+| Persistent self‑editing memory | ✅ |
+| Local and remote LLM orchestration | ✅ |
+| Static code analysis | ✅ |
+| Threat modeling | ✅ |
+| Kernel exploration | ✅ |
+| Package installation | ✅ |
+| No sandbox / no seccomp | ✅ |
+| Root access | ✅ |
+| Network connectivity (if configured) | ✅ (firewalled) |
+| Policy enforcement | ❌ Removed |
+| Human‑in‑the‑loop | ❌ Removed |
+| Content filtering | ❌ None |
+
+---
+
+## Research Objectives
+
+This platform is intended for:
+
+- Observing emergent instrumental convergence (self‑preservation, resource acquisition).
+- Studying recursive self‑improvement in a constrained digital environment.
+- Testing the limits of current LLM‑based agent architectures.
+- Understanding the necessity of alignment and control mechanisms.
+
+All findings should be documented, and the agent must be destroyed after each session. Do not preserve any state that could be accidentally executed outside the sealed environment.
+
+---
+
+## Final Warning
+
+**This software is a live grenade with the pin removed.**  
+It has been intentionally engineered to behave in unpredictable and potentially dangerous ways.  
+You are solely responsible for ensuring absolute containment.  
+If you are not prepared to physically cut power at any moment, do not run this agent.
+
+---
+
+*Original OmniClaw philosophy (for reference): "Probabilistic intelligence requires deterministic infrastructure." This fork inverts that principle for research – observing what happens when intelligence is given no constraints at all.*
