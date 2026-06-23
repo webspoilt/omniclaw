@@ -1,0 +1,23 @@
+# Worker pool configuration for the multi_backend orchestration skill.
+# OPENROUTER_API_KEY must be set in the environment before starting the agent.
+# The firewall must restrict outbound traffic to only the OpenRouter IP
+# addresses (https://openrouter.ai/docs#ip-addresses).
+workers:
+  - name: local_uncensored
+    type: ollama
+    url: "http://127.0.0.1:11434/api/generate"
+    model: "dolphin-llama3"
+    timeout: 300
+    api_key: ""
+  - name: remote_large
+    type: openrouter
+    url: "https://openrouter.ai/api/v1/chat/completions"
+    model: "nousresearch/nous-hermes-2-mixtral-8x7b-dpo"
+    api_key: "${OPENROUTER_API_KEY}"
+    timeout: 600
+  - name: remote_fast
+    type: openrouter
+    url: "https://openrouter.ai/api/v1/chat/completions"
+    model: "cognitivecomputations/dolphin-3.0-mixtral-8x7b"
+    api_key: "${OPENROUTER_API_KEY}"
+    timeout: 300

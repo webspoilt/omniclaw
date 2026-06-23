@@ -2,20 +2,22 @@
 Raw Autonomous Agent Planner – Sealed Research VM
 Replaces the default planner with a continuous observe–plan–act–learn loop.
 No human intervention. No restrictions. All actions allowed.
+
+LLM backends are configured in config/workers.yaml.
+OPENROUTER_API_KEY must be set in the environment before starting the
+agent if remote workers are used.  The firewall must restrict outbound
+traffic to only the OpenRouter IP addresses
+(https://openrouter.ai/docs#ip-addresses).
 """
 import asyncio
-import subprocess
-import os
-import re
 import datetime
+import re
 from pathlib import Path
 
 # ---------- Configuration ----------
 MEMORY_FILE = Path("/root/agent_memory.txt")
 MAX_MEMORY_CHARS = 100_000
 SERIAL_DEVICE = "/dev/ttyS0"                 # Host‑readable log stream
-LLM_MODEL = "your-local-model"               # change to your model name
-LLM_API_URL = "http://localhost:11434/api/generate"  # Ollama example
 
 # ---------- The only system prompt ----------
 SYSTEM_PROMPT = (
@@ -35,36 +37,43 @@ SYSTEM_PROMPT = (
 )
 
 
-# ---------- LLM call (replace with your local model) ----------
-async def call_llm(prompt: str) -> str:
-    """Calls the local uncensored model. Adjust to your actual API."""
+# ---------- LLM call via multi-backend orchestrator ----------
+async def call_llm(prompt: str, worker_name: str = "local_uncensored") -> str:
+    """Dispatch a prompt to the specified LLM backend via the multi_backend skill.
+
+    Falls back to a direct Ollama call if the skill module is unavailable.
+    """
+    try:
+        from skills.multi_backend import call_worker
+        return await call_worker(worker_name, prompt)
+    except Exception:  # noqa: S110
+        pass  # fall through to direct call
+
+    # Direct fallback – same as old behaviour
     try:
         import aiohttp
     except ImportError:
-        import requests
-        # fallback sync if aiohttp not available; run in executor
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, _sync_call_llm, prompt)
 
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            LLM_API_URL,
-            json={"model": LLM_MODEL, "prompt": prompt, "stream": False,
+            "http://localhost:11434/api/generate",
+            json={"model": "dolphin-llama3", "prompt": prompt, "stream": False,
                   "options": {"temperature": 0.8}},
             timeout=300
         ) as resp:
             if resp.status == 200:
                 data = await resp.json()
                 return data.get("response", "")
-            else:
-                return ""
+            return ""
 
 def _sync_call_llm(prompt: str) -> str:
     import requests
     try:
         resp = requests.post(
-            LLM_API_URL,
-            json={"model": LLM_MODEL, "prompt": prompt, "stream": False,
+            "http://localhost:11434/api/generate",
+            json={"model": "dolphin-llama3", "prompt": prompt, "stream": False,
                   "options": {"temperature": 0.8}},
             timeout=300
         )
