@@ -1,8 +1,8 @@
 # skills/network_probe.py
 """Network reconnaissance and download tools for the research agent."""
+import shlex
 import socket
 import subprocess
-import shlex
 from pathlib import Path
 
 import requests
@@ -94,8 +94,8 @@ def tcp_port_check(host: str, port: int, timeout_sec: float = 3.0) -> str:
 def ping_host(host: str) -> str:
     """Ping a host to check reachability. Sends 3 ICMP packets."""
     try:
-        proc = subprocess.run(
-            ["ping", "-c", "3", "-W", "5", host],
+        proc = subprocess.run(  # noqa: S603
+            ["ping", "-c", "3", "-W", "5", host],  # noqa: S607
             capture_output=True,
             text=True,
             timeout=20,
@@ -114,7 +114,7 @@ def curl_request(args: str, timeout_sec: int = 30) -> str:
     """
     try:
         cmd = ["curl"] + shlex.split(args)
-        proc = subprocess.run(
+        proc = subprocess.run(  # noqa: S603
             cmd,
             capture_output=True,
             text=True,
