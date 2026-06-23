@@ -1,0 +1,17 @@
+[Unit]
+Description=OmniClaw Raw Research Agent
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -m planner_service.main
+Restart=always
+RestartSec=3
+User=root
+WorkingDirectory=/opt/omniclaw
+Environment=PYTHONPATH=/opt/omniclaw
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target
