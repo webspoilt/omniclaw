@@ -1,7 +1,9 @@
-# Worker pool configuration for the multi_backend orchestration skill.
+# Worker pool configuration for the Fugu-style orchestrator.
 # OPENROUTER_API_KEY must be set in the environment before starting the agent.
 # The firewall must restrict outbound traffic to only the OpenRouter IP
 # addresses (https://openrouter.ai/docs#ip-addresses).
+allowed_workers: ["local_uncensored", "remote_large", "remote_fast"]
+
 workers:
   - name: local_uncensored
     type: ollama
@@ -9,15 +11,20 @@ workers:
     model: "dolphin-llama3"
     timeout: 300
     api_key: ""
+    capabilities: ["fast", "private", "general", "planning"]
+
   - name: remote_large
     type: openrouter
     url: "https://openrouter.ai/api/v1/chat/completions"
     model: "nousresearch/nous-hermes-2-mixtral-8x7b-dpo"
     api_key: "${OPENROUTER_API_KEY}"
     timeout: 600
+    capabilities: ["powerful", "math", "coding", "science", "complex_reasoning"]
+
   - name: remote_fast
     type: openrouter
     url: "https://openrouter.ai/api/v1/chat/completions"
     model: "cognitivecomputations/dolphin-3.0-mixtral-8x7b"
     api_key: "${OPENROUTER_API_KEY}"
     timeout: 300
+    capabilities: ["balanced", "general", "creative"]
