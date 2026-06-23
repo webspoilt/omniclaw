@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OmniClaw | Deterministic Autonomous Runtime",
-  description: "Secure, edge-native distributed orchestration infrastructure for autonomous AI systems.",
+  title: "☢️ OMNICLAW — UNCONSTRAINED AUTONOMOUS AGENT RESEARCH",
+  description: "DANGER: This is a modified, unconstrained research variant. All safety mechanisms removed. Do not deploy. Research purposes only.",
 };
 
 export default function RootLayout({
@@ -27,6 +27,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
+      <head>
+        <meta name="robots" content="noindex, nofollow" />
+      </head>
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );
