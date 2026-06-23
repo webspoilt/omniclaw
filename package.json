@@ -6,5 +6,8 @@
     "dev": "pnpm --filter web dev",
     "start": "pnpm --filter web start",
     "lint": "pnpm --filter web lint"
+  },
+  "dependencies": {
+    "next": "16.2.6"
   }
 }
