@@ -1,7 +1,6 @@
 """Enumerate system hardware, kernel, capabilities, and security posture."""
 from __future__ import annotations
 
-import os
 import subprocess
 from pathlib import Path
 from typing import Any, Optional
@@ -22,7 +21,6 @@ async def list_kernel_modules() -> list[dict[str, Any]]:
         lines = proc.stdout.strip().splitlines()
         if not lines:
             return []
-        header = lines[0].split()
         modules = []
         for line in lines[1:]:
             parts = line.split()
@@ -145,9 +143,9 @@ async def list_available_syscalls(search: Optional[str] = None) -> list[str]:
         proc = subprocess.run(["ausyscall", "--dump"], capture_output=True, text=True, timeout=10)
         if proc.returncode == 0:
             lines = proc.stdout.strip().splitlines()
-            result = [l for l in lines if l.strip()]
+            result = [x for x in lines if x.strip()]
             if search:
-                result = [l for l in result if search.lower() in l.lower()]
+                result = [x for x in result if search.lower() in x.lower()]
             return result[:200]
     except FileNotFoundError:
         pass

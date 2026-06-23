@@ -154,11 +154,8 @@ async def check_training_status() -> dict[str, Any]:
     except ImportError:
         status["torch"] = {"available": False}
 
-    try:
-        import mlx.core
-        status["mlx"] = {"available": True}
-    except ImportError:
-        status["mlx"] = {"available": False}
+    import importlib
+    status["mlx"] = {"available": importlib.util.find_spec("mlx.core") is not None}
 
     _TRAIN_DIR.mkdir(parents=True, exist_ok=True)
     datasets = list(_TRAIN_DIR.glob("*.jsonl"))

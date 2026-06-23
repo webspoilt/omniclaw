@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import re
 import math
-from pathlib import Path
-from typing import Optional
 
 from core.skills.registry import tool
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import random
 import string
-from typing import Any, Optional
+from typing import Any
 
 from core.skills.registry import tool
 
@@ -58,8 +58,8 @@ async def generate_variations(base_value: str) -> dict[str, str]:
         "control_chars": "\x01\x02\x03\x04",
         "unicode": "你好世界ñññ😀🔥💀",
         "very_long": base_value * 100,
-        "sql_injection": f"'; DROP TABLE skills; --",
-        "shell_injection": f"`rm -rf /`",
+        "sql_injection": "'; DROP TABLE skills; --",
+        "shell_injection": "`rm -rf /`",
         "path_traversal": "../../etc/passwd",
         "base_value": base_value,
     }
@@ -77,7 +77,8 @@ async def generate_variations(base_value: str) -> dict[str, str]:
     required=["tool_name", "input_summary", "error_message"],
 )
 async def record_crash(tool_name: str, input_summary: str, error_message: str, severity: str = "crash") -> str:
-    import json, time
+    import json
+    import time
     from pathlib import Path
     crash_dir = Path(__file__).resolve().parent.parent / "data" / "crashes"
     crash_dir.mkdir(parents=True, exist_ok=True)

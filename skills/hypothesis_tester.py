@@ -72,7 +72,7 @@ async def run_experiment(control_command: str, variant_command: str, iterations:
     variant = await measure_execution_time(variant_command, iterations, "variant")
 
     result: dict[str, Any] = {
-        "experiment": label or f"control vs variant",
+        "experiment": label or "control vs variant",
         "control": control,
         "variant": variant,
     }
@@ -98,7 +98,8 @@ async def run_experiment(control_command: str, variant_command: str, iterations:
     required=["values_a_json", "values_b_json"],
 )
 async def statistical_test(values_a_json: str, values_b_json: str) -> dict[str, Any]:
-    import json, math
+    import json
+    import math
     try:
         a = json.loads(values_a_json)
         b = json.loads(values_b_json)
@@ -152,7 +153,8 @@ async def statistical_test(values_a_json: str, values_b_json: str) -> dict[str, 
     required=[],
 )
 async def check_file_change_timing(iterations: int = 10) -> dict[str, Any]:
-    import tempfile, os
+    import tempfile
+    import os
     writes: list[float] = []
     reads: list[float] = []
     deletes: list[float] = []

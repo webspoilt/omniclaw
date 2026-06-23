@@ -4,7 +4,6 @@ from __future__ import annotations
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Optional
 
 from core.skills.registry import tool
 
@@ -23,11 +22,8 @@ async def check_solver_available() -> dict[str, bool]:
             result[s] = True
         except (FileNotFoundError, subprocess.TimeoutExpired):
             result[s] = False
-    try:
-        import z3
-        result["z3_python"] = True
-    except ImportError:
-        result["z3_python"] = False
+    import importlib
+    result["z3_python"] = importlib.util.find_spec("z3") is not None
     return result
 
 

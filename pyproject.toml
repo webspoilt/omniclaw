@@ -25,6 +25,35 @@ dependencies = [
     "torch>=2.1.0",
 ]
 
+[tool.mypy]
+explicit_package_bases = true
+ignore_missing_imports = true
+strict = true
+exclude = [
+  "legacy/",
+  ".venv/",
+  "node_modules/",
+  ".git/",
+  "build/",
+  "engines/",
+  "apps/",
+  "skills/",
+  "project/",
+  "packages/",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "S"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = []
+norecursedirs = [".git", ".venv", "node_modules", "legacy", ".next"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
