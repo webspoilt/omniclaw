@@ -25,6 +25,7 @@ dependencies = [
     "torch>=2.1.0",
     "pyyaml>=6.0",
     "aiohttp>=3.9.0",
+    "click>=8.1.0",
 ]
 
 [tool.mypy]
@@ -55,6 +56,9 @@ select = ["E", "F", "I", "N", "W", "UP", "S"]
 asyncio_mode = "auto"
 testpaths = []
 norecursedirs = [".git", ".venv", "node_modules", "legacy", ".next"]
+
+[project.scripts]
+omniclaw-cli = "cli:main"
 
 [build-system]
 requires = ["hatchling"]
